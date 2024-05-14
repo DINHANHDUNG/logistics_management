@@ -6,39 +6,40 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
-
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
-import {Counter} from './src/components/counter';
-import { store } from './src/app/store';
-import { Provider } from 'react-redux';
+import {SafeAreaView} from 'react-native';
+import {Provider} from 'react-redux';
+import {store} from './src/app/store';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import HomeScreen from './src/screen/home';
+import LoadingScreen from './src/screen/loading';
+import LoginScreen from './src/screen/login';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+  const Stack = createNativeStackNavigator();
   return (
     <Provider store={store}>
-      <SafeAreaView style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={backgroundStyle}>
-          <Header />
-          <Counter />
-        </ScrollView>
+      <SafeAreaView style={{flex: 1}}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="LoginScreen">
+            <Stack.Screen
+              options={{headerShown: false}}
+              name="LoadingScreen"
+              component={LoadingScreen}
+            />
+            <Stack.Screen
+              options={{headerShown: false}}
+              name="LoginScreen"
+              component={LoginScreen}
+            />
+            <Stack.Screen
+              options={{headerShown: false}}
+              name="Home"
+              component={HomeScreen}
+            />
+            {/* <Stack.Screen name="Details" component={DetailsScreen} /> */}
+          </Stack.Navigator>
+        </NavigationContainer>
       </SafeAreaView>
     </Provider>
   );
