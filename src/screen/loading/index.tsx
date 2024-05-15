@@ -8,7 +8,8 @@ export default function LoadingScreen() {
   useEffect(() => {
     setTimeout(() => {
       //fake 3s vao app
-      navigation.navigate('Home');
+      navigation.replace('UserTab');
+      // navigation.replace('AdminTab');
     }, 3000);
   }, []);
 

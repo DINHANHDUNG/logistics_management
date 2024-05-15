@@ -30,11 +30,15 @@ export const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 4,
     marginBottom: 5,
+    height: 40,
   },
   inputPass: {
     // flex: 1,
+    paddingVertical: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    height: 40,
+    alignItems: 'center',
   },
   btnLogin: {
     backgroundColor: '#1F41BB',
