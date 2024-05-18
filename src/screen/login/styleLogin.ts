@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {colors} from '../../common/color';
 
 export const styles = StyleSheet.create({
   container: {
@@ -10,7 +11,7 @@ export const styles = StyleSheet.create({
     marginBottom: 30,
   },
   textTitle: {
-    color: '#1F41BB',
+    color: colors.colorMain2,
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 40,
@@ -30,14 +31,19 @@ export const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 4,
     marginBottom: 5,
+    height: 40,
   },
   inputPass: {
     // flex: 1,
+    paddingHorizontal: 5,
+    paddingVertical: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    height: 40,
+    alignItems: 'center',
   },
   btnLogin: {
-    backgroundColor: '#1F41BB',
+    backgroundColor: colors.colorMain2,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 4,
