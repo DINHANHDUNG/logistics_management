@@ -19,7 +19,11 @@ export default function LoginScreen() {
     setState(pre => ({...pre, [key]: value}));
   };
 
-  const onSubmit = (values: {username: string; password: string}) => {
+  const onSubmit = (values: {
+    username: string;
+    password: string;
+    key: string;
+  }) => {
     console.log(values);
     navigation.navigate('LoadingScreen');
   };
@@ -31,7 +35,7 @@ export default function LoginScreen() {
       </View>
       <Formik
         validationSchema={loginValidationSchema}
-        initialValues={{username: '', password: ''}}
+        initialValues={{username: '', password: '', key: ''}}
         onSubmit={onSubmit}>
         {({handleChange, handleBlur, handleSubmit, values, errors}) => (
           <View>
@@ -41,20 +45,20 @@ export default function LoginScreen() {
               onChangeText={handleChange('username')}
               onBlur={handleBlur('username')}
               value={values.username}
-              placeholder="Nhập username"
+              placeholder="Enter username"
             />
             {errors.username && (
               <Text style={styles.errorText}>{errors.username}</Text>
             )}
 
-            <Text style={styles.label}>Mat khau</Text>
+            <Text style={styles.label}>Password</Text>
             <View style={[styles.input, styles.inputPass]}>
               <TextInput
-                style={{flex: 1,}}
+                style={{flex: 1}}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
-                placeholder="Nhập mật khẩu"
+                placeholder="Enter password"
                 secureTextEntry={state.showPassword ? true : false}
               />
               <TouchableOpacity
@@ -67,7 +71,19 @@ export default function LoginScreen() {
             {errors.password && (
               <Text style={styles.errorText}>{errors.password}</Text>
             )}
-            <TouchableOpacity style={styles.btnLogin} onPress={handleSubmit}>
+
+            <Text style={styles.label}>Key</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('key')}
+              onBlur={handleBlur('key')}
+              value={values.key}
+              placeholder="Enter key"
+            />
+            {errors.key && <Text style={styles.errorText}>{errors.key}</Text>}
+            <TouchableOpacity
+              style={styles.btnLogin}
+              onPress={() => handleSubmit()}>
               <Text style={styles.textLogin}>Đăng nhập</Text>
             </TouchableOpacity>
           </View>

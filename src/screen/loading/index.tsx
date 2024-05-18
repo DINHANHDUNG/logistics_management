@@ -1,6 +1,7 @@
 import {ActivityIndicator, StatusBar, StyleSheet, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import { colors } from '../../common/color';
 
 export default function LoadingScreen() {
   const navigation = useNavigation();
@@ -16,7 +17,7 @@ export default function LoadingScreen() {
   return (
     <View style={styles.container}>
       <StatusBar />
-      <ActivityIndicator size="large" color="#0000ff" />
+      <ActivityIndicator size="large" color={colors.colorMain2} />
     </View>
   );
 }

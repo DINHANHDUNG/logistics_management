@@ -1,5 +1,5 @@
-import React from 'react';
-import {SafeAreaView, Text, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {BackHandler, SafeAreaView, Text, View} from 'react-native';
 import {Provider} from 'react-redux';
 import {store} from './src/app/store';
 import {NavigationContainer} from '@react-navigation/native';
@@ -14,7 +14,14 @@ import HeaderCustom from './src/components/header';
 import 'react-native-gesture-handler';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import CustomDrawerContent from './src/components/drawer';
-import DeliveryListScreen from './src/screen/delivery/deliveryListScreen';
+import DeliveryListScreen from './src/screen/deliveryListScreen';
+import CompleteScreen from './src/screen/completeScreen';
+import DetailCompleteScreen from './src/screen/completeDetailScreen';
+import PouroilScreen from './src/screen/pouroilScreen';
+import PouroilDetailScreen from './src/screen/PouroilDetailScreen';
+import ImagePickerModal from './src/components/modals/selectImgModal';
+import ProcessingScreen from './src/screen/processingScreen';
+import ProcessingDetailScreen from './src/screen/processingDetailScreen';
 
 function App(): React.JSX.Element {
   const Stack = createNativeStackNavigator();
@@ -29,57 +36,44 @@ function App(): React.JSX.Element {
     );
   }
 
-  // Màn hình admin
-  function ListStatusCar() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Admin Screen!</Text>
-      </View>
-    );
-  }
-
-  // Màn hình user
-  function Pouroil() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Pouroil!</Text>
-      </View>
-    );
-  }
-  function Complete() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Complete!</Text>
-      </View>
-    );
-  }
-  function Processing() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Processing!</Text>
-      </View>
-    );
-  }
-  function Delivered() {
-    return (
-      <View style={{flex: 1}}>
-        <HeaderCustom
-          title="Tiêu đề"
-          onActionPress={() => {}}
-          IconRight={<Icon name={'help-circle-outline'} size={16} />}
-        />
-        <Text>Delivered!</Text>
-      </View>
-    );
-  }
-
   function MainNavigator() {
     return (
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
-        <Stack.Screen name="AdminTab" component={AdminDrawerNavigator} />
-        <Stack.Screen name="UserTab" component={UserDrawerNavigator} />
+        <Stack.Screen name="AdminTab" component={AdminTabNavigator} />
+        <Stack.Screen name="UserTab" component={UserTabNavigator} />
+      </Stack.Navigator>
+    );
+  }
+
+  function StackComplate() {
+    return (
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="CompleteScreen" component={CompleteScreen} />
+        <Stack.Screen
+          name="DetailCompleteScreen"
+          component={DetailCompleteScreen}
+        />
+      </Stack.Navigator>
+    );
+  }
+  function StackPouroil() {
+    return (
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="PouroilScreen" component={PouroilScreen} />
+        <Stack.Screen
+          name="PouroilDetailScreen"
+          component={PouroilDetailScreen}
+        />
+      </Stack.Navigator>
+    );
+  }
+  function StackProcessing() {
+    return (
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="ProcessingScreen" component={ProcessingScreen} />
+        <Stack.Screen name="ProcessingDetailScreen" component={ProcessingDetailScreen} />
       </Stack.Navigator>
     );
   }
@@ -157,10 +151,10 @@ function App(): React.JSX.Element {
           tabBarActiveTintColor: 'tomato',
           tabBarInactiveTintColor: 'gray',
         })}>
-        <Tab.Screen name="Đã giao" component={Delivered} />
-        <Tab.Screen name="Đang thực hiện" component={Processing} />
-        <Tab.Screen name="Hoàn thành" component={Complete} />
-        <Tab.Screen name="Đổ dầu" component={Pouroil} />
+        <Tab.Screen name="Đã giao" component={DeliveryListScreen} />
+        <Tab.Screen name="Đang thực hiện" component={StackProcessing} />
+        <Tab.Screen name="Hoàn thành" component={StackComplate} />
+        <Tab.Screen name="Đổ dầu" component={StackPouroil} />
       </Tab.Navigator>
     );
   }
@@ -182,6 +176,14 @@ function App(): React.JSX.Element {
       </Drawer.Navigator>
     );
   }
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => true,
+    );
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <Provider store={store}>
