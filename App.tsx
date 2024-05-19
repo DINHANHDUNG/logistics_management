@@ -21,6 +21,8 @@ import PouroilDetailScreen from './src/screen/PouroilDetailScreen';
 import ImagePickerModal from './src/components/modals/selectImgModal';
 import ProcessingScreen from './src/screen/processingScreen';
 import ProcessingDetailScreen from './src/screen/processingDetailScreen';
+import HistoryStatusScreen from './src/screen/historyStatus';
+import StatusCarScreen from './src/screen/statusCarScreen';
 
 function App(): React.JSX.Element {
   const Stack = createNativeStackNavigator();
@@ -73,6 +75,7 @@ function App(): React.JSX.Element {
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="ProcessingScreen" component={ProcessingScreen} />
         <Stack.Screen name="ProcessingDetailScreen" component={ProcessingDetailScreen} />
+        <Stack.Screen name="HistoryStatusScreen" component={HistoryStatusScreen} />
       </Stack.Navigator>
     );
   }
@@ -106,7 +109,7 @@ function App(): React.JSX.Element {
           tabBarActiveTintColor: 'tomato',
           tabBarInactiveTintColor: 'gray',
         })}>
-        <Tab.Screen name="Trạng thái xe" component={DeliveryListScreen} />
+        <Tab.Screen name="Trạng thái xe" component={StatusCarScreen} />
         <Tab.Screen name="Chuyến vận chuyển" component={HomeScreen} />
         <Tab.Screen name="Báo cáo" component={SettingsScreen} />
       </Tab.Navigator>

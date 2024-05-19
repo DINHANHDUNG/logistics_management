@@ -43,7 +43,7 @@ export default function LoginScreen() {
         onSubmit={onSubmit}>
         {({handleChange, handleBlur, handleSubmit, values, errors}) => (
           <View>
-            <Text style={styles.label}>User name</Text>
+            <Text style={styles.label}>Tài khoản</Text>
             <TextInput
               style={styles.input}
               onChangeText={handleChange('username')}
@@ -55,7 +55,7 @@ export default function LoginScreen() {
               <Text style={styles.errorText}>{errors.username}</Text>
             )}
 
-            <Text style={styles.label}>Password</Text>
+            <Text style={styles.label}>Mật khẩu</Text>
             <View style={[styles.input, styles.inputPass]}>
               <TextInput
                 style={{flex: 1}}

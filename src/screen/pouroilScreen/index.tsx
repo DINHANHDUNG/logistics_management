@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, ScrollView, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  RefreshControl,
+} from 'react-native';
 import HomeHeader from '../../components/header/headerBottomTab';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import thư viện Icon
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -22,6 +29,15 @@ const PouroilScreen = () => {
     startDate: new Date() as Date,
     endDate: lastDayOfMonth as Date,
   });
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   console.log('values', values);
 
@@ -118,7 +134,11 @@ const PouroilScreen = () => {
           <Icon name="calendar" size={20} style={styles.iconInput} />
         </TouchableOpacity>
       </View>
-      <ScrollView style={styles.containerScroll}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        style={styles.containerScroll}>
         {deliveries.map(delivery => (
           <TouchableOpacity
             key={delivery?.id}

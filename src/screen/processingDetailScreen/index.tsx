@@ -17,6 +17,7 @@ import moment from 'moment';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {styles} from './style';
 import SelectValueModal from '../../components/modals/selectModal';
+import { useNavigation } from '@react-navigation/native';
 
 const validationSchema = yup.object().shape({
   status: yup.string().required('Vui lòng nhập trạng thái'),
@@ -25,8 +26,7 @@ const validationSchema = yup.object().shape({
 
 const ProcessingDetailScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
-
-  console.log('record', record);
+  const navigate = useNavigation()
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState<Array<string>>([]);
   const [visibleDate, setVisibleDate] = useState(false);
@@ -65,6 +65,7 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
       <HeaderCustom
         title={`${'Chuyển tt (' + record?.customer + ')'}`}
         IconRight={<Icon name="history" size={16} />}
+        onActionPress={()=> navigate.navigate("HistoryStatusScreen")}
       />
       <View style={{flex: 1, padding: 20}}>
         <Formik

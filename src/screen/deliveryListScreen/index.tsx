@@ -1,14 +1,23 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {
+  RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import thư viện Icon
 import HomeHeader from '../../components/header/headerBottomTab';
-import { styles } from './style';
+import {styles} from './style';
 const DeliveryListScreen = () => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   const deliveries = [
     {
       id: 1,
@@ -66,7 +75,11 @@ const DeliveryListScreen = () => {
   return (
     <View style={styles.container}>
       <HomeHeader />
-      <ScrollView style={styles.containerScroll}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        style={styles.containerScroll}>
         {deliveries.map(delivery => (
           <View key={delivery.id} style={styles.deliveryContainer}>
             <View style={styles.infoContainer}>

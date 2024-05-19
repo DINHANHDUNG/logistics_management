@@ -1,5 +1,12 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, ScrollView, Alert} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  RefreshControl,
+} from 'react-native';
 import HomeHeader from '../../components/header/headerBottomTab';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import thư viện Icon
 import {styles} from './style';
@@ -11,6 +18,15 @@ const CompleteScreen = () => {
   const navigate = useNavigation();
   const [visibleStartDate, setVisibleStartDate] = useState(false);
   const [visibleEndDate, setVisibleEndDate] = useState(false);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   const [values, setValues] = useState({
     startDate: new Date() as Date,
@@ -112,7 +128,11 @@ const CompleteScreen = () => {
           <Icon name="calendar" size={20} style={styles.iconInput} />
         </TouchableOpacity>
       </View>
-      <ScrollView style={styles.containerScroll}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        style={styles.containerScroll}>
         {deliveries.map(delivery => (
           <TouchableOpacity
             key={delivery.id}
