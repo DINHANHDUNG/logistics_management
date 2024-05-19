@@ -4,7 +4,7 @@ export const loginValidationSchema = yup.object().shape({
   username: yup
     .string()
     // .email('Email không đúng định dạng')
-    .required('Vui lòng nhập usename'),
+    .required('Vui lòng nhập tài khoản'),
   key: yup
     .string()
     // .email('Email không đúng định dạng')
