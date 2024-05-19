@@ -5,6 +5,8 @@ import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {loginValidationSchema} from './schema';
 import {styles} from './styleLogin';
+import {Image} from 'react-native';
+const iconLogo = require('../../assets/images/LOGO.png');
 
 const eyeOff = <Icon name="eye-off-outline" size={15} />;
 const eyeOn = <Icon name="eye-outline" size={15} />;
@@ -30,8 +32,10 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.top}>
-        <Text style={styles.textTitle}>Đăng nhập</Text>
-        <Text style={styles.subTitle}>Vui lòng đăng nhập để tiếp tục</Text>
+        <Image source={iconLogo} style={styles.logoWrapper} />
+        <Text style={styles.textTitle}>Viet Solution Technologi</Text>
+        {/* <Text style={styles.textTitle}>Đăng nhập</Text>
+        <Text style={styles.subTitle}>Vui lòng đăng nhập để tiếp tục</Text> */}
       </View>
       <Formik
         validationSchema={loginValidationSchema}

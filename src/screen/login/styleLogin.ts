@@ -8,14 +8,16 @@ export const styles = StyleSheet.create({
     padding: 15,
   },
   top: {
-    marginBottom: 30,
+    marginVertical: 30,
+    alignItems: 'center',
   },
   textTitle: {
     color: colors.colorMain2,
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 40,
+    // marginTop: 40,
     marginBottom: 5,
+    textTransform: 'uppercase'
   },
   subTitle: {
     color: 'gray',
@@ -54,4 +56,5 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   errorText: {fontSize: 10, color: 'red'},
+  logoWrapper: {width: 100, height: 100},
 });

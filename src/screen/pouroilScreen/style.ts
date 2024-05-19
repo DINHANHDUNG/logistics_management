@@ -14,6 +14,9 @@ export const styles = StyleSheet.create({
   containerFilter: {
     marginTop: 10,
     paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
 
   containerIcon: {
@@ -99,7 +102,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    width: '100%',
+    width: '47%',
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,

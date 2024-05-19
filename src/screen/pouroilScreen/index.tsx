@@ -104,6 +104,7 @@ const PouroilScreen = () => {
           </View>
           <Icon name="calendar" size={20} style={styles.iconInput} />
         </TouchableOpacity>
+        <Text>~</Text>
         <TouchableOpacity
           style={styles.inputContainer}
           onPress={showHidenEndDate}>

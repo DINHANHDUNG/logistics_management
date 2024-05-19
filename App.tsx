@@ -10,7 +10,6 @@ import LoginScreen from './src/screen/login';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import HeaderCustom from './src/components/header';
 import 'react-native-gesture-handler';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import CustomDrawerContent from './src/components/drawer';
