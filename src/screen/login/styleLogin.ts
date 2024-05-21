@@ -15,9 +15,8 @@ export const styles = StyleSheet.create({
     color: colors.colorMain2,
     fontSize: 18,
     fontWeight: 'bold',
-    // marginTop: 40,
     marginBottom: 5,
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
   subTitle: {
     color: 'gray',
@@ -36,7 +35,6 @@ export const styles = StyleSheet.create({
     height: 40,
   },
   inputPass: {
-    // flex: 1,
     paddingHorizontal: 5,
     paddingVertical: 0,
     flexDirection: 'row',
@@ -55,6 +53,23 @@ export const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
-  errorText: {fontSize: 10, color: 'red'},
-  logoWrapper: {width: 100, height: 100},
+  errorText: {
+    fontSize: 10,
+    color: 'red',
+  },
+  logoWrapper: {
+    width: 100,
+    height: 100,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  checkbox: {
+    marginRight: 10,
+  },
+  checkboxLabel: {
+    fontSize: 16,
+  },
 });

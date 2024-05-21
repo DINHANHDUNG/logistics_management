@@ -4,6 +4,8 @@ import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../common/color';
 import {useNavigation} from '@react-navigation/native';
+import {authStore} from '../../app/features/auth/authSlice';
+import {useAppSelector} from '../../app/hooks';
 
 interface Props {
   visible: boolean;
@@ -12,6 +14,7 @@ interface Props {
 
 const AccountModal = ({visible, onClose}: Props) => {
   const navigation = useNavigation();
+  const auth = useAppSelector(authStore);
   const onLogout = () => {
     console.log('onLogout');
     navigation.replace('LoginScreen');
@@ -23,8 +26,8 @@ const AccountModal = ({visible, onClose}: Props) => {
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Icon name="close-outline" size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.username}>DINH ANH DUNG</Text>
-        <Text style={styles.role}>(Admin)</Text>
+        <Text style={styles.username}>{auth.HoTen}</Text>
+        <Text style={styles.role}>({auth.Username})</Text>
         <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
           <Text style={styles.logoutButtonText}>Đăng Xuất</Text>
         </TouchableOpacity>

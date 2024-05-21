@@ -1,18 +1,25 @@
 import {useNavigation} from '@react-navigation/native';
-import {Formik} from 'formik';
-import React, {useState} from 'react';
-import {Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {useFormik} from 'formik';
+import React, {useState, useEffect} from 'react';
+import {Alert, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {loginValidationSchema} from './schema';
 import {styles} from './styleLogin';
 import {Image} from 'react-native';
+import {useLazyLoginQuery} from '../../app/services/login';
+import LoadingModal from '../../components/modals/loadingModal';
+import {useAppDispatch} from '../../app/hooks';
+import {changeUser} from '../../app/features/auth/authSlice';
 const iconLogo = require('../../assets/images/LOGO.png');
 
 const eyeOff = <Icon name="eye-off-outline" size={15} />;
 const eyeOn = <Icon name="eye-outline" size={15} />;
 
-export default function LoginScreen() {
+const LoginScreen = () => {
+  const [login, {isLoading, isError}] = useLazyLoginQuery();
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const [state, setState] = useState({
     showPassword: false,
   });
@@ -21,78 +28,155 @@ export default function LoginScreen() {
     setState(pre => ({...pre, [key]: value}));
   };
 
-  const onSubmit = (values: {
-    username: string;
-    password: string;
-    key: string;
-  }) => {
-    console.log(values);
-    navigation.navigate('LoadingScreen');
-  };
+  const formik = useFormik({
+    initialValues: {
+      UserName: '',
+      Password: '',
+      ProductKey: '',
+      rememberMe: false,
+    },
+    validationSchema: loginValidationSchema,
+    onSubmit: async values => {
+      console.log(values);
+      login(values).then(req => {
+        console.log(req);
+        if (req.data.IDUser) {
+          dispatch(changeUser(req.data));
+          navigation.navigate('LoadingScreen');
+        } else {
+          Alert.alert('Lỗi', 'Tài khoản hoặc mật khẩu không chính xác');
+        }
+      });
+      if (values.rememberMe) {
+        try {
+          await AsyncStorage.setItem('UserName', values.UserName);
+          await AsyncStorage.setItem('Password', values.Password);
+          await AsyncStorage.setItem('ProductKey', values.ProductKey);
+          await AsyncStorage.setItem('rememberMe', 'true');
+        } catch (error) {
+          console.error('Failed to save credentials', error);
+        }
+      } else {
+        try {
+          await AsyncStorage.removeItem('UserName');
+          await AsyncStorage.removeItem('Password');
+          await AsyncStorage.removeItem('ProductKey');
+          await AsyncStorage.removeItem('rememberMe');
+        } catch (error) {
+          console.error('Failed to clear credentials', error);
+        }
+      }
+    },
+  });
+
+  useEffect(() => {
+    const loadCredentials = async () => {
+      try {
+        const savedUserName = await AsyncStorage.getItem('UserName');
+        const savedPassword = await AsyncStorage.getItem('Password');
+        const savedProductKey = await AsyncStorage.getItem('ProductKey');
+        const rememberMe = await AsyncStorage.getItem('rememberMe');
+        if (
+          savedUserName &&
+          savedPassword &&
+          savedProductKey &&
+          rememberMe === 'true'
+        ) {
+          formik.setValues({
+            UserName: savedUserName,
+            Password: savedPassword,
+            ProductKey: savedProductKey,
+            rememberMe: true,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load credentials', error);
+      }
+    };
+    loadCredentials();
+  }, [formik.setValues]);
+
+  useEffect(() => {
+    if (!isLoading && isError === true) {
+      Alert.alert('Lỗi', 'Tài khoản hoặc mật khẩu không chính xác');
+    }
+  }, [isError, isLoading]);
+
   return (
     <View style={styles.container}>
       <View style={styles.top}>
         <Image source={iconLogo} style={styles.logoWrapper} />
         <Text style={styles.textTitle}>Viet Solution Technologi</Text>
-        {/* <Text style={styles.textTitle}>Đăng nhập</Text>
-        <Text style={styles.subTitle}>Vui lòng đăng nhập để tiếp tục</Text> */}
       </View>
-      <Formik
-        validationSchema={loginValidationSchema}
-        initialValues={{username: '', password: '', key: ''}}
-        onSubmit={onSubmit}>
-        {({handleChange, handleBlur, handleSubmit, values, errors}) => (
-          <View>
-            <Text style={styles.label}>Tài khoản</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChange('username')}
-              onBlur={handleBlur('username')}
-              value={values.username}
-              placeholder="Enter username"
-            />
-            {errors.username && (
-              <Text style={styles.errorText}>{errors.username}</Text>
-            )}
-
-            <Text style={styles.label}>Mật khẩu</Text>
-            <View style={[styles.input, styles.inputPass]}>
-              <TextInput
-                style={{flex: 1}}
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                value={values.password}
-                placeholder="Enter password"
-                secureTextEntry={state.showPassword ? true : false}
-              />
-              <TouchableOpacity
-                onPress={() =>
-                  changeState('showPassword', !state.showPassword)
-                }>
-                {state.showPassword ? eyeOn : eyeOff}
-              </TouchableOpacity>
-            </View>
-            {errors.password && (
-              <Text style={styles.errorText}>{errors.password}</Text>
-            )}
-
-            <Text style={styles.label}>Key</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChange('key')}
-              onBlur={handleBlur('key')}
-              value={values.key}
-              placeholder="Enter key"
-            />
-            {errors.key && <Text style={styles.errorText}>{errors.key}</Text>}
-            <TouchableOpacity
-              style={styles.btnLogin}
-              onPress={() => handleSubmit()}>
-              <Text style={styles.textLogin}>Đăng nhập</Text>
-            </TouchableOpacity>
-          </View>
+      <View>
+        <Text style={styles.label}>Tài khoản</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={formik.handleChange('UserName')}
+          onBlur={formik.handleBlur('UserName')}
+          value={formik.values.UserName}
+          placeholder="Enter UserName"
+        />
+        {formik.touched.UserName && formik.errors.UserName && (
+          <Text style={styles.errorText}>{formik.errors.UserName}</Text>
         )}
-      </Formik>
+
+        <Text style={styles.label}>Mật khẩu</Text>
+        <View style={[styles.input, styles.inputPass]}>
+          <TextInput
+            style={{flex: 1}}
+            onChangeText={formik.handleChange('Password')}
+            onBlur={formik.handleBlur('Password')}
+            value={formik.values.Password}
+            placeholder="Enter Password"
+            secureTextEntry={!state.showPassword}
+          />
+          <TouchableOpacity
+            onPress={() => changeState('showPassword', !state.showPassword)}>
+            {state.showPassword ? eyeOn : eyeOff}
+          </TouchableOpacity>
+        </View>
+        {formik.touched.Password && formik.errors.Password && (
+          <Text style={styles.errorText}>{formik.errors.Password}</Text>
+        )}
+
+        <Text style={styles.label}>ProductKey</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={formik.handleChange('ProductKey')}
+          onBlur={formik.handleBlur('ProductKey')}
+          value={formik.values.ProductKey}
+          placeholder="Enter ProductKey"
+        />
+        {formik.touched.ProductKey && formik.errors.ProductKey && (
+          <Text style={styles.errorText}>{formik.errors.ProductKey}</Text>
+        )}
+
+        <View style={styles.checkboxContainer}>
+          <TouchableOpacity
+            onPress={() =>
+              formik.setFieldValue('rememberMe', !formik.values.rememberMe)
+            }
+            style={styles.checkbox}>
+            <Icon
+              name={
+                formik.values.rememberMe
+                  ? 'checkbox-marked'
+                  : 'checkbox-blank-outline'
+              }
+              size={20}
+            />
+          </TouchableOpacity>
+          <Text style={styles.checkboxLabel}>Lưu tài khoản</Text>
+        </View>
+
+        <TouchableOpacity style={styles.btnLogin} onPress={formik.handleSubmit}>
+          <Text style={styles.textLogin}>Đăng nhập</Text>
+        </TouchableOpacity>
+      </View>
+      <LoadingModal isVisible={isLoading} />
     </View>
   );
-}
+};
+
+export default LoginScreen;
