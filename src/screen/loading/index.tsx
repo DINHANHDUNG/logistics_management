@@ -1,17 +1,27 @@
 import {ActivityIndicator, StatusBar, StyleSheet, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import { colors } from '../../common/color';
+import {colors} from '../../common/color';
+import {useAppSelector} from '../../app/hooks';
+import {authStore} from '../../app/features/auth/authSlice';
 
 export default function LoadingScreen() {
   const navigation = useNavigation();
+  const auth = useAppSelector(authStore);
+
+  const checkLogin = () => {
+    if (auth.IDUser) {
+      if (auth.FlagQuanLy) {
+        return navigation.replace('AdminTab');
+      }
+      return navigation.replace('UserTab');
+    }
+    navigation.replace('LoginScreen');
+  };
+
   //Xu ly loading truoc khi vao app, check login
   useEffect(() => {
-    setTimeout(() => {
-      //fake 3s vao app
-      // navigation.replace('UserTab');
-      navigation.replace('AdminTab');
-    }, 3000);
+    checkLogin();
   }, []);
 
   return (
