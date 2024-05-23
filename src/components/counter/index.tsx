@@ -8,7 +8,7 @@ export function Counter() {
   const count = useAppSelector((state: RootState) => state.counter.value);
   const dispatch = useAppDispatch();
   const {data, isLoading} = useGetPokemonByNameQuery('bulbasaur');
-  
+
   return (
     <View>
       <View>
@@ -28,7 +28,7 @@ export function Counter() {
           <View>
             <Text>{data.species.name}</Text>
             <Image
-              source={{uri: data.sprites.front_shiny}}
+              source={{uri: data.sprites.front_shiny ?? ''}}
               style={{width: 100, height: 100}}
             />
           </View>

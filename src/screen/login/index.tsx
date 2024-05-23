@@ -11,7 +11,7 @@ import {useLazyLoginQuery} from '../../app/services/login';
 import LoadingModal from '../../components/modals/loadingModal';
 import {useAppDispatch} from '../../app/hooks';
 import {changeUser} from '../../app/features/auth/authSlice';
-const iconLogo = require('../../assets/images/LOGO.png');
+const iconLogo = require('../../assets/images/logoLogin.png');
 
 const eyeOff = <Icon name="eye-off-outline" size={15} />;
 const eyeOn = <Icon name="eye-outline" size={15} />;
@@ -37,8 +37,11 @@ const LoginScreen = () => {
     },
     validationSchema: loginValidationSchema,
     onSubmit: async values => {
-      console.log(values);
-      login(values).then(req => {
+      login({
+        UserName: values.UserName,
+        Password: values.Password,
+        ProductKey: values.ProductKey,
+      }).then(req => {
         console.log(req);
         if (req.data.IDUser) {
           dispatch(changeUser(req.data));
@@ -106,7 +109,6 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <View style={styles.top}>
         <Image source={iconLogo} style={styles.logoWrapper} />
-        <Text style={styles.textTitle}>Viet Solution Technologi</Text>
       </View>
       <View>
         <Text style={styles.label}>Tài khoản</Text>

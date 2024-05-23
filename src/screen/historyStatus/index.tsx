@@ -162,7 +162,10 @@ const HistoryStatusScreen = () => {
                   <TouchableOpacity
                     key={index}
                     onPress={() => handleImagePress(item.images, index)}>
-                    <Image source={{uri: image}} style={styles.historyImage} />
+                    <Image
+                      source={{uri: image ?? ''}}
+                      style={styles.historyImage}
+                    />
                   </TouchableOpacity>
                 ))}
               </ScrollView>

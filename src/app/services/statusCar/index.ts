@@ -18,8 +18,22 @@ export const statusCarApi = createApi({
       }),
       // transformResponse: (response) => response, //Trả ra theo ý muốn nếu cần
     }),
+    GetListChuyenXe: builder.query({
+      query: (value: {
+        IDXe: number;
+        Productkey: string;
+        dtNow: string;
+        Limit: number;
+        Page: 1;
+      }) => ({
+        method: GET,
+        url: NetWork.GetListChuyenXe,
+        params: value,
+      }),
+      // transformResponse: (response) => response, //Trả ra theo ý muốn nếu cần
+    }),
   }),
 });
 
 // Export hooks for usage in functional components
-export const {useLazyGetSttCarQuery} = statusCarApi;
+export const {useLazyGetSttCarQuery, useGetListChuyenXeQuery} = statusCarApi;

@@ -58,8 +58,10 @@ export const styles = StyleSheet.create({
     color: 'red',
   },
   logoWrapper: {
-    width: 100,
-    height: 100,
+    width: 400,
+    height: 150,
+    objectFit: 'contain',
+    // backgroundColor: 'red'
   },
   checkboxContainer: {
     flexDirection: 'row',

@@ -25,8 +25,6 @@ const StatusCarScreen = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const Limit = 10;
 
-  console.log('data', data);
-
   useEffect(() => {
     fetchStatusCarList(page);
   }, [page]);
@@ -39,7 +37,6 @@ const StatusCarScreen = () => {
         Limit: Limit,
         ProductKey: ProductKey ?? '',
       });
-      console.log('response?.data', response?.data);
 
       if (response?.data) {
         setStatusCarList(prevStatusCarList =>
@@ -102,7 +99,11 @@ const StatusCarScreen = () => {
           <TouchableOpacity
             key={val.IDXe}
             style={styles.itemContainer}
-            onPress={() => navigate.navigate('StatusCarDetailScreen')}>
+            onPress={() =>
+              navigate.navigate('StatusCarDetailScreen', {
+                item: val,
+              })
+            }>
             <View style={styles.infoContainer}>
               <Text style={styles.title}>Biển số xe: {val.BienSoXe}</Text>
             </View>
