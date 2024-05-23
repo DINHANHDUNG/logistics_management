@@ -2349,7 +2349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/datetimepicker@npm:^8.0.1":
+"@react-native-community/datetimepicker@npm:8.0.1":
   version: 8.0.1
   resolution: "@react-native-community/datetimepicker@npm:8.0.1"
   dependencies:
@@ -7084,7 +7084,7 @@ __metadata:
     "@babel/preset-env": ^7.20.0
     "@babel/runtime": ^7.20.0
     "@react-native-async-storage/async-storage": ^1.23.1
-    "@react-native-community/datetimepicker": ^8.0.1
+    "@react-native-community/datetimepicker": 8.0.1
     "@react-native/babel-preset": 0.74.83
     "@react-native/eslint-config": 0.74.83
     "@react-native/metro-config": 0.74.83

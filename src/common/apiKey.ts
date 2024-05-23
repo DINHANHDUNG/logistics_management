@@ -6,6 +6,7 @@ export const NetWork = {
   login: 'GetUserLogin',
   //Status car
   getListSttCar: 'GetTrangThaiXeTrongNgay',
+  GetListChuyenXe: 'GetListChuyenXe',
 
   //Pokemon
   pokemon: 'api/v2/'

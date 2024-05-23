@@ -1,10 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AccountModal from '../modals/accountModal';
 
@@ -14,14 +9,11 @@ const HomeHeader = () => {
     setModalVisible(!modalVisible);
   };
 
-  const iconLogo = require('../../assets/images/logoPNG2.png')
+  const iconLogo = require('../../assets/images/logoPNG2.png');
 
   return (
     <View style={styles.headerContainer}>
-      <Image
-        source={iconLogo}
-        style={styles.logoWrapper}
-      />
+      <Image source={iconLogo ?? ''} style={styles.logoWrapper} />
       <TouchableOpacity onPress={onRightPress} style={styles.rightButton}>
         <Icon name="person-circle-outline" size={28} color="#fff" />
       </TouchableOpacity>

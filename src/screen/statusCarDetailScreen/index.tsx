@@ -1,42 +1,148 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, View} from 'react-native';
 import {
-  ExpandableCalendar,
   TimelineList,
   CalendarProvider,
   CalendarUtils,
 } from 'react-native-calendars';
 import {groupBy, find, filter} from 'lodash';
-import {getDate, timelineEvents} from './timeLineEvents';
+import {getDate} from './timeLineEvents';
 import HeaderCustom from '../../components/header';
+import {useGetListChuyenXeQuery} from '../../app/services/statusCar';
+import {authStore} from '../../app/features/auth/authSlice';
+import {useAppSelector} from '../../app/hooks';
+import moment from 'moment';
+import {Text} from 'react-native';
+import LoadingModal from '../../components/modals/loadingModal';
 
-const INITIAL_TIME = {hour: 9, minutes: 0};
-const EVENTS = timelineEvents;
+// Dữ liệu mới
+// const newEventsData = [
+//   {
+//     ProductKey: null,
+//     IDChuyen: 19,
+//     NgayDongHangCal: '2024-05-19T13:15:00',
+//     NgayDongHang: '13:15 19/05/2024',
+//     NgayTraHangCal: '2024-05-19T15:30:00',
+//     NgayTraHang: '15:30 19/05/2024',
+//     DiemDi: 'KCN Quế Võ',
+//     DiemDen: 'KCN Yên Phong',
+//     BienSoXe: '99C-23633',
+//     ThoiGianVe: '13:15 19/05/2024',
+//   },
+//   {
+//     ProductKey: null,
+//     IDChuyen: 20,
+//     NgayDongHangCal: '2024-05-23T13:15:00',
+//     NgayDongHang: '13:15 23/05/2024',
+//     NgayTraHangCal: '2024-05-23T15:30:00',
+//     NgayTraHang: '15:30 23/05/2024',
+//     DiemDi: 'KCN Quế Võ',
+//     DiemDen: 'KCN Yên Phong',
+//     BienSoXe: '99C-24633',
+//     ThoiGianVe: '13:15 23/05/2024',
+//   },
+//   {
+//     ProductKey: null,
+//     IDChuyen: 21,
+//     NgayDongHangCal: '2024-05-23T13:15:00',
+//     NgayDongHang: '13:30 23/05/2024',
+//     NgayTraHangCal: '2024-05-23T16:30:00',
+//     NgayTraHang: '16:30 23/05/2024',
+//     DiemDi: 'KCN Quế Võ',
+//     DiemDen: 'KCN Yên Phong',
+//     BienSoXe: '99C-24633',
+//     ThoiGianVe: '13:15 23/05/2024',
+//   },
+// ];
 
-const StatusCarDetailScreen = () => {
-  const [currentDate, setCurrentDate] = useState(getDate());
-  const [eventsByDate, setEventsByDate] = useState(
-    groupBy(EVENTS, e => CalendarUtils.getCalendarDateString(e.start)),
+const convertToEvent = (data: any) => {
+  return {
+    id: data?.IDChuyen,
+    start: data?.NgayDongHangCal,
+    end: data?.NgayTraHangCal,
+    title: `${data?.BienSoXe}`,
+    color: 'lightblue',
+    summary: `${data?.DiemDi} -> ${data?.DiemDen}\n ${moment(
+      data?.NgayDongHangCal,
+    ).format('DD-MM-YYYY')} -> ${moment(data?.NgayTraHangCal).format(
+      'DD-MM-YYYY',
+    )}`,
+  };
+};
+
+const StatusCarDetailScreen = ({route}: {route: any}) => {
+  const {item: record} = route.params;
+  const auth = useAppSelector(authStore);
+  const formattedDate = moment().format('YYYY-MM-DD');
+  const {data, isLoading} = useGetListChuyenXeQuery(
+    {
+      IDXe: record.IDXe,
+      Productkey: auth.Key,
+      dtNow: formattedDate,
+      Limit: 100,
+      Page: 1,
+    },
+    {
+      skip: !record.IDXe && !auth.Key,
+    },
   );
 
-  const marked = {
-    [`${getDate(-1)}`]: {marked: true},
-    [`${getDate()}`]: {marked: true},
-    [`${getDate(1)}`]: {marked: true},
-    [`${getDate(2)}`]: {marked: true},
-    [`${getDate(4)}`]: {marked: true},
-  };
+  const EVENTS = (data?.data?.length > 0 ? data?.data : []).map(convertToEvent);
+  const [currentDate, setCurrentDate] = useState(getDate());
+  const [eventsByDate, setEventsByDate] = useState<any>(
+    groupBy(EVENTS, e => CalendarUtils.getCalendarDateString(e.start)),
+  );
+  const [initTime, setInitTime] = useState({
+    hour: 9,
+    minutes: 0,
+  });
 
-  const onDateChanged = (date, source) => {
+  // const timelineRef = useRef(null);
+
+  // useEffect(() => {
+  //   if (timelineRef.current && EVENTS.length > 0) {
+  //     // Find the date string of the first event
+  //     const firstEventDate = CalendarUtils.getCalendarDateString(
+  //       EVENTS[0].start,
+  //     );
+  //     // Scroll to the first event of the first date
+  //     const index = eventsByDate[firstEventDate].findIndex(
+  //       event => event.id === EVENTS[0].id,
+  //     );
+  //     timelineRef.current.scrollToIndex({index, animated: true});
+  //   }
+  // }, [eventsByDate]);
+
+  useEffect(() => {
+    if (data?.data && !isLoading) {
+      // Lấy giờ từ sự kiện đầu tiên
+      const EVENTS = (data?.data?.length > 0 ? data?.data : []).map(
+        convertToEvent,
+      );
+      const firstEventTime = new Date(EVENTS?.[0]?.start);
+      const INITIAL_TIME = {
+        hour: firstEventTime.getHours(),
+        minutes: firstEventTime.getMinutes(),
+      };
+      setEventsByDate(
+        groupBy(EVENTS, e => CalendarUtils.getCalendarDateString(e.start)),
+      );
+      console.log('INITIAL_TIME', INITIAL_TIME);
+
+      setInitTime(INITIAL_TIME);
+    }
+  }, [isLoading]);
+
+  const onDateChanged = (date: any, source: any) => {
     console.log('TimelineCalendarScreen onDateChanged: ', date, source);
     setCurrentDate(date);
   };
 
-  const onMonthChange = (month, updateSource) => {
+  const onMonthChange = (month: any, updateSource: any) => {
     console.log('TimelineCalendarScreen onMonthChange: ', month, updateSource);
   };
 
-  const createNewEvent = (timeString, timeObject) => {
+  const createNewEvent = (timeString: any, timeObject: any) => {
     const hourString = `${(timeObject.hour + 1).toString().padStart(2, '0')}`;
     const minutesString = `${timeObject.minutes.toString().padStart(2, '0')}`;
 
@@ -46,7 +152,7 @@ const StatusCarDetailScreen = () => {
       end: `${timeObject.date} ${hourString}:${minutesString}:00`,
       title: 'New Event',
       color: 'white',
-    };
+    } as any;
 
     if (timeObject.date) {
       setEventsByDate(prevEventsByDate => {
@@ -64,7 +170,7 @@ const StatusCarDetailScreen = () => {
     }
   };
 
-  const approveNewEvent = (_timeString, timeObject) => {
+  const approveNewEvent = (_timeString: any, timeObject: any) => {
     Alert.prompt('New Event', 'Enter event title', [
       {
         text: 'Cancel',
@@ -121,26 +227,26 @@ const StatusCarDetailScreen = () => {
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <HeaderCustom title={'Thông tin các chuyến'} />
-      <CalendarProvider
-        date={currentDate}
-        onDateChanged={onDateChanged}
-        onMonthChange={onMonthChange}
-        showTodayButton
-        disabledOpacity={0.6}>
-        {/* <ExpandableCalendar
-        firstDay={1}
-        leftArrowImageSource={require('../../assets/images/previous.png')}
-        rightArrowImageSource={require('../../assets/images/next.png')}
-        markedDates={marked}
-      /> */}
-        <TimelineList
-          events={eventsByDate}
-          timelineProps={timelineProps}
-          showNowIndicator
-          scrollToFirst
-          initialTime={INITIAL_TIME}
-        />
-      </CalendarProvider>
+      {!isLoading && (
+        <CalendarProvider
+          date={currentDate}
+          onDateChanged={onDateChanged}
+          onMonthChange={onMonthChange}
+          showTodayButton
+          disabledOpacity={0.6}>
+          <TimelineList
+            // ref={timelineRef}
+            events={eventsByDate}
+            timelineProps={timelineProps}
+            showNowIndicator
+            scrollToFirst
+            scrollToNow
+            initialTime={initTime}
+            // renderItem={item => <Text>{item.date}</Text>}
+          />
+        </CalendarProvider>
+      )}
+      <LoadingModal isVisible={isLoading} />
     </View>
   );
 };

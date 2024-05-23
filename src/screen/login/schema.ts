@@ -11,6 +11,6 @@ export const loginValidationSchema = yup.object().shape({
     .required('Vui lòng nhập key'),
   Password: yup
     .string()
-    .min(8, ({min}) => `Mật khẩu phải có ít nhất ${min} ký tự`)
+    .min(6, ({min}) => `Mật khẩu phải có ít nhất ${min} ký tự`)
     .required('Vui lòng nhập mật khẩu'),
 });
