@@ -1,9 +1,9 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import stackReport from '../stack/stackReport';
 import StackStatusCar from '../stack/stackStatusCar';
 import StackTransportTrip from '../stack/stackTransportTrip';
-import {View} from 'react-native';
-import {Text} from 'react-native';
 
 function AdminTabNavigator() {
   const Tab = createBottomTabNavigator();
@@ -11,7 +11,7 @@ function AdminTabNavigator() {
   function SettingsScreen() {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Settings!</Text>
+        <Text>Điều phối xe!</Text>
       </View>
     );
   }
@@ -44,7 +44,8 @@ function AdminTabNavigator() {
       })}>
       <Tab.Screen name="Trạng thái xe" component={StackStatusCar} />
       <Tab.Screen name="Chuyến vận chuyển" component={StackTransportTrip} />
-      <Tab.Screen name="Báo cáo" component={SettingsScreen} />
+      <Tab.Screen name="Điều phố" component={SettingsScreen} />
+      <Tab.Screen name="Báo cáo" component={stackReport} />
     </Tab.Navigator>
   );
 }

@@ -6,6 +6,7 @@ import {authApi} from './services/login';
 import {statusCarApi} from './services/statusCar';
 import {transportTripApi} from './services/transportTrip';
 import {categoryApi} from './services/category';
+import {reportApi} from './services/report';
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     [statusCarApi.reducerPath]: statusCarApi.reducer,
     [transportTripApi.reducerPath]: transportTripApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
+    [reportApi.reducerPath]: reportApi.reducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware().concat(
@@ -24,6 +26,7 @@ export const store = configureStore({
       statusCarApi.middleware,
       transportTripApi.middleware,
       categoryApi.middleware,
+      reportApi.middleware,
     ),
 });
 
