@@ -11,6 +11,7 @@ import {useLazyLoginQuery} from '../../app/services/login';
 import LoadingModal from '../../components/modals/loadingModal';
 import {useAppDispatch} from '../../app/hooks';
 import {changeUser} from '../../app/features/auth/authSlice';
+import {MSG} from '../../common/contants';
 const iconLogo = require('../../assets/images/logoLogin.png');
 
 const eyeOff = <Icon name="eye-off-outline" size={15} />;
@@ -41,13 +42,13 @@ const LoginScreen = () => {
         UserName: values.UserName,
         Password: values.Password,
         ProductKey: values.ProductKey,
-      }).then(req => {
+      }).then((req: any) => {
         console.log(req);
-        if (req.data.IDUser) {
-          dispatch(changeUser(req.data));
+        if (req.data.data.IDUser) {
+          dispatch(changeUser(req.data.data));
           navigation.navigate('LoadingScreen');
         } else {
-          Alert.alert('Lỗi', 'Tài khoản hoặc mật khẩu không chính xác');
+          Alert.alert(MSG.err, MSG.errLoginfail);
         }
       });
       if (values.rememberMe) {
@@ -101,7 +102,7 @@ const LoginScreen = () => {
 
   useEffect(() => {
     if (!isLoading && isError === true) {
-      Alert.alert('Lỗi', 'Tài khoản hoặc mật khẩu không chính xác');
+      Alert.alert(MSG.err, MSG.errLoginfail);
     }
   }, [isError, isLoading]);
 

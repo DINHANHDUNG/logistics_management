@@ -4,6 +4,8 @@ import authReducer from './features/auth/authSlice';
 // import {pokemonApi} from './services/pokemon';
 import {authApi} from './services/login';
 import {statusCarApi} from './services/statusCar';
+import {transportTripApi} from './services/transportTrip';
+import {categoryApi} from './services/category';
 
 export const store = configureStore({
   reducer: {
@@ -13,9 +15,16 @@ export const store = configureStore({
     // [pokemonApi.reducerPath]: pokemonApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [statusCarApi.reducerPath]: statusCarApi.reducer,
+    [transportTripApi.reducerPath]: transportTripApi.reducer,
+    [categoryApi.reducerPath]: categoryApi.reducer,
   },
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(authApi.middleware, statusCarApi.middleware),
+    getDefaultMiddleware().concat(
+      authApi.middleware,
+      statusCarApi.middleware,
+      transportTripApi.middleware,
+      categoryApi.middleware,
+    ),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

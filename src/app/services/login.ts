@@ -15,7 +15,7 @@ export const authApi = createApi({
         url: NetWork.login,
         params: value,
       }),
-      // transformResponse: (response) => response, //Trả ra theo ý muốn nếu cần
+      transformResponse: response => response, //Trả ra theo ý muốn nếu cần
     }),
   }),
 });

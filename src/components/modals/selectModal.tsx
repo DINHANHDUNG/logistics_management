@@ -8,18 +8,14 @@ import {
   Dimensions,
 } from 'react-native';
 import Modal from 'react-native-modal';
-
-interface Value {
-  key: string;
-  value: string;
-}
-
 interface Props {
   isVisible: boolean;
   onClose: () => void;
-  onSelectValue: (selectedValue: Value) => void;
-  values: Array<Value>;
+  onSelectValue: (selectedValue: any) => void;
+  values: Array<any>;
   title?: string; // Optional title prop
+  keyRender?: string;
+  keySubRender?: string;
 }
 
 const SelectValueModal: React.FC<Props> = ({
@@ -28,6 +24,8 @@ const SelectValueModal: React.FC<Props> = ({
   onSelectValue,
   values,
   title = '', // Default value for title is an empty string
+  keyRender,
+  keySubRender,
 }) => {
   const screenHeight = Dimensions.get('window').height;
   const modalHeight = screenHeight * 0.3;
@@ -43,15 +41,21 @@ const SelectValueModal: React.FC<Props> = ({
       <View style={[styles.modalView, {maxHeight: modalHeight}]}>
         {title !== '' && <Text style={styles.title}>{title}</Text>}
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          {values.map(item => (
+          {values.map((item: any, index) => (
             <TouchableOpacity
-              key={item.key}
+              key={item.ID || index}
               style={styles.itemContainer}
               onPress={() => {
                 onSelectValue(item);
                 onClose();
               }}>
-              <Text style={styles.itemText}>{item.value}</Text>
+              <Text style={styles.itemText}>
+                {keyRender
+                  ? keySubRender
+                    ? item[keyRender] + ' - ' + item[keySubRender]
+                    : item[keyRender]
+                  : item.value}
+              </Text>
               <View style={styles.line} />
             </TouchableOpacity>
           ))}

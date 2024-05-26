@@ -1,5 +1,4 @@
 import {StyleSheet} from 'react-native';
-import {colors} from '../../common/color';
 
 export const styles = StyleSheet.create({
   label: {
@@ -39,7 +38,7 @@ export const styles = StyleSheet.create({
   iconInput: {
     position: 'absolute',
     right: 10,
-    fontSize: 14
+    fontSize: 14,
     // color: colors.colorMain2,
   },
   inputContainer: {
@@ -71,5 +70,13 @@ export const styles = StyleSheet.create({
     height: 100,
     marginRight: 10,
     borderRadius: 10,
+  },
+  row: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  itemRow: {
+    width: '48%',
   },
 });

@@ -30,7 +30,7 @@ export const statusCarApi = createApi({
         url: NetWork.GetListChuyenXe,
         params: value,
       }),
-      // transformResponse: (response) => response, //Trả ra theo ý muốn nếu cần
+      transformResponse: (response: any) => response.data,
     }),
   }),
 });

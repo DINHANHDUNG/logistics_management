@@ -8,6 +8,20 @@ export const NetWork = {
   getListSttCar: 'GetTrangThaiXeTrongNgay',
   GetListChuyenXe: 'GetListChuyenXe',
 
+  //TransportTrip
+  GetListChuyenVanChuyen: 'GetListChuyenVanChuyen',
+  PostChuyenVanChuyen: 'PostChuyenVanChuyen',
+  DeleteChuyenVanChuyen: 'DeleteChuyenVanChuyen',
+
+  //Category
+  listKH: 'GettblDMCustomer',
+  listDiaDiem: 'GettblDMDoor',
+  listHangHoa: 'GettblDMHangHoa',
+  listLoaiXe: 'GettblDMLoaiXe',
+  listXeVanChuyen: 'GettblDMXeOto',
+  listNhanVien: 'GettblNhanSu',
+  listDonViVanTai: 'GettblDMDonViVanTai',
+
   //Pokemon
   pokemon: 'api/v2/'
 }
