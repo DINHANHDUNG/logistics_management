@@ -146,6 +146,7 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
     if (record?.IDChuyen) {
       return;
     }
+    console.log('newData', newData);
 
     addTransportTrip(newData).then((req: any) => {
       console.log(req);
