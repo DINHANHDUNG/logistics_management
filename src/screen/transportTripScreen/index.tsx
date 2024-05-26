@@ -85,7 +85,11 @@ const TransportTripScreen = () => {
         startDate: values.startDate,
         endDate: values.endDate,
       });
-      setPage(1);
+      if (page != 1) {
+        setPage(1);
+      } else {
+        fetchList(1);
+      }
     });
 
     return unsubscribe;
@@ -304,7 +308,9 @@ const TransportTripScreen = () => {
           name="plus"
           size={23}
           color="#fff"
-          onPress={() => navigate.navigate('TransportTripDetailScreen')}
+          onPress={() =>
+            navigate.navigate('TransportTripDetailScreen', {item: {}})
+          }
         />
       </View>
       <LoadingModal isVisible={isLoading || loadingDelete} />
