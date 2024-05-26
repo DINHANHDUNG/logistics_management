@@ -12,48 +12,7 @@ import {useGetListChuyenXeQuery} from '../../app/services/statusCar';
 import {authStore} from '../../app/features/auth/authSlice';
 import {useAppSelector} from '../../app/hooks';
 import moment from 'moment';
-import {Text} from 'react-native';
 import LoadingModal from '../../components/modals/loadingModal';
-
-// Dữ liệu mới
-// const newEventsData = [
-//   {
-//     ProductKey: null,
-//     IDChuyen: 19,
-//     NgayDongHangCal: '2024-05-19T13:15:00',
-//     NgayDongHang: '13:15 19/05/2024',
-//     NgayTraHangCal: '2024-05-19T15:30:00',
-//     NgayTraHang: '15:30 19/05/2024',
-//     DiemDi: 'KCN Quế Võ',
-//     DiemDen: 'KCN Yên Phong',
-//     BienSoXe: '99C-23633',
-//     ThoiGianVe: '13:15 19/05/2024',
-//   },
-//   {
-//     ProductKey: null,
-//     IDChuyen: 20,
-//     NgayDongHangCal: '2024-05-23T13:15:00',
-//     NgayDongHang: '13:15 23/05/2024',
-//     NgayTraHangCal: '2024-05-23T15:30:00',
-//     NgayTraHang: '15:30 23/05/2024',
-//     DiemDi: 'KCN Quế Võ',
-//     DiemDen: 'KCN Yên Phong',
-//     BienSoXe: '99C-24633',
-//     ThoiGianVe: '13:15 23/05/2024',
-//   },
-//   {
-//     ProductKey: null,
-//     IDChuyen: 21,
-//     NgayDongHangCal: '2024-05-23T13:15:00',
-//     NgayDongHang: '13:30 23/05/2024',
-//     NgayTraHangCal: '2024-05-23T16:30:00',
-//     NgayTraHang: '16:30 23/05/2024',
-//     DiemDi: 'KCN Quế Võ',
-//     DiemDen: 'KCN Yên Phong',
-//     BienSoXe: '99C-24633',
-//     ThoiGianVe: '13:15 23/05/2024',
-//   },
-// ];
 
 const convertToEvent = (data: any) => {
   return {
@@ -86,6 +45,8 @@ const StatusCarDetailScreen = ({route}: {route: any}) => {
       skip: !record.IDXe && !auth.Key,
     },
   );
+
+  console.log('data', data);
 
   const EVENTS = (data?.data?.length > 0 ? data?.data : []).map(convertToEvent);
   const [currentDate, setCurrentDate] = useState(getDate());

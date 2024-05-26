@@ -6,6 +6,7 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import HomeHeader from '../../components/header/headerBottomTab';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -15,10 +16,12 @@ import LoadingModal from '../../components/modals/loadingModal';
 import {getProductKey} from '../../app/hooks';
 import {dataStatusCar} from '../../types/statusCar';
 import {useNavigation} from '@react-navigation/native';
+import {isCloseToBottom} from '../../utils';
+import {MSG} from '../../common/contants';
 
 const StatusCarScreen = () => {
   const navigate = useNavigation();
-  const [getList, {data, isLoading}] = useLazyGetSttCarQuery();
+  const [getList, {isLoading}] = useLazyGetSttCarQuery();
   const [statusCarList, setStatusCarList] = useState([]);
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
@@ -38,15 +41,15 @@ const StatusCarScreen = () => {
         ProductKey: ProductKey ?? '',
       });
 
-      if (response?.data) {
+      if (response?.data?.status === 200) {
         setStatusCarList(prevStatusCarList =>
           page === 1
-            ? response.data.data
+            ? response.data.data.data
             : [...prevStatusCarList, ...response.data],
         );
       }
     } catch (error) {
-      console.error(error);
+      Alert.alert(MSG.err, MSG.errAgain);
     }
   };
 
@@ -65,19 +68,6 @@ const StatusCarScreen = () => {
       setLoadingMore(true);
       setPage(prevPage => prevPage + 1);
       setLoadingMore(false);
-    }
-  };
-
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case 'Đang chờ':
-        return styles.statusPending;
-      case 'Đang giao':
-        return styles.statusInProgress;
-      case 'Hoàn thành':
-        return styles.statusCompleted;
-      default:
-        return {};
     }
   };
 
@@ -133,14 +123,6 @@ const StatusCarScreen = () => {
         <LoadingModal isVisible={isLoading} />
       </ScrollView>
     </View>
-  );
-};
-
-const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
-  const paddingToBottom = 20;
-  return (
-    layoutMeasurement.height + contentOffset.y >=
-    contentSize.height - paddingToBottom
   );
 };
 

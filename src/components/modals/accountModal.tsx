@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../common/color';
-import {useNavigation} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import {authStore} from '../../app/features/auth/authSlice';
 import {useAppSelector} from '../../app/hooks';
 
@@ -17,7 +17,12 @@ const AccountModal = ({visible, onClose}: Props) => {
   const auth = useAppSelector(authStore);
   const onLogout = () => {
     console.log('onLogout');
-    navigation.replace('LoginScreen');
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'LoginScreen'}],
+      }),
+    );
   };
 
   return (

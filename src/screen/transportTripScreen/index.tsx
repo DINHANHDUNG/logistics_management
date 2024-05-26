@@ -1,154 +1,287 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  RefreshControl,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { styles } from './style';
+import {styles} from './style';
 import HomeHeader from '../../components/header/headerBottomTab';
+import {authStore} from '../../app/features/auth/authSlice';
+import {useAppSelector} from '../../app/hooks';
+import {
+  useDeleteTransportTripMutation,
+  useLazyGetListQuery,
+} from '../../app/services/transportTrip';
+import {dataTransportTrip} from '../../types/transportTrip';
+import LoadingModal from '../../components/modals/loadingModal';
+import {MSG} from '../../common/contants';
+
+const Limit = 10;
 
 const TransportTripScreen = () => {
+  const [getList, {isLoading}] = useLazyGetListQuery();
+  const [deleteTrip, {isLoading: loadingDelete}] =
+    useDeleteTransportTripMutation();
+  const auth = useAppSelector(authStore);
   const navigate = useNavigation();
-  const [visibleStartDate, setVisibleStartDate] = useState(false);
-  const [visibleEndDate, setVisibleEndDate] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+  const [uiState, setUiState] = useState({
+    visibleStartDate: false,
+    visibleEndDate: false,
+    refreshing: false,
+    loadingMore: false,
+  });
+  const [page, setPage] = useState(1);
+  const [trips, setTrips] = useState<Array<dataTransportTrip>>([]);
   const [values, setValues] = useState({
     startDate: new Date(),
     endDate: new Date(),
   });
 
+  const fetchList = async (page: number) => {
+    try {
+      const ProductKey = auth.Key;
+      const response = await getList({
+        Page: page,
+        Limit: Limit,
+        ProductKey: ProductKey ?? '',
+        dtE: moment(values.endDate).format('YYYY/MM/DD'),
+        dtS: moment(values.startDate).format('YYYY/MM/DD'),
+        IDUser: auth.IDUser,
+      });
+
+      const newData = response?.data?.data.data ?? [];
+
+      if (response?.data.status === 200) {
+        if (page === 1) {
+          setTrips(newData);
+        } else {
+          setTrips(prevTrips => [...prevTrips, ...newData]);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchList(1);
+  }, [values.startDate, values.endDate]);
+
+  useEffect(() => {
+    fetchList(page);
+  }, [page]);
+
+  React.useEffect(() => {
+    const unsubscribe = navigate.addListener('focus', () => {
+      setValues({
+        startDate: values.startDate,
+        endDate: values.endDate,
+      });
+      setPage(1);
+    });
+
+    return unsubscribe;
+  }, [navigate]);
+
   const onRefresh = () => {
-    setRefreshing(true);
+    setUiState(prevState => ({...prevState, refreshing: true}));
+    if (page != 1) {
+      setPage(1);
+    } else {
+      fetchList(1);
+    }
     setTimeout(() => {
-      setRefreshing(false);
+      setUiState(prevState => ({...prevState, refreshing: false}));
     }, 2000);
   };
 
-  const changeValue = (key, value) => {
-    setValues(prevState => ({ ...prevState, [key]: value }));
+  const loadMore = () => {
+    if (!uiState.loadingMore && trips.length >= Limit * page) {
+      setUiState(prevState => ({...prevState, loadingMore: true}));
+      setPage(prevPage => prevPage + 1);
+      setUiState(prevState => ({...prevState, loadingMore: false}));
+    }
+  };
+
+  const changeValue = (key: string, value: any) => {
+    setValues(prevState => ({...prevState, [key]: value}));
   };
 
   const showHideStartDate = () => {
-    setVisibleStartDate(!visibleStartDate);
+    setUiState(prevState => ({
+      ...prevState,
+      visibleStartDate: !prevState.visibleStartDate,
+    }));
   };
 
   const showHideEndDate = () => {
-    setVisibleEndDate(!visibleEndDate);
+    setUiState(prevState => ({
+      ...prevState,
+      visibleEndDate: !prevState.visibleEndDate,
+    }));
   };
 
-  const handleConfirm = (date, key) => {
+  const handleConfirm = (date: any, key: any) => {
     if (key === 'startDate') {
       if (date < values.endDate) {
         changeValue(key, date);
       } else {
-        setValues(prevState => ({ ...prevState, [key]: date, endDate: new Date(date) }));
+        setValues(prevState => ({
+          ...prevState,
+          [key]: date,
+          endDate: new Date(date),
+        }));
       }
     }
     if (key === 'endDate') {
       if (date < values.startDate) {
-        setVisibleEndDate(false);
-        // Hiển thị thông báo cho khoảng ngày không hợp lệ
+        setUiState(prevState => ({...prevState, visibleEndDate: false}));
+        Alert.alert('Lỗi', 'Ngày kết thúc phải lớn hơn ngày bắt đầu');
         return;
       }
       changeValue(key, date);
     }
-    setVisibleStartDate(false);
+    setPage(1); // Reset the page number
+    setUiState(prevState => ({
+      ...prevState,
+      visibleStartDate: false,
+      visibleEndDate: false,
+    }));
   };
 
-  const deliveries = [
-    {
-      id: 1,
-      customer: 'Nguyễn Văn A',
-      pickupLocation: '123 Đường ABC, Quận XYZ',
-      dropoffLocation: '456 Đường DEF, Quận UVW',
-      time: '08:00',
-      vehicleType: 'Xe tải',
-    },
-    {
-      id: 2,
-      customer: 'Nguyễn Thị B',
-      pickupLocation: '789 Đường GHI, Quận JKL',
-      dropoffLocation: '101112 Đường MNO, Quận PQR',
-      time: '10:00',
-      vehicleType: 'Xe máy',
-    },
-    {
-      id: 3,
-      customer: 'Nguyễn Văn A',
-      pickupLocation: '123 Đường ABC, Quận XYZ',
-      dropoffLocation: '456 Đường DEF, Quận UVW',
-      time: '08:00',
-      vehicleType: 'Xe hơi',
-    },
-  ];
+  const deleteItem = (item: dataTransportTrip) => {
+    Alert.alert(MSG.wraning, MSG.wraningDelete + ' ' + item.IDChuyen, [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          deleteTrip({
+            IDChuyen: item.IDChuyen,
+            ProductKey: auth.Key,
+          }).then((req: any) => {
+            if (req.data.status === 200) {
+              Alert.alert(MSG.success, 'Đã xóa chuyến thành công');
+              onRefresh();
+            } else {
+              Alert.alert(MSG.err, MSG.errAgain);
+            }
+          });
+        },
+      },
+    ]);
+  };
+
+  const updateItem = (item: dataTransportTrip) => {
+    console.log(item);
+    navigate.navigate('TransportTripDetailScreen', {item});
+  };
+
+  const renderItem = ({item}: {item: dataTransportTrip}) => {
+    return (
+      <View key={item.IDChuyen} style={styles.deliveryContainer}>
+        <View style={styles.infoContainer}>
+          <Text style={styles.title}>Khách hàng: {item.KhachHang}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <View style={styles.containerIcon}>
+            <Icon name="truck" size={20} style={styles.icon} />
+          </View>
+          <Text style={styles.text}>Điểm đi: {item.DiemDi}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <View style={styles.containerIcon}>
+            <Icon name="map-marker" size={20} style={styles.icon} />
+          </View>
+          <Text style={styles.text}>Điểm đến: {item.DiemDen}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <View style={styles.containerIcon}>
+            <Icon name="clock-o" size={20} style={styles.icon} />
+          </View>
+          <Text style={styles.text}>Thời gian: {item.NgayDongHang}</Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.button, styles.completeButton]}
+            onPress={() => updateItem(item)}>
+            <Text style={styles.buttonText}>Cập nhật</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.transferButton]}
+            onPress={() => deleteItem(item)}>
+            <Text style={styles.buttonText}>Xóa</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <HomeHeader />
       <View style={styles.containerFilter}>
-        <TouchableOpacity style={styles.inputContainer} onPress={showHideStartDate}>
+        <TouchableOpacity
+          style={styles.inputContainer}
+          onPress={showHideStartDate}>
           <View style={styles.input}>
             <Text>
-              {values.startDate ? moment(values.startDate).format('DD/MM/YYYY') : 'Chọn ngày bắt đầu'}
+              {values.startDate
+                ? moment(values.startDate).format('DD/MM/YYYY')
+                : 'Chọn ngày bắt đầu'}
             </Text>
           </View>
           <Icon name="calendar" size={20} style={styles.iconInput} />
         </TouchableOpacity>
         <Text>~</Text>
-        <TouchableOpacity style={styles.inputContainer} onPress={showHideEndDate}>
+        <TouchableOpacity
+          style={styles.inputContainer}
+          onPress={showHideEndDate}>
           <View style={styles.input}>
             <Text>
-              {values.endDate ? moment(values.endDate).format('DD/MM/YYYY') : 'Chọn ngày kết thúc'}
+              {values.endDate
+                ? moment(values.endDate).format('DD/MM/YYYY')
+                : 'Chọn ngày kết thúc'}
             </Text>
           </View>
           <Icon name="calendar" size={20} style={styles.iconInput} />
         </TouchableOpacity>
       </View>
-      
-      {/* List of Deliveries */}
-      <ScrollView
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        style={styles.containerScroll}>
-        {deliveries.map(delivery => (
-          <TouchableOpacity
-            key={delivery.id}
-            style={styles.deliveryContainer}
-            onPress={() => navigate.navigate('TransportTripDetailScreen', { item: delivery })}>
-            <View style={styles.infoContainer}>
-              <Text style={styles.title}>Khách hàng: {delivery.customer}</Text>
-            </View>
-            <View style={styles.infoContainer}>
-              <View style={styles.containerIcon}>
-                <Icon name="truck" size={20} style={styles.icon} />
-              </View>
-              <Text style={styles.text}>Nơi đóng: {delivery.pickupLocation}</Text>
-            </View>
-            <View style={styles.infoContainer}>
-              <View style={styles.containerIcon}>
-                <Icon name="map-marker" size={20} style={styles.icon} />
-              </View>
-              <Text style={styles.text}>Nơi trả: {delivery.dropoffLocation}</Text>
-            </View>
-            <View style={styles.infoContainer}>
-              <View style={styles.containerIcon}>
-                <Icon name="clock-o" size={20} style={styles.icon} />
-              </View>
-              <Text style={styles.text}>Thời gian: {delivery.pickupTime}</Text>
-            </View>
-            <View style={styles.infoContainer}>
-              <View style={styles.containerIcon}>
-                <Icon name="car" size={20} style={styles.icon} />
-              </View>
-              <Text style={styles.text}>Loại xe: {delivery.vehicleType}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
 
+      {/* List of Deliveries */}
+      <FlatList
+        data={trips}
+        renderItem={renderItem}
+        keyExtractor={item => item?.IDChuyen?.toString()}
+        refreshControl={
+          <RefreshControl
+            refreshing={uiState.refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          uiState.loadingMore ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : null
+        }
+        style={styles.containerScroll}
+      />
       {/* Date Time Pickers */}
       <DateTimePickerModal
-        isVisible={visibleStartDate}
+        isVisible={uiState.visibleStartDate}
         mode="date"
         locale="vi_VN"
         confirmTextIOS="Chọn"
@@ -158,7 +291,7 @@ const TransportTripScreen = () => {
       />
 
       <DateTimePickerModal
-        isVisible={visibleEndDate}
+        isVisible={uiState.visibleEndDate}
         mode="date"
         locale="vi_VN"
         confirmTextIOS="Chọn"
@@ -166,6 +299,15 @@ const TransportTripScreen = () => {
         onConfirm={date => handleConfirm(date, 'endDate')}
         onCancel={showHideEndDate}
       />
+      <View style={styles.iconPlus}>
+        <Icon
+          name="plus"
+          size={23}
+          color="#fff"
+          onPress={() => navigate.navigate('TransportTripDetailScreen')}
+        />
+      </View>
+      <LoadingModal isVisible={isLoading || loadingDelete} />
     </View>
   );
 };

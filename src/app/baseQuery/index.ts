@@ -21,7 +21,7 @@ export const axiosBaseQuery =
     console.log(baseUrl, url, params);
     // const accessToken = await getToken()
     const urlB = baseUrl || API_URL;
-    console.log('urlB', urlB);
+    console.log('urlB', urlB, params);
 
     try {
       const result = await axios({
@@ -37,8 +37,10 @@ export const axiosBaseQuery =
         },
       });
       return {
-        data: result.data,
-        //  status: result?.status
+        data: {
+          data: result.data,
+          status: result?.status,
+        },
       };
     } catch (axiosError) {
       const err = axiosError as AxiosError;

@@ -1,5 +1,5 @@
-import { Platform, StyleSheet } from 'react-native';
-import { colors } from '../../common/color';
+import {Platform, StyleSheet} from 'react-native';
+import {colors} from '../../common/color';
 
 export const styles = StyleSheet.create({
   container: {
@@ -10,13 +10,14 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#fff', // Màu nền tổng thể
+    paddingBottom: 40,
   },
   containerFilter: {
     marginTop: 10,
     paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
   containerIcon: {
     flexDirection: 'row',
@@ -41,7 +42,7 @@ export const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.1,
         shadowRadius: 5,
       },
@@ -115,5 +116,23 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     color: colors.colorMain2,
+  },
+  transferButton: {
+    backgroundColor: '#FF5733',
+  },
+  completeButton: {
+    backgroundColor: '#28a745',
+  },
+  iconPlus: {
+    position: 'absolute',
+    backgroundColor: 'tomato',
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    right: 10,
+    bottom: 20,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

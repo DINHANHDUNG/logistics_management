@@ -2,176 +2,519 @@ import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import moment from 'moment';
 import React, {useState} from 'react';
-import {Text, TextInput, TouchableOpacity, View} from 'react-native';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import * as yup from 'yup';
 import HeaderCustom from '../../components/header';
 import SelectValueModal from '../../components/modals/selectModal';
 import {styles} from './style';
+import {useAppSelector} from '../../app/hooks';
+import {authStore} from '../../app/features/auth/authSlice';
+import {
+  useGetListDiaDiemQuery,
+  useGetListHangHoaQuery,
+  useGetListKHQuery,
+  useGetListLoaiXeQuery,
+} from '../../app/services/category';
+import {validationSchema} from './schema';
+import {dataSubmit} from '../../types/transportTrip';
+import {useAddTransportTripMutation} from '../../app/services/transportTrip';
+import {MSG} from '../../common/contants';
+import LoadingModal from '../../components/modals/loadingModal';
 
-const validationSchema = yup.object().shape({
-  customer: yup.string().required('Vui lòng chọn khách hàng'),
-  pickupLocation: yup.string().required('Vui lòng nhập nơi đóng'),
-  dropoffLocation: yup.string().required('Vui lòng nhập nơi trả'),
-  time: yup.string().required('Vui lòng nhập thời gian'),
-  vehicleType: yup.string().required('Vui lòng chọn loại xe'),
-});
-
-const TransportTripDetailScreen = ({route}: any) => {
+const TransportTripDetailScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
+  console.log('record', record);
+
   const navigate = useNavigation();
-  const [visibleTime, setVisibleTime] = useState(false); // Thay đổi state để hiển thị thời gian thay vì ngày
+  const auth = useAppSelector(authStore);
+  const [addTransportTrip, {isLoading}] = useAddTransportTripMutation();
+  // Fetching data for select fields
+  const {data: dataKH} = useGetListKHQuery(
+    {ProductKey: auth.Key},
+    {skip: !auth.Key},
+  );
+  const {data: dataLoaiXe} = useGetListLoaiXeQuery(
+    {ProductKey: auth.Key},
+    {skip: !auth.Key},
+  );
+  const {data: dataHangHoa} = useGetListHangHoaQuery(
+    {ProductKey: auth.Key},
+    {skip: !auth.Key},
+  );
+  const {data: dataDiaDiem} = useGetListDiaDiemQuery(
+    {ProductKey: auth.Key},
+    {skip: !auth.Key},
+  );
+
+  const [visibleDatePicker, setVisibleDatePicker] = useState(false);
+  const [visibleTimePicker, setVisibleTimePicker] = useState(false);
+  const [selectedField, setSelectedField] = useState(null as unknown as string);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalOptions, setModalOptions] = useState([]);
+  const [modalField, setModalField] = useState('');
 
-  const options = [
-    {key: '1', value: 'Option 1'},
-    {key: '2', value: 'Option 2'},
-    {key: '3', value: 'Option 3'},
-    {key: '4', value: 'Option 4'},
-    {key: '5', value: 'Option 5'},
-    {key: '6', value: 'Option 6'},
-    {key: '7', value: 'Option 7'},
-    {key: '8', value: 'Option 8'},
-    {key: '9', value: 'Option 9'},
-    {key: '10', value: 'Option 10'},
-  ];
-
-  const showHidenTime = () => {
-    setVisibleTime(!visibleTime); // Thay đổi trạng thái hiển thị thời gian
+  const handleConfirmDate = (date: any, setFieldValue: any) => {
+    setFieldValue(selectedField, date);
+    setVisibleDatePicker(false);
   };
 
-  const showHidenStt = () => {
-    setModalVisible(!modalVisible);
+  const handleConfirmTime = (time: any, setFieldValue: any) => {
+    setFieldValue(selectedField, time);
+    setVisibleTimePicker(false);
+  };
+
+  const openModal = (field: any, options: any) => {
+    setModalField(field);
+    setModalOptions(options);
+    setModalVisible(true);
+  };
+
+  const renderTitleModalSelect = () => {
+    switch (modalField) {
+      case 'IDDiemDi':
+        return 'Chọn điểm đi';
+
+      case 'IDDiemDen':
+        return 'Chọn điểm đến';
+
+      case 'IDHangHoa':
+        return 'Chọn hàng hóa';
+
+      case 'IDKhachHang':
+        return 'Chọn khách hàng';
+
+      case 'IDLoaiXe':
+        return 'Chọn loại xe';
+
+      default:
+        return 'Chọn';
+    }
+  };
+
+  const handleSubmit = (val: dataSubmit) => {
+    const ngayDongHang =
+      moment(val.NgayDongHang).format('YYYY/MM/DD') +
+      ' ' +
+      moment(val.GioDongHang).format('HH:mm');
+    const ngayTraHang =
+      moment(val.NgayTraHang).format('YYYY/MM/DD') +
+      ' ' +
+      moment(val.GioTraHang).format('HH:mm');
+
+    const ngayGioDongHang = moment(val.NgayDongHang).set({
+      hour: moment(val.GioDongHang).hours(),
+      minute: moment(val.GioDongHang).minutes(),
+    });
+    const ngayGioTraHang = moment(val.NgayTraHang).set({
+      hour: moment(val.GioTraHang).hours(),
+      minute: moment(val.GioTraHang).minutes(),
+    });
+    if (ngayGioTraHang < ngayGioDongHang) {
+      Alert.alert(
+        MSG.err,
+        'Ngày và giờ trả hàng phải sau ngày và giờ đóng hàng',
+      );
+      return;
+    }
+    //Check thời gian ngày đóng ngày trả (Đóng trả phải lớn hơn đóng)
+    const newData = {
+      ProductKey: auth.Key,
+      IDUser: auth.IDUser,
+      IDDiemDen: val.IDDiemDen ? Number(val.IDDiemDen) : '',
+      IDDiemDi: val.IDDiemDi ? Number(val.IDDiemDi) : '',
+      IDHangHoa: val.IDHangHoa ? Number(val.IDHangHoa) : '',
+      IDKhachHang: val.IDKhachHang ? Number(val.IDKhachHang) : '',
+      IDLoaiXe: val.IDLoaiXe ? Number(val.IDLoaiXe) : '',
+      SoKhoi: val.SoKhoi ? Number(val.SoKhoi) : '',
+      SoKG: val.SoKG ? Number(val.SoKG) : '',
+      NgayDongHang: ngayDongHang,
+      NgayTraHang: ngayTraHang,
+      SoPL: val.SoPL,
+      FlagHangVe: val.FlagHangVe,
+      ThoiGianVe: val.ThoiGianVe
+        ? moment(val.ThoiGianVe).format('YYYY/MM/DD HH:mm')
+        : '',
+    };
+    if (record?.IDChuyen) {
+      return;
+    }
+
+    addTransportTrip(newData).then((req: any) => {
+      console.log(req);
+      if (req?.data?.status === 200) {
+        //Thêm mới thành công
+        Alert.alert(MSG.success, MSG.addNew, [
+          {
+            text: 'Cancel',
+            onPress: () => navigate.goBack(),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: () => navigate.goBack()},
+        ]);
+      } else {
+        Alert.alert(MSG.err, MSG.errAgain);
+      }
+    });
   };
 
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
-      <HeaderCustom title={'Thêm mới chuyến vận chuyển'} />
-      <View style={{flex: 1, padding: 20}}>
+      <HeaderCustom
+        title={`${
+          record?.IDChuyen ? 'Cập nhật' : 'Thêm mới'
+        } chuyến vận chuyển`}
+      />
+      <ScrollView contentContainerStyle={{flexGrow: 1, padding: 20}}>
         <Formik
           initialValues={{
-            customer: record?.customer ?? '',
-            pickupLocation: record?.pickupLocation ?? '',
-            dropoffLocation: record?.dropoffLocation ?? '',
-            time: record?.time ?? '',
-            vehicleType: record?.vehicleType ?? '',
+            NgayDongHang: new Date(),
+            GioDongHang: '',
+            NgayTraHang: new Date(),
+            GioTraHang: '',
+            IDDiemDi: '',
+            IDDiemDen: '',
+            IDHangHoa: '',
+            SoKG: '',
+            SoKhoi: '',
+            SoPL: '',
+            FlagHangVe: false,
+            ThoiGianVe: '',
+            IDKhachHang: '',
+            IDLoaiXe: '',
           }}
           validationSchema={validationSchema}
-          onSubmit={values => {
-            console.log(values);
-          }}>
+          onSubmit={handleSubmit}>
           {({
             handleChange,
-            setFieldValue,
             handleBlur,
             handleSubmit,
+            setFieldValue,
             values,
             errors,
+            touched,
           }) => (
             <View>
               <Text style={styles.label}>Khách hàng</Text>
-              {/* Replace this TouchableOpacity with your custom select modal */}
               <TouchableOpacity
                 style={styles.inputContainer}
-                onPress={showHidenStt}>
+                onPress={() => openModal('IDKhachHang', dataKH)}>
                 <View style={styles.inputDate}>
                   <Text>
-                    {values.customer ? values.customer : 'Chọn khách hàng'}
+                    {values.IDKhachHang
+                      ? dataKH?.find(e => e.ID === Number(values.IDKhachHang))
+                          ?.Name
+                      : 'Chọn khách hàng'}
                   </Text>
                 </View>
                 <Icon name="chevron-down" style={styles.iconInput} />
               </TouchableOpacity>
-
-              {errors.customer && (
-                <Text style={styles.errorText}>{errors.customer}</Text>
+              {errors?.IDKhachHang && touched.IDKhachHang && (
+                <Text style={styles.errorText}>{errors?.IDKhachHang}</Text>
               )}
 
-              <Text style={styles.label}>Nơi đóng</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={handleChange('pickupLocation')}
-                onBlur={handleBlur('pickupLocation')}
-                value={values.pickupLocation}
-                placeholder="Nhập nơi đóng"
-              />
-              {errors.pickupLocation && (
-                <Text style={styles.errorText}>{errors.pickupLocation}</Text>
-              )}
-
-              <Text style={styles.label}>Nơi trả</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={handleChange('dropoffLocation')}
-                onBlur={handleBlur('dropoffLocation')}
-                value={values.dropoffLocation}
-                placeholder="Nhập nơi trả"
-              />
-              {errors.dropoffLocation && (
-                <Text style={styles.errorText}>{errors.dropoffLocation}</Text>
-              )}
-
-              <Text style={styles.label}>Thời gian</Text>
+              <Text style={styles.label}>Mã hàng hóa</Text>
               <TouchableOpacity
                 style={styles.inputContainer}
-                onPress={showHidenTime}>
+                onPress={() => openModal('IDHangHoa', dataHangHoa)}>
                 <View style={styles.inputDate}>
                   <Text>
-                    {values.time
-                      ? moment(values.time).format('HH:mm').toString() // Hiển thị thời gian
+                    {values.IDHangHoa
+                      ? dataHangHoa?.find(
+                          e => e.ID === Number(values.IDHangHoa),
+                        )?.Name
+                      : 'Chọn hàng hóa'}
+                  </Text>
+                </View>
+                <Icon name="chevron-down" style={styles.iconInput} />
+              </TouchableOpacity>
+              {errors?.IDHangHoa && touched.IDHangHoa && (
+                <Text style={styles.errorText}>{errors?.IDHangHoa}</Text>
+              )}
+
+              <Text style={styles.label}>Loại xe</Text>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => openModal('IDLoaiXe', dataLoaiXe)}>
+                <View style={styles.inputDate}>
+                  <Text>
+                    {values.IDLoaiXe
+                      ? dataLoaiXe?.find(e => e.ID === Number(values.IDLoaiXe))
+                          ?.Name
+                      : 'Chọn loại xe'}
+                  </Text>
+                </View>
+                <Icon name="chevron-down" style={styles.iconInput} />
+              </TouchableOpacity>
+              {errors?.IDLoaiXe && touched.IDLoaiXe && (
+                <Text style={styles.errorText}>{errors?.IDLoaiXe}</Text>
+              )}
+
+              <View style={styles.row}>
+                <View style={styles.itemRow}>
+                  <Text style={styles.label}>Ngày đóng hàng</Text>
+                  <TouchableOpacity
+                    style={styles.inputContainer}
+                    onPress={() => {
+                      setVisibleDatePicker(true);
+                      setSelectedField('NgayDongHang');
+                    }}>
+                    <View style={styles.inputDate}>
+                      <Text>
+                        {values.NgayDongHang
+                          ? moment(values.NgayDongHang).format('DD/MM/YYYY')
+                          : 'Chọn ngày'}
+                      </Text>
+                    </View>
+                    <Icon name="calendar" style={styles.iconInput} />
+                  </TouchableOpacity>
+                  {errors?.NgayDongHang && touched.NgayDongHang && (
+                    <Text style={styles.errorText}>{errors?.NgayDongHang}</Text>
+                  )}
+                </View>
+
+                <View style={styles.itemRow}>
+                  <Text style={styles.label}>Giờ đóng hàng</Text>
+                  <TouchableOpacity
+                    style={styles.inputContainer}
+                    onPress={() => {
+                      setVisibleTimePicker(true);
+                      setSelectedField('GioDongHang');
+                    }}>
+                    <View style={styles.inputDate}>
+                      <Text>
+                        {values.GioDongHang
+                          ? moment(values.GioDongHang).format('HH:mm')
+                          : 'Chọn giờ'}
+                      </Text>
+                    </View>
+                    <Icon name="clock-o" style={styles.iconInput} />
+                  </TouchableOpacity>
+                  {errors?.GioDongHang && touched.GioDongHang && (
+                    <Text style={styles.errorText}>{errors?.GioDongHang}</Text>
+                  )}
+                </View>
+              </View>
+
+              <View style={styles.row}>
+                <View style={styles.itemRow}>
+                  <Text style={styles.label}>Ngày trả hàng</Text>
+                  <TouchableOpacity
+                    style={styles.inputContainer}
+                    onPress={() => {
+                      setVisibleDatePicker(true);
+                      setSelectedField('NgayTraHang');
+                    }}>
+                    <View style={styles.inputDate}>
+                      <Text>
+                        {values.NgayTraHang
+                          ? moment(values.NgayTraHang).format('DD/MM/YYYY')
+                          : 'Chọn ngày'}
+                      </Text>
+                    </View>
+                    <Icon name="calendar" style={styles.iconInput} />
+                  </TouchableOpacity>
+                  {errors?.NgayTraHang && touched.NgayTraHang && (
+                    <Text style={styles.errorText}>{errors?.NgayTraHang}</Text>
+                  )}
+                </View>
+
+                <View style={styles.itemRow}>
+                  <Text style={styles.label}>Giờ trả hàng</Text>
+                  <TouchableOpacity
+                    style={styles.inputContainer}
+                    onPress={() => {
+                      setVisibleTimePicker(true);
+                      setSelectedField('GioTraHang');
+                    }}>
+                    <View style={styles.inputDate}>
+                      <Text>
+                        {values.GioTraHang
+                          ? moment(values.GioTraHang).format('HH:mm')
+                          : 'Chọn giờ'}
+                      </Text>
+                    </View>
+                    <Icon name="clock-o" style={styles.iconInput} />
+                  </TouchableOpacity>
+                  {errors?.GioTraHang && touched.GioTraHang && (
+                    <Text style={styles.errorText}>{errors?.GioTraHang}</Text>
+                  )}
+                </View>
+              </View>
+
+              <Text style={styles.label}>Điểm đi</Text>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => openModal('IDDiemDi', dataDiaDiem)}>
+                <View style={styles.inputDate}>
+                  <Text>
+                    {values.IDDiemDi
+                      ? dataDiaDiem?.find(e => e.ID === Number(values.IDDiemDi))
+                          ?.Name +
+                        ' - ' +
+                        dataDiaDiem?.find(e => e.ID === Number(values.IDDiemDi))
+                          ?.Address
+                      : 'Chọn điểm đi'}
+                  </Text>
+                </View>
+                <Icon name="chevron-down" style={styles.iconInput} />
+              </TouchableOpacity>
+              {errors?.IDDiemDi && touched.IDDiemDi && (
+                <Text style={styles.errorText}>{errors?.IDDiemDi}</Text>
+              )}
+
+              <Text style={styles.label}>Điểm đến</Text>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => openModal('IDDiemDen', dataDiaDiem)}>
+                <View style={styles.inputDate}>
+                  <Text>
+                    {values.IDDiemDen
+                      ? dataDiaDiem?.find(
+                          e => e.ID === Number(values.IDDiemDen),
+                        )?.Name +
+                        ' - ' +
+                        dataDiaDiem?.find(
+                          e => e.ID === Number(values.IDDiemDen),
+                        )?.Address
+                      : 'Chọn điểm đến'}
+                  </Text>
+                </View>
+                <Icon name="chevron-down" style={styles.iconInput} />
+              </TouchableOpacity>
+              {errors?.IDDiemDen && touched.IDDiemDen && (
+                <Text style={styles.errorText}>{errors?.IDDiemDen}</Text>
+              )}
+
+              <Text style={styles.label}>Thời gian về</Text>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => {
+                  setVisibleTimePicker(true);
+                  setSelectedField('ThoiGianVe');
+                }}>
+                <View style={styles.inputDate}>
+                  <Text>
+                    {values.ThoiGianVe
+                      ? moment(values.ThoiGianVe).format('HH:mm')
                       : 'Chọn giờ'}
                   </Text>
                 </View>
                 <Icon name="clock-o" style={styles.iconInput} />
-                {/* Thay icon */}
               </TouchableOpacity>
-              {errors.time && (
-                <Text style={styles.errorText}>{errors.time}</Text>
+              {errors?.ThoiGianVe && touched.ThoiGianVe && (
+                <Text style={styles.errorText}>{errors?.ThoiGianVe}</Text>
               )}
 
-              <Text style={styles.label}>Loại xe</Text>
-              {/* Replace this TouchableOpacity with your custom select modal */}
+              <View style={styles.row}>
+                <View style={styles.itemRow}>
+                  <Text style={styles.label}>Số kg</Text>
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={handleChange('SoKG')}
+                    onBlur={handleBlur('SoKG')}
+                    value={values.SoKG}
+                    keyboardType="numeric"
+                    placeholder="Nhập số kg"
+                  />
+                  {errors?.SoKG && touched.SoKG && (
+                    <Text style={styles.errorText}>{errors?.SoKG}</Text>
+                  )}
+                </View>
+                <View style={styles.itemRow}>
+                  <Text style={styles.label}>Số khối</Text>
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={handleChange('SoKhoi')}
+                    onBlur={handleBlur('SoKhoi')}
+                    value={values.SoKhoi}
+                    keyboardType="numeric"
+                    placeholder="Nhập số khối"
+                  />
+                  {errors?.SoKhoi && touched.SoKhoi && (
+                    <Text style={styles.errorText}>{errors?.SoKhoi}</Text>
+                  )}
+                </View>
+              </View>
+
+              <Text style={styles.label}>Số PL</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={handleChange('SoPL')}
+                onBlur={handleBlur('SoPL')}
+                value={values.SoPL}
+                keyboardType="numeric"
+                placeholder="Nhập số PL"
+              />
+              {errors?.SoPL && touched.SoPL && (
+                <Text style={styles.errorText}>{errors?.SoPL}</Text>
+              )}
+
+              <Text style={styles.label}>Hàng về</Text>
               <TouchableOpacity
                 style={styles.inputContainer}
-                onPress={() => setModalVisible(true)}>
+                onPress={() => setFieldValue('FlagHangVe', !values.FlagHangVe)}>
                 <View style={styles.inputDate}>
-                  <Text>
-                    {values.vehicleType ? values.vehicleType : 'Chọn loại xe'}
-                  </Text>
+                  <Text>{values.FlagHangVe ? 'Có' : 'Không'}</Text>
                 </View>
-                <Icon name="chevron-down" style={styles.iconInput} />
+                <Icon
+                  name={values.FlagHangVe ? 'check-square' : 'square-o'}
+                  style={styles.iconInput}
+                />
               </TouchableOpacity>
-              {errors.vehicleType && (
-                <Text style={styles.errorText}>{errors.vehicleType}</Text>
-              )}
 
               <TouchableOpacity
                 style={styles.buttonContainer}
-                onPress={() => handleSubmit()}>
+                onPress={handleSubmit}>
                 <Text style={styles.textBtn}>Lưu</Text>
               </TouchableOpacity>
 
-              <DateTimePickerModal
-                isVisible={visibleTime} // Sử dụng visibleTime thay vì visibleDate
-                mode="time" // Đặt mode là 'time' để hiển thị chỉ thời gian
-                locale="vi_VN"
-                confirmTextIOS="Chọn"
-                cancelTextIOS="Hủy"
-                onConfirm={date => setFieldValue('time', date)}
-                onCancel={showHidenTime}
+              <DatePicker
+                modal
+                open={visibleDatePicker}
+                date={new Date()}
+                mode="date"
+                locale="vi"
+                onConfirm={date => handleConfirmDate(date, setFieldValue)}
+                onCancel={() => setVisibleDatePicker(false)}
+              />
+
+              <DatePicker
+                modal
+                open={visibleTimePicker}
+                date={new Date()}
+                mode="time"
+                is24hourSource="locale"
+                locale="vi"
+                onConfirm={time => handleConfirmTime(time, setFieldValue)}
+                onCancel={() => setVisibleTimePicker(false)}
               />
 
               <SelectValueModal
-                title="Chọn loại xe"
+                title={renderTitleModalSelect()}
                 isVisible={modalVisible}
                 onClose={() => setModalVisible(false)}
-                onSelectValue={e => setFieldValue('vehicleType', e.value)}
-                values={options}
+                onSelectValue={e => setFieldValue(modalField, e.ID)}
+                values={modalOptions ?? []}
+                keyRender={'Name'}
+                keySubRender={
+                  modalField === 'IDDiemDen' || modalField === 'IDDiemDi'
+                    ? 'Address'
+                    : ''
+                }
               />
             </View>
           )}
         </Formik>
-      </View>
+      </ScrollView>
+      <LoadingModal isVisible={isLoading} />
     </View>
   );
 };
