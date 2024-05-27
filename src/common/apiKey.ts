@@ -12,6 +12,8 @@ export const NetWork = {
   GetListChuyenVanChuyen: 'GetListChuyenVanChuyen',
   PostChuyenVanChuyen: 'PostChuyenVanChuyen',
   DeleteChuyenVanChuyen: 'DeleteChuyenVanChuyen',
+  GetChuyenVanChuyen: 'GetChuyenVanChuyen',
+  PutChuyenVanChuyen: 'PutChuyenVanChuyen',
 
   //report admin
   GetListSuachuaXe: 'GetListSuachuaXe',
