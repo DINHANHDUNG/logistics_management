@@ -42,16 +42,16 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
   const [addTransportTrip, {isLoading}] = useAddTransportTripMutation();
   const [updateTransportTrip, {isLoading: loadingUpdate}] =
     useUpdateTransportTripMutation();
-  const {data, isLoading: loadingDetail} = useGetDetailQuery(
+  const {data, isLoading: loadingDetail, refetch} = useGetDetailQuery(
     {ProductKey: auth.Key, IDChuyen: record.IDChuyen},
     {skip: !record.IDChuyen},
   );
 
   const [initialValues, setInitialValues] = useState({
     NgayDongHang: new Date(),
-    GioDongHang: '',
+    GioDongHang: '' as any,
     NgayTraHang: new Date(),
-    GioTraHang: '',
+    GioTraHang: '' as any,
     IDDiemDi: '',
     IDDiemDen: '',
     IDHangHoa: '',
@@ -59,43 +59,12 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
     SoKhoi: '',
     SoPL: '',
     FlagHangVe: false,
-    ThoiGianVe: '',
+    ThoiGianVe: '' as any,
     IDKhachHang: '',
     IDLoaiXe: '',
   });
 
   console.log('initialValues', initialValues);
-
-  useEffect(() => {
-    if (!loadingDetail && data) {
-      setInitialValues({
-        NgayDongHang: data.NgayDongHang
-          ? moment(data.NgayDongHang).toDate()
-          : new Date(),
-        GioDongHang: data.NgayDongHang
-          ? moment(data.NgayDongHang).format('HH:mm')
-          : '',
-        NgayTraHang: data.NgayTraHang
-          ? moment(data.NgayTraHang).toDate()
-          : new Date(),
-        GioTraHang: data.NgayTraHang
-          ? moment(data.NgayTraHang).format('HH:mm')
-          : '',
-        IDDiemDi: data.IDDiemDi ?? '',
-        IDDiemDen: data.IDDiemDen ?? '',
-        IDHangHoa: data.IDDMHangHoa ?? '',
-        SoKG: data.SoKG ?? '',
-        SoKhoi: data.SoKhoi ?? '',
-        SoPL: data.SoPL ?? '',
-        FlagHangVe: data.FlagHangVe ?? false,
-        ThoiGianVe: data.ThoiGianVe
-          ? moment(data.ThoiGianVe).format('HH:mm')
-          : '',
-        IDKhachHang: data.IDKhachHang ?? '',
-        IDLoaiXe: data.IDLoaiXe ?? '',
-      });
-    }
-  }, [loadingDetail]);
 
   console.log('data', data);
 
@@ -205,12 +174,16 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
       ThoiGianVe: val.ThoiGianVe
         ? moment(val.ThoiGianVe).format('YYYY/MM/DD HH:mm')
         : '',
-    };
+    } as any;
+    
     if (record?.IDChuyen) {
+      newData.IDChuyen = record?.IDChuyen
+      console.log('data truyền vào', newData);
       updateTransportTrip(newData).then((req: any) => {
         console.log(req);
         if (req?.data?.status === 200) {
           //Thêm mới thành công
+          refetch()
           Alert.alert(MSG.success, MSG.updateSuccess, [
             {
               text: 'Cancel',
@@ -245,6 +218,33 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
     });
   };
 
+  useEffect(() => {
+    if (!loadingDetail && data) {
+      setInitialValues({
+        NgayDongHang: data.NgayDongHang
+          ? moment(data.NgayDongHang).toDate()
+          : new Date(),
+        GioDongHang: data.NgayDongHang
+          ? moment(data.NgayDongHang).toDate()
+          : '',
+        NgayTraHang: data.NgayTraHang
+          ? moment(data.NgayTraHang).toDate()
+          : new Date(),
+        GioTraHang: data.NgayTraHang ? moment(data.NgayTraHang).toDate() : '',
+        IDDiemDi: data.IDDiemDi ?? '',
+        IDDiemDen: data.IDDiemDen ?? '',
+        IDHangHoa: data.IDDMHangHoa ?? '',
+        SoKG: data.SoKG ? data.SoKG.toString() : '',
+        SoKhoi: data.SoKhoi ? data.SoKhoi.toString() : '',
+        SoPL: data.SoPL ? data.SoPL.toString() : '',
+        FlagHangVe: data.FlagHangVe ?? false,
+        ThoiGianVe: data.ThoiGianVe ? moment(data.ThoiGianVe).toDate() : '',
+        IDKhachHang: data.IDKhachHang ?? '',
+        IDLoaiXe: data.IDLoaiXe ?? '',
+      });
+    }
+  }, [loadingDetail]);
+
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <HeaderCustom
@@ -256,7 +256,7 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          enableReintialize={true}
+          enableReinitialize={true}
           onSubmit={handleSubmit}>
           {({
             handleChange,
