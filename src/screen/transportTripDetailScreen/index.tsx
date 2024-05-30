@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import moment from 'moment';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   TextInput,
@@ -25,7 +25,11 @@ import {
 } from '../../app/services/category';
 import {validationSchema} from './schema';
 import {dataSubmit} from '../../types/transportTrip';
-import {useAddTransportTripMutation} from '../../app/services/transportTrip';
+import {
+  useAddTransportTripMutation,
+  useGetDetailQuery,
+  useUpdateTransportTripMutation,
+} from '../../app/services/transportTrip';
 import {MSG} from '../../common/contants';
 import LoadingModal from '../../components/modals/loadingModal';
 
@@ -36,6 +40,65 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
   const navigate = useNavigation();
   const auth = useAppSelector(authStore);
   const [addTransportTrip, {isLoading}] = useAddTransportTripMutation();
+  const [updateTransportTrip, {isLoading: loadingUpdate}] =
+    useUpdateTransportTripMutation();
+  const {data, isLoading: loadingDetail} = useGetDetailQuery(
+    {ProductKey: auth.Key, IDChuyen: record.IDChuyen},
+    {skip: !record.IDChuyen},
+  );
+
+  const [initialValues, setInitialValues] = useState({
+    NgayDongHang: new Date(),
+    GioDongHang: '',
+    NgayTraHang: new Date(),
+    GioTraHang: '',
+    IDDiemDi: '',
+    IDDiemDen: '',
+    IDHangHoa: '',
+    SoKG: '',
+    SoKhoi: '',
+    SoPL: '',
+    FlagHangVe: false,
+    ThoiGianVe: '',
+    IDKhachHang: '',
+    IDLoaiXe: '',
+  });
+
+  console.log('initialValues', initialValues);
+
+  useEffect(() => {
+    if (!loadingDetail && data) {
+      setInitialValues({
+        NgayDongHang: data.NgayDongHang
+          ? moment(data.NgayDongHang).toDate()
+          : new Date(),
+        GioDongHang: data.NgayDongHang
+          ? moment(data.NgayDongHang).format('HH:mm')
+          : '',
+        NgayTraHang: data.NgayTraHang
+          ? moment(data.NgayTraHang).toDate()
+          : new Date(),
+        GioTraHang: data.NgayTraHang
+          ? moment(data.NgayTraHang).format('HH:mm')
+          : '',
+        IDDiemDi: data.IDDiemDi ?? '',
+        IDDiemDen: data.IDDiemDen ?? '',
+        IDHangHoa: data.IDDMHangHoa ?? '',
+        SoKG: data.SoKG ?? '',
+        SoKhoi: data.SoKhoi ?? '',
+        SoPL: data.SoPL ?? '',
+        FlagHangVe: data.FlagHangVe ?? false,
+        ThoiGianVe: data.ThoiGianVe
+          ? moment(data.ThoiGianVe).format('HH:mm')
+          : '',
+        IDKhachHang: data.IDKhachHang ?? '',
+        IDLoaiXe: data.IDLoaiXe ?? '',
+      });
+    }
+  }, [loadingDetail]);
+
+  console.log('data', data);
+
   // Fetching data for select fields
   const {data: dataKH} = useGetListKHQuery(
     {ProductKey: auth.Key},
@@ -144,6 +207,22 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
         : '',
     };
     if (record?.IDChuyen) {
+      updateTransportTrip(newData).then((req: any) => {
+        console.log(req);
+        if (req?.data?.status === 200) {
+          //Thêm mới thành công
+          Alert.alert(MSG.success, MSG.updateSuccess, [
+            {
+              text: 'Cancel',
+              onPress: () => navigate.goBack(),
+              style: 'cancel',
+            },
+            {text: 'OK', onPress: () => navigate.goBack()},
+          ]);
+        } else {
+          Alert.alert(MSG.err, MSG.errAgain);
+        }
+      });
       return;
     }
     console.log('newData', newData);
@@ -175,23 +254,9 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
       />
       <ScrollView contentContainerStyle={{flexGrow: 1, padding: 20}}>
         <Formik
-          initialValues={{
-            NgayDongHang: new Date(),
-            GioDongHang: '',
-            NgayTraHang: new Date(),
-            GioTraHang: '',
-            IDDiemDi: '',
-            IDDiemDen: '',
-            IDHangHoa: '',
-            SoKG: '',
-            SoKhoi: '',
-            SoPL: '',
-            FlagHangVe: false,
-            ThoiGianVe: '',
-            IDKhachHang: '',
-            IDLoaiXe: '',
-          }}
+          initialValues={initialValues}
           validationSchema={validationSchema}
+          enableReintialize={true}
           onSubmit={handleSubmit}>
           {({
             handleChange,
@@ -515,7 +580,7 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
           )}
         </Formik>
       </ScrollView>
-      <LoadingModal isVisible={isLoading} />
+      <LoadingModal isVisible={isLoading || loadingUpdate} />
     </View>
   );
 };

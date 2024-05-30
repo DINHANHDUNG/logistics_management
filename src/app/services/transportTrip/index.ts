@@ -17,10 +17,26 @@ export const transportTripApi = createApi({
       }),
       // transformResponse: (response) => response, //Trả ra theo ý muốn nếu cần
     }),
+    getDetail: builder.query({
+      query: value => ({
+        method: GET,
+        url: NetWork.GetChuyenVanChuyen,
+        params: value,
+      }),
+      transformResponse: (response: any) => response.data, //Trả ra theo ý muốn nếu cần
+    }),
     addTransportTrip: builder.mutation({
       query: value => ({
         method: POST,
         url: NetWork.PostChuyenVanChuyen,
+        data: value,
+      }),
+      // transformResponse: (response) => response, //Trả ra theo ý muốn nếu cần
+    }),
+    updateTransportTrip: builder.mutation({
+      query: value => ({
+        method: POST,
+        url: NetWork.PutChuyenVanChuyen,
         data: value,
       }),
       // transformResponse: (response) => response, //Trả ra theo ý muốn nếu cần
@@ -41,5 +57,7 @@ export const {
   useGetListQuery,
   useLazyGetListQuery,
   useAddTransportTripMutation,
-  useDeleteTransportTripMutation
+  useDeleteTransportTripMutation,
+  useGetDetailQuery,
+  useUpdateTransportTripMutation
 } = transportTripApi;

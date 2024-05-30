@@ -19,4 +19,5 @@ export const MSG = {
   //Success
   success: 'Thành công',
   addNew: 'Thêm mới thành công',
+  updateSuccess: 'Cập nhật thành công',
 };
