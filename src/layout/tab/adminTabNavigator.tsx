@@ -1,20 +1,13 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import stackReport from '../stack/stackReport';
+import StackReport from '../stack/stackReport';
 import StackStatusCar from '../stack/stackStatusCar';
 import StackTransportTrip from '../stack/stackTransportTrip';
+import StackVehicleCoordination from '../stack/vehicleCoordination';
 
 function AdminTabNavigator() {
   const Tab = createBottomTabNavigator();
 
-  function SettingsScreen() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Điều phối xe!</Text>
-      </View>
-    );
-  }
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -32,7 +25,7 @@ function AdminTabNavigator() {
               iconName = focused ? 'analytics' : 'analytics-outline';
               break;
             case 'Điều phối':
-              iconName = focused ? 'bus' : 'bus-outline';
+              iconName = focused ? 'car-sport' : 'car-sport-outline';
               break;
             default:
               iconName = 'help-circle-outline';
@@ -47,8 +40,8 @@ function AdminTabNavigator() {
       })}>
       <Tab.Screen name="Trạng thái xe" component={StackStatusCar} />
       <Tab.Screen name="Chuyến vận chuyển" component={StackTransportTrip} />
-      <Tab.Screen name="Điều phối" component={SettingsScreen} />
-      <Tab.Screen name="Báo cáo" component={stackReport} />
+      <Tab.Screen name="Điều phối" component={StackVehicleCoordination} />
+      <Tab.Screen name="Báo cáo" component={StackReport} />
     </Tab.Navigator>
   );
 }

@@ -3,8 +3,10 @@ import ListReportScreen from '../../screen/listReport';
 import TransportTripDetailScreen from '../../screen/transportTripDetailScreen';
 import RepairReportScreen from '../../screen/repairReportScreen/repairReportScreen';
 import PouroilReportScreen from '../../screen/pouroilReportScreen/pouroilReportScreen';
+import StatusCarReportScreen from '../../screen/statusCarReportScreen';
+import VehicleCoordinationReportScreen from '../../screen/vehicleCoordinationReportScreen';
 
-function stackReport() {
+function StackReport() {
   const Stack = createNativeStackNavigator();
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -14,8 +16,16 @@ function stackReport() {
         name="PouroilReportScreen"
         component={PouroilReportScreen}
       />
+      <Stack.Screen
+        name="StatusCarReportScreen"
+        component={StatusCarReportScreen}
+      />
+      <Stack.Screen
+        name="VehicleCoordinationReportScreen"
+        component={VehicleCoordinationReportScreen}
+      />
     </Stack.Navigator>
   );
 }
 
-export default stackReport;
+export default StackReport;

@@ -1,45 +1,43 @@
+import {useNavigation} from '@react-navigation/native';
+import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  RefreshControl,
   ActivityIndicator,
   Alert,
+  FlatList,
+  RefreshControl,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import moment from 'moment';
-import {useNavigation} from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {styles} from './style';
-import HomeHeader from '../../components/header/headerBottomTab';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {authStore} from '../../app/features/auth/authSlice';
 import {useAppSelector} from '../../app/hooks';
-import {
-  useDeleteTransportTripMutation,
-  useLazyGetListQuery,
-} from '../../app/services/transportTrip';
-import {dataTransportTrip} from '../../types/transportTrip';
-import LoadingModal from '../../components/modals/loadingModal';
+import {useLazyGetListQuery} from '../../app/services/vehicleCoordination';
 import {MSG} from '../../common/contants';
+import HomeHeader from '../../components/header/headerBottomTab';
+import SelectCarModal from '../../components/modals/SelectCarModal';
+import LoadingModal from '../../components/modals/loadingModal';
+import {dataVehicleCoordination} from '../../types/vehicleCoordination';
+import {styles} from './style';
 
 const Limit = 10;
 
-const TransportTripScreen = () => {
+const VehicleCoordinationReportScreen = () => {
   const [getList, {isLoading, isFetching}] = useLazyGetListQuery();
-  const [deleteTrip, {isLoading: loadingDelete}] =
-    useDeleteTransportTripMutation();
   const auth = useAppSelector(authStore);
   const navigate = useNavigation();
   const [uiState, setUiState] = useState({
     visibleStartDate: false,
     visibleEndDate: false,
+    visibleSelectCar: false,
+    itemSelect: {} as dataVehicleCoordination,
     refreshing: false,
     loadingMore: false,
   });
   const [page, setPage] = useState(1);
-  const [trips, setTrips] = useState<Array<dataTransportTrip>>([]);
+  const [trips, setTrips] = useState<Array<dataVehicleCoordination>>([]);
   const [values, setValues] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -79,7 +77,7 @@ const TransportTripScreen = () => {
     fetchList(page);
   }, [page]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = navigate.addListener('focus', () => {
       setValues({
         startDate: values.startDate,
@@ -117,6 +115,10 @@ const TransportTripScreen = () => {
 
   const changeValue = (key: string, value: any) => {
     setValues(prevState => ({...prevState, [key]: value}));
+  };
+
+  const changeUiState = (key: string, value: any) => {
+    setUiState(prevState => ({...prevState, [key]: value}));
   };
 
   const showHideStartDate = () => {
@@ -161,49 +163,137 @@ const TransportTripScreen = () => {
     }));
   };
 
-  const deleteItem = (item: dataTransportTrip) => {
-    Alert.alert(MSG.wraning, MSG.wraningDelete + ' ' + item.IDChuyen, [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'OK',
-        onPress: () => {
-          deleteTrip({
-            IDChuyen: item.IDChuyen,
-            ProductKey: auth.Key,
-          }).then((req: any) => {
-            if (req.data.status === 200) {
-              Alert.alert(MSG.success, 'Đã xóa chuyến thành công');
-              return onRefresh();
-            }
-            // else {
-            //   Alert.alert(MSG.err, MSG.errAgain);
-            // }
-            if (req.data.status === 404) {
-              return Alert.alert(MSG.err, 'Không tìm thấy chuyến cần xóa !');
-            }
-            if (req.data.status === 400) {
-              return Alert.alert(MSG.err, 'Không thể xóa chuyến !');
-            }
-            return Alert.alert(MSG.err, MSG.errAgain);
-          });
-        },
-      },
-    ]);
-  };
-
-  const updateItem = (item: dataTransportTrip) => {
+  const updateItem = (item: dataVehicleCoordination) => {
     console.log(item);
     navigate.navigate('TransportTripDetailScreen', {item});
   };
 
-  const renderItem = ({item}: {item: dataTransportTrip}) => {
+  const handleDieuPhoi = (item: dataVehicleCoordination) => {
+    changeUiState('itemSelect', item);
+    changeUiState('visibleSelectCar', true);
+  };
+
+  const cancelItem = (item: dataVehicleCoordination) => {
+    Alert.alert(
+      MSG.wraning,
+      'Bạn có chắc chắn muốn hủy chuyến' + ' ' + item.IDChuyen,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            // deleteTrip({
+            //   IDChuyen: item.IDChuyen,
+            //   ProductKey: auth.Key,
+            // }).then((req: any) => {
+            //   if (req.data.status === 200) {
+            //     Alert.alert(MSG.success, 'Cập nhật thành công');
+            //     return onRefresh();
+            //   }
+            //   if (req.data.status === 404) {
+            //     return Alert.alert(MSG.err, 'Không tìm thấy chuyến !');
+            //   }
+            //   if (req.data.status === 400) {
+            //     return Alert.alert(MSG.err, 'Không thể xóa chuyến !');
+            //   }
+            //if (req.data.status === 409) {
+            //     return Alert.alert(MSG.err, 'Không thể thực hiện hủy chuyến trên chuyến này !');
+            //   }
+            //   return Alert.alert(MSG.err, MSG.errAgain);
+            // });
+          },
+        },
+      ],
+    );
+  };
+
+  const cancelLenhItem = (item: dataVehicleCoordination) => {
+    Alert.alert(
+      MSG.wraning,
+      'Bạn có chắc chắn muốn bỏ gửi lệnh' + ' ' + item.IDChuyen,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            // deleteTrip({
+            //   IDChuyen: item.IDChuyen,
+            //   ProductKey: auth.Key,
+            // }).then((req: any) => {
+            //   if (req.data.status === 200) {
+            //     Alert.alert(MSG.success, 'Cập nhật thành công');
+            //     return onRefresh();
+            //   }
+            //   if (req.data.status === 404) {
+            //     return Alert.alert(MSG.err, 'Không tìm thấy chuyến !');
+            //   }
+            //if (req.data.status === 409) {
+            //     return Alert.alert(MSG.err, 'Không thể thực hiện bỏ gửi lệnh trên chuyến này !');
+            //   }
+            //   return Alert.alert(MSG.err, MSG.errAgain);
+            // });
+          },
+        },
+      ],
+    );
+  };
+
+  const sendItem = (item: dataVehicleCoordination) => {
+    Alert.alert(
+      MSG.wraning,
+      'Bạn có chắc chắn muốn bỏ gửi lệnh' + ' ' + item.IDChuyen,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            // deleteTrip({
+            //   IDChuyen: item.IDChuyen,
+            //   ProductKey: auth.Key,
+            // }).then((req: any) => {
+            //   if (req.data.status === 200) {
+            //     Alert.alert(MSG.success, 'Cập nhật thành công');
+            //     return onRefresh();
+            //   }
+            //   if (req.data.status === 404) {
+            //     return Alert.alert(MSG.err, 'Không tìm thấy chuyến');
+            //   }
+            //if (req.data.status === 409) {
+            //     return Alert.alert(MSG.err, 'Không thể thực hiện gửi lệnh trên chuyến này !');
+            //   }
+            //   return Alert.alert(MSG.err, MSG.errAgain);
+            // });
+          },
+        },
+      ],
+    );
+  };
+
+  const renderItem = ({item}: {item: dataVehicleCoordination}) => {
     return (
-      <View key={item.IDChuyen} style={styles.deliveryContainer}>
+      <View
+        key={item.IDChuyen}
+        style={[
+          styles.deliveryContainer,
+          // {backgroundColor: item.RGB ?? '#fff'},
+        ]}>
         <View style={styles.infoContainer}>
           <Text style={styles.title}>Khách hàng: {item.KhachHang}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.title}>Biển số xe: {item.BienSoXe}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.title}>Lái xe: {item.LaiXe}</Text>
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.containerIcon}>
@@ -223,17 +313,13 @@ const TransportTripScreen = () => {
           </View>
           <Text style={styles.text}>Thời gian: {item.NgayDongHang}</Text>
         </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, styles.completeButton]}
-            onPress={() => updateItem(item)}>
-            <Text style={styles.buttonText}>Cập nhật</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.transferButton]}
-            onPress={() => deleteItem(item)}>
-            <Text style={styles.buttonText}>Xóa</Text>
-          </TouchableOpacity>
+        <View style={styles.infoContainer}>
+          <View style={styles.containerIcon}>
+            <Icon name="info-circle" size={20} style={styles.icon} />
+          </View>
+          <Text style={styles.text}>
+            Trạng thái điều phối: {item.TrangThaiDieuPhoiOut || 'Chưa gửi lệnh'}
+          </Text>
         </View>
       </View>
     );
@@ -311,19 +397,24 @@ const TransportTripScreen = () => {
         onConfirm={date => handleConfirm(date, 'endDate')}
         onCancel={showHideEndDate}
       />
-      <View style={styles.iconPlus}>
+      {/* <View style={styles.iconPlus}>
         <Icon
           name="plus"
           size={23}
           color="#fff"
           onPress={() =>
-            navigate.navigate('TransportTripDetailScreen', {item: {}})
+            navigate.navigate('TransportTripDetailScreen', { item: {} })
           }
         />
-      </View>
-      <LoadingModal isVisible={isLoading || loadingDelete || isFetching} />
+      </View> */}
+      <SelectCarModal
+        onClose={() => changeUiState('visibleSelectCar', false)}
+        visible={uiState.visibleSelectCar}
+        item={uiState.itemSelect}
+      />
+      <LoadingModal isVisible={isLoading || isFetching} />
     </View>
   );
 };
 
-export default TransportTripScreen;
+export default VehicleCoordinationReportScreen;

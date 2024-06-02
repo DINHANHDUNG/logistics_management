@@ -7,6 +7,7 @@ import {statusCarApi} from './services/statusCar';
 import {transportTripApi} from './services/transportTrip';
 import {categoryApi} from './services/category';
 import {reportApi} from './services/report';
+import { vehicleCoordinationApi } from './services/vehicleCoordination';
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     [transportTripApi.reducerPath]: transportTripApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
     [reportApi.reducerPath]: reportApi.reducer,
+    [vehicleCoordinationApi.reducerPath]: vehicleCoordinationApi.reducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware().concat(
@@ -27,6 +29,7 @@ export const store = configureStore({
       transportTripApi.middleware,
       categoryApi.middleware,
       reportApi.middleware,
+      vehicleCoordinationApi.middleware,
     ),
 });
 

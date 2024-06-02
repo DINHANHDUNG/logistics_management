@@ -15,6 +15,14 @@ export const NetWork = {
   GetChuyenVanChuyen: 'GetChuyenVanChuyen',
   PutChuyenVanChuyen: 'PutChuyenVanChuyen',
 
+  //vehicleCoordination
+  GetListDieuPhoiVanChuyen: 'GetListDieuPhoiVanChuyen', 
+  GetChuyenDieuPhoi: 'GetChuyenDieuPhoi',
+  UpdateDieuPhoi: 'UpdateDieuPhoi',
+  UpdateGuiLenh: 'UpdateGuiLenh',
+  UpdateHuyChuyen: 'UpdateHuyChuyen',
+  UpdateBoGuiLenh: 'UpdateBoGuiLenh',
+
   //report admin
   GetListSuachuaXe: 'GetListSuachuaXe',
   GetListDoDau: 'GetListDoDau',
@@ -27,6 +35,7 @@ export const NetWork = {
   listXeVanChuyen: 'GettblDMXeOto',
   listNhanVien: 'GettblNhanSu',
   listDonViVanTai: 'GettblDMDonViVanTai',
+  listLaiXe: 'GetThongTinTuXe',
 
   //Pokemon
   pokemon: 'api/v2/',
