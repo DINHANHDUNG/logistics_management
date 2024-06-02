@@ -61,7 +61,7 @@ const PouroilReportScreen = () => {
 
       const newData = response?.data;
       console.log('newData', newData);
-      if (newData.status === 200) {
+      if (newData?.status === 200) {
         if (page === 1) {
           setRecords(newData.data.data);
         } else {

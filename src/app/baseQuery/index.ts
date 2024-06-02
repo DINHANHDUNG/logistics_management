@@ -18,10 +18,10 @@ export const axiosBaseQuery =
     unknown
   > =>
   async ({url, method, data, params}) => {
-    console.log(baseUrl, url, params);
+    // console.log(baseUrl, url, params, data);
     // const accessToken = await getToken()
     const urlB = baseUrl || API_URL;
-    console.log('urlB', urlB, params);
+    console.log('urlB', urlB, baseUrl, params, data);
 
     try {
       const result = await axios({
