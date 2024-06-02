@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import VehicleCoordinationScreen from '../../screen/vehicleCoordinationScreen';
 import RentedVehicleScreen from '../../screen/rentedVehicleScreen';
+import CompanyVehicleScreen from '../../screen/companyVehicleScreen';
 
 function StackVehicleCoordination() {
   const Stack = createNativeStackNavigator();
@@ -13,6 +14,10 @@ function StackVehicleCoordination() {
       <Stack.Screen
         name="RentedVehicleScreen"
         component={RentedVehicleScreen}
+      />
+      <Stack.Screen
+        name="CompanyVehicleScreen"
+        component={CompanyVehicleScreen}
       />
     </Stack.Navigator>
   );

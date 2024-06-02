@@ -93,5 +93,6 @@ export const {
   useGetListXeVanChuyenQuery,
   useGetListNhanVienQuery,
   useGetListDonViVanTaiQuery,
-  useGetListlaiXeQuery
+  useGetListlaiXeQuery,
+  useLazyGetListlaiXeQuery
 } = categoryApi;
