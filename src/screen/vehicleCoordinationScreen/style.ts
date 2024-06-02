@@ -4,12 +4,13 @@ import {colors} from '../../common/color';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff', // Màu nền tổng thể
   },
   containerScroll: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff', // Màu nền tổng thể
+    paddingBottom: 40,
   },
   containerFilter: {
     marginTop: 10,
@@ -27,12 +28,13 @@ export const styles = StyleSheet.create({
   infoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 4,
   },
   icon: {
     marginRight: 8,
     color: colors.colorMain2,
   },
-  itemContainer: {
+  deliveryContainer: {
     margin: 10,
     padding: 15,
     borderRadius: 10,
@@ -59,22 +61,6 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     marginBottom: 4,
-  },
-  status: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 5,
-    // color: '#fff',
-    fontWeight: '600',
-  },
-  statusPending: {
-    backgroundColor: 'orange',
-  },
-  statusInProgress: {
-    backgroundColor: 'blue',
-  },
-  statusCompleted: {
-    backgroundColor: 'green',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -104,10 +90,7 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 5,
   },
-  label: {
-    marginBottom: 5,
-    marginTop: 12,
-  },
+  //Input Date
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -124,7 +107,7 @@ export const styles = StyleSheet.create({
   input: {
     flex: 1,
     textAlign: 'center',
-    paddingRight: 30,
+    paddingRight: 30, // Space for the icon
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -134,11 +117,22 @@ export const styles = StyleSheet.create({
     right: 10,
     color: colors.colorMain2,
   },
-  border: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
+  transferButton: {
+    backgroundColor: '#FF5733',
+  },
+  completeButton: {
+    backgroundColor: '#28a745',
+  },
+  iconPlus: {
+    position: 'absolute',
+    backgroundColor: 'tomato',
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    right: 10,
+    bottom: 20,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

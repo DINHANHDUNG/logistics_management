@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import HomeHeader from '../../components/header/headerBottomTab';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {styles} from './style';
 import {useLazyGetSttCarQuery} from '../../app/services/statusCar';
@@ -18,8 +17,9 @@ import {dataStatusCar} from '../../types/statusCar';
 import {useNavigation} from '@react-navigation/native';
 import {isCloseToBottom} from '../../utils';
 import {MSG} from '../../common/contants';
+import HeaderCustom from '../../components/header';
 
-const StatusCarScreen = () => {
+const StatusCarReportScreen = () => {
   const navigate = useNavigation();
   const [getList, {isLoading, isFetching}] = useLazyGetSttCarQuery();
   const [statusCarList, setStatusCarList] = useState([]);
@@ -73,7 +73,7 @@ const StatusCarScreen = () => {
 
   return (
     <View style={styles.container}>
-      <HomeHeader />
+      <HeaderCustom title="Báo cáo trạng thái xe" />
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -89,11 +89,12 @@ const StatusCarScreen = () => {
           <TouchableOpacity
             key={val.IDXe}
             style={[styles.itemContainer, {backgroundColor: val.RGB ?? '#FFF'}]}
-            onPress={() =>
-              navigate.navigate('StatusCarDetailScreen', {
-                item: val,
-              })
-            }>
+            // onPress={() =>
+            //   navigate.navigate('StatusCarDetailScreen', {
+            //     item: val,
+            //   })
+            // }
+          >
             <View style={styles.infoContainer}>
               <Text style={styles.title}>Biển số xe: {val.BienSoXe}</Text>
             </View>
@@ -126,4 +127,4 @@ const StatusCarScreen = () => {
   );
 };
 
-export default StatusCarScreen;
+export default StatusCarReportScreen;

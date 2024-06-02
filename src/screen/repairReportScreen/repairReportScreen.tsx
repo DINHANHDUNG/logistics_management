@@ -25,7 +25,7 @@ import { formatCurrency2 } from '../../utils';
 const Limit = 10;
 
 const RepairReportScreen = () => {
-  const [getList, {isLoading}] = useLazyGetListSuachuaXeQuery();
+  const [getList, {isLoading, isFetching}] = useLazyGetListSuachuaXeQuery();
   const auth = useAppSelector(authStore);
   const navigate = useNavigation();
   const [uiState, setUiState] = useState({
@@ -264,7 +264,7 @@ const RepairReportScreen = () => {
         onCancel={showHideEndDate}
       />
 
-      <LoadingModal isVisible={isLoading} />
+      <LoadingModal isVisible={isLoading || isFetching} />
     </View>
   );
 };
