@@ -49,6 +49,14 @@ export const vehicleCoordinationApi = createApi({
         data: value,
       }),
     }),
+    UpdateDieuPhoi: builder.mutation({
+      query: value => ({
+        method: POST,
+        url: NetWork.UpdateDieuPhoi,
+        data: value,
+      }),
+      // transformResponse: (response) => response, //Trả ra theo ý muốn nếu cần
+    }),
   }),
 });
 
@@ -60,4 +68,5 @@ export const {
   useUpdateBoGuiLenhMutation,
   useUpdateGuiLenhMutation,
   useUpdateHuyChuyenMutation,
+  useUpdateDieuPhoiMutation
 } = vehicleCoordinationApi;
