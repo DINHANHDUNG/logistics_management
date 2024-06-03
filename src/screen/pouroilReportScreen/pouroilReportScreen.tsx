@@ -232,6 +232,9 @@ const PouroilReportScreen = () => {
             <View style={{height: 30}}></View>
           )
         }
+        ListEmptyComponent={
+          <Text style={{textAlign: 'center', marginTop: 20}}>Không có dữ liệu</Text>
+        }
         style={styles.containerScroll}
       />
       {/* Date Time Pickers */}

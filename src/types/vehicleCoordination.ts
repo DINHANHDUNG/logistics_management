@@ -5,6 +5,7 @@ export type dtoListVehicleCoordination = {
   IDUser: number;
   dtS: string;
   dtE: string;
+  TrangThai?: number
 };
 
 export type dtoUpdate = {

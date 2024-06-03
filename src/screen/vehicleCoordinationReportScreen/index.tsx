@@ -375,6 +375,9 @@ const VehicleCoordinationReportScreen = () => {
             <ActivityIndicator size="large" color="#0000ff" />
           ) : null
         }
+        ListEmptyComponent={
+          <Text style={{textAlign: 'center', marginTop: 20}}>Không có dữ liệu</Text>
+        }
         style={styles.containerScroll}
       />
       {/* Date Time Pickers */}

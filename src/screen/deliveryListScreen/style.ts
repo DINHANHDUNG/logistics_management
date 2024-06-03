@@ -1,5 +1,5 @@
 import {Platform, StyleSheet} from 'react-native';
-import { colors } from '../../common/color';
+import {colors} from '../../common/color';
 
 export const styles = StyleSheet.create({
   container: {
@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 8,
-    color: colors.colorMain2
+    color: colors.colorMain2,
   },
   deliveryContainer: {
     margin: 10,
@@ -83,5 +83,38 @@ export const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     marginLeft: 5,
+  },
+  containerFilter: {
+    marginTop: 10,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    width: '47%',
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  input: {
+    flex: 1,
+    textAlign: 'center',
+    paddingRight: 30, // Space for the icon
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconInput: {
+    position: 'absolute',
+    right: 10,
+    color: colors.colorMain2,
   },
 });
