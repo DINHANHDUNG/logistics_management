@@ -23,7 +23,8 @@ export const categoryApi = createApi({
         url: NetWork.listKH,
         params: params,
       }),
-      transformResponse: (response: {data: itemKH[]}) => response.data,
+      transformResponse: (response: {data: {data: itemKH[]}}) =>
+        response?.data?.data,
     }),
     getListDiaDiem: builder.query<itemDiaDiem[], unknown>({
       query: params => ({
@@ -31,7 +32,8 @@ export const categoryApi = createApi({
         url: NetWork.listDiaDiem,
         params: params,
       }),
-      transformResponse: (response: {data: itemDiaDiem[]}) => response.data,
+      transformResponse: (response: {data: {data: itemDiaDiem[]}}) =>
+        response?.data?.data,
     }),
     getListHangHoa: builder.query<itemHangHoa[], unknown>({
       query: params => ({
@@ -39,7 +41,8 @@ export const categoryApi = createApi({
         url: NetWork.listHangHoa,
         params: params,
       }),
-      transformResponse: (response: {data: itemHangHoa[]}) => response.data,
+      transformResponse: (response: {data: {data: itemHangHoa[]}}) =>
+        response?.data?.data,
     }),
     getListLoaiXe: builder.query<itemLoaiXe[], unknown>({
       query: params => ({
@@ -47,7 +50,8 @@ export const categoryApi = createApi({
         url: NetWork.listLoaiXe,
         params: params,
       }),
-      transformResponse: (response: {data: itemLoaiXe[]}) => response.data,
+      transformResponse: (response: {data: {data: itemLoaiXe[]}}) =>
+        response?.data?.data,
     }),
     getListXeVanChuyen: builder.query<itemXeVanChuyen[], unknown>({
       query: params => ({
@@ -55,7 +59,8 @@ export const categoryApi = createApi({
         url: NetWork.listXeVanChuyen,
         params: params,
       }),
-      transformResponse: (response: {data: itemXeVanChuyen[]}) => response.data,
+      transformResponse: (response: {data: {data: itemXeVanChuyen[]}}) =>
+        response?.data?.data,
     }),
     getListNhanVien: builder.query<itemNhanVien[], unknown>({
       query: params => ({
@@ -63,7 +68,8 @@ export const categoryApi = createApi({
         url: NetWork.listNhanVien,
         params: params,
       }),
-      transformResponse: (response: {data: itemNhanVien[]}) => response.data,
+      transformResponse: (response: {data: {data: itemNhanVien[]}}) =>
+        response?.data?.data,
     }),
     getListDonViVanTai: builder.query<itemDonViVanTai[], unknown>({
       query: params => ({
@@ -71,7 +77,8 @@ export const categoryApi = createApi({
         url: NetWork.listDonViVanTai,
         params: params,
       }),
-      transformResponse: (response: {data: itemDonViVanTai[]}) => response.data,
+      transformResponse: (response: {data: {data: itemDonViVanTai[]}}) =>
+        response?.data?.data,
     }),
     getListlaiXe: builder.query<any[], unknown>({
       query: params => ({
@@ -79,7 +86,8 @@ export const categoryApi = createApi({
         url: NetWork.listLaiXe,
         params: params,
       }),
-      transformResponse: (response: {data: any[]}) => response.data,
+      transformResponse: (response: {data: {data: any[]}}) =>
+        response?.data?.data,
     }),
   }),
 });
@@ -94,5 +102,5 @@ export const {
   useGetListNhanVienQuery,
   useGetListDonViVanTaiQuery,
   useGetListlaiXeQuery,
-  useLazyGetListlaiXeQuery
+  useLazyGetListlaiXeQuery,
 } = categoryApi;

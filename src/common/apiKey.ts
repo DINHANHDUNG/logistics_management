@@ -1,5 +1,6 @@
 import Config from 'react-native-config';
 export const API_URL = Config.REACT_APP_BASE_URL ?? '';
+export const API_IMAGE_URL = Config.REACT_APP_BASE_IMAGE_URL ?? '';
 
 export const NetWork = {
   //Admin
@@ -27,6 +28,11 @@ export const NetWork = {
   //report admin
   GetListSuachuaXe: 'GetListSuachuaXe',
   GetListDoDau: 'GetListDoDau',
+
+  //Đổ dầu
+  DeleteDoDau: 'DeleteDoDau',
+  GetDoDau: 'GetDoDau',
+  UpdateDoDau: 'UpdateDoDau',
 
   //Category
   listKH: 'GettblDMCustomer',

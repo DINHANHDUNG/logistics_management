@@ -274,8 +274,8 @@ const VehicleCoordinationScreen = () => {
                 return Alert.alert(MSG.err, req?.error?.data || '');
               }
               if (req?.error.status === 409) {
-                console.log("Vaof");
-                
+                console.log('Vaof');
+
                 return Alert.alert(MSG.err, req?.error?.data || '');
               }
               return Alert.alert(MSG.err, MSG.errAgain);
@@ -292,10 +292,29 @@ const VehicleCoordinationScreen = () => {
         key={item.IDChuyen}
         style={[
           styles.deliveryContainer,
-          // {backgroundColor: item.RGB ?? '#fff'},
+          // {backgroundColor: item.RGB ? `rgb(${item.RGB})` : '#FFFFFF'},
         ]}>
-        <View style={styles.infoContainer}>
-          <Text style={styles.title}>Khách hàng: {item.KhachHang}</Text>
+        <View
+          style={[
+            styles.infoContainer,
+            {
+              justifyContent: 'space-between',
+              flex: 1,
+              alignItems: 'flex-start',
+            },
+          ]}>
+          <Text style={[styles.title, {width: '90%', flex: 1}]}>
+            Khách hàng: {item.KhachHang}{' '}
+          </Text>
+          <Icon
+            name="flag"
+            size={20}
+            style={[
+              styles.icon,
+
+              {color: item.RGB ? `rgb(${item.RGB})` : '#FFFFFF'},
+            ]}
+          />
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.title}>Biển số xe: {item.BienSoXe}</Text>
@@ -409,7 +428,9 @@ const VehicleCoordinationScreen = () => {
           ) : null
         }
         ListEmptyComponent={
-          <Text style={{textAlign: 'center', marginTop: 20}}>Không có dữ liệu</Text>
+          <Text style={{textAlign: 'center', marginTop: 20}}>
+            Không có dữ liệu
+          </Text>
         }
         style={styles.containerScroll}
       />

@@ -23,7 +23,7 @@ export const transportTripApi = createApi({
         url: NetWork.GetChuyenVanChuyen,
         params: value,
       }),
-      transformResponse: (response: any) => response.data, //Trả ra theo ý muốn nếu cần
+      transformResponse: (response: any) => response?.data?.data, //Trả ra theo ý muốn nếu cần
     }),
     addTransportTrip: builder.mutation({
       query: value => ({

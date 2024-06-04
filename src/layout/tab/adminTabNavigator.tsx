@@ -4,6 +4,7 @@ import StackReport from '../stack/stackReport';
 import StackStatusCar from '../stack/stackStatusCar';
 import StackTransportTrip from '../stack/stackTransportTrip';
 import StackVehicleCoordination from '../stack/vehicleCoordination';
+import {colors} from '../../common/color';
 
 function AdminTabNavigator() {
   const Tab = createBottomTabNavigator();
@@ -35,7 +36,7 @@ function AdminTabNavigator() {
           // You can return any component that you like here!
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
+        tabBarActiveTintColor: colors.colorMain2,
         tabBarInactiveTintColor: 'gray',
       })}>
       <Tab.Screen name="Trạng thái xe" component={StackStatusCar} />

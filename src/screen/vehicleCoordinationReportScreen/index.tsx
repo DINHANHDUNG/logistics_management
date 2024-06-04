@@ -21,6 +21,7 @@ import SelectCarModal from '../../components/modals/SelectCarModal';
 import LoadingModal from '../../components/modals/loadingModal';
 import {dataVehicleCoordination} from '../../types/vehicleCoordination';
 import {styles} from './style';
+import HeaderCustom from '../../components/header';
 
 const Limit = 10;
 
@@ -284,10 +285,29 @@ const VehicleCoordinationReportScreen = () => {
         key={item.IDChuyen}
         style={[
           styles.deliveryContainer,
-          // {backgroundColor: item.RGB ?? '#fff'},
+          // {backgroundColor: item.RGB ? `rgb(${item.RGB})` : '#FFFFFF'},
         ]}>
-        <View style={styles.infoContainer}>
-          <Text style={styles.title}>Khách hàng: {item.KhachHang}</Text>
+        <View
+          style={[
+            styles.infoContainer,
+            {
+              justifyContent: 'space-between',
+              flex: 1,
+              alignItems: 'flex-start',
+            },
+          ]}>
+          <Text style={[styles.title, {width: '90%', flex: 1}]}>
+            Khách hàng: {item.KhachHang}{' '}
+          </Text>
+          <Icon
+            name="flag"
+            size={20}
+            style={[
+              styles.icon,
+
+              {color: item.RGB ? `rgb(${item.RGB})` : '#FFFFFF'},
+            ]}
+          />
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.title}>Biển số xe: {item.BienSoXe}</Text>
@@ -328,7 +348,8 @@ const VehicleCoordinationReportScreen = () => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <HomeHeader />
+      {/* <HomeHeader /> */}
+      <HeaderCustom title='Báo cáo điều phối' />
       <View style={styles.containerFilter}>
         <TouchableOpacity
           style={styles.inputContainer}
@@ -376,7 +397,9 @@ const VehicleCoordinationReportScreen = () => {
           ) : null
         }
         ListEmptyComponent={
-          <Text style={{textAlign: 'center', marginTop: 20}}>Không có dữ liệu</Text>
+          <Text style={{textAlign: 'center', marginTop: 20}}>
+            Không có dữ liệu
+          </Text>
         }
         style={styles.containerScroll}
       />

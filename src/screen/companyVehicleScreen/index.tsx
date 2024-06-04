@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
-import {Formik} from 'formik';
-import React, {useEffect, useState} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   ScrollView,
@@ -10,25 +10,22 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {authStore} from '../../app/features/auth/authSlice';
-import {useAppSelector} from '../../app/hooks';
+import { authStore } from '../../app/features/auth/authSlice';
+import { useAppSelector } from '../../app/hooks';
 import {
-  useGetListKHQuery,
   useGetListLoaiXeQuery,
   useGetListNhanVienQuery,
-  useGetListlaiXeQuery,
-  useLazyGetListlaiXeQuery,
+  useLazyGetListlaiXeQuery
 } from '../../app/services/category';
 import {
   useGetDetailQuery,
   useUpdateDieuPhoiMutation,
 } from '../../app/services/vehicleCoordination';
-import {MSG} from '../../common/contants';
+import { MSG } from '../../common/contants';
 import HeaderCustom from '../../components/header';
 import LoadingModal from '../../components/modals/loadingModal';
 import SelectValueModal from '../../components/modals/selectModal';
-import {validationSchema} from './schema';
-import {styles} from './style';
+import { styles } from './style';
 
 const CompanyVehicleScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;

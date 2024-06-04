@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    color: '#666',
+    color: '#333',
     marginBottom: 4,
   },
   status: {

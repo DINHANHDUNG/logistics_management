@@ -195,12 +195,7 @@ const DeliveryListScreen = () => {
 
   const renderItem = ({item}: {item: dataVehicleCoordination}) => {
     return (
-      <View
-        key={item.IDChuyen}
-        style={[
-          styles.deliveryContainer,
-          // {backgroundColor: item.RGB ?? '#fff'},
-        ]}>
+      <View key={item.IDChuyen} style={[styles.deliveryContainer]}>
         <View style={styles.infoContainer}>
           <Text style={styles.title}>Khách hàng: {item.KhachHang}</Text>
         </View>
@@ -306,7 +301,9 @@ const DeliveryListScreen = () => {
           ) : null
         }
         ListEmptyComponent={
-          <Text style={{textAlign: 'center', marginTop: 20}}>Không có dữ liệu</Text>
+          <Text style={{textAlign: 'center', marginTop: 20}}>
+            Không có dữ liệu
+          </Text>
         }
         style={styles.containerScroll}
       />

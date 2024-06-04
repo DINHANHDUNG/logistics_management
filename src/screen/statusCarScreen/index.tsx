@@ -28,6 +28,8 @@ const StatusCarScreen = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const Limit = 10;
 
+  console.log('statusCarList', statusCarList);
+
   useEffect(() => {
     fetchStatusCarList(page);
   }, [page]);
@@ -88,14 +90,36 @@ const StatusCarScreen = () => {
         {statusCarList.map((val: dataStatusCar) => (
           <TouchableOpacity
             key={val.IDXe}
-            style={[styles.itemContainer, {backgroundColor: val.RGB ?? '#FFF'}]}
+            style={[
+              styles.itemContainer,
+              {backgroundColor: val.RGB ? `rgb(${val.RGB})` : '#FFFFFF'},
+            ]}
             onPress={() =>
               navigate.navigate('StatusCarDetailScreen', {
                 item: val,
               })
             }>
-            <View style={styles.infoContainer}>
-              <Text style={styles.title}>Biển số xe: {val.BienSoXe}</Text>
+            <View
+              style={[
+                styles.infoContainer,
+                {
+                  justifyContent: 'space-between',
+                  flex: 1,
+                  alignItems: 'flex-start',
+                },
+              ]}>
+              <Text style={[styles.title, {width: '90%', flex: 1}]}>
+                Biển số xe: {val.BienSoXe}
+              </Text>
+              <Icon
+                name="flag"
+                size={20}
+                style={[
+                  styles.icon,
+
+                  {color: val.RGB ? `rgb(${val.RGB})` : '#FFFFFF'},
+                ]}
+              />
             </View>
             <View style={styles.infoContainer}>
               <View style={styles.containerIcon}>
@@ -107,14 +131,7 @@ const StatusCarScreen = () => {
               <View style={styles.containerIcon}>
                 <Icon name="info-circle" size={20} style={styles.icon} />
               </View>
-              <Text
-                style={[
-                  styles.text,
-                  // styles.status,
-                  // {backgroundColor: val.RGB ?? ''},
-                ]}>
-                Trạng thái: {val.TrangThai}
-              </Text>
+              <Text style={[styles.text]}>Trạng thái: {val.TrangThai}</Text>
             </View>
           </TouchableOpacity>
         ))}

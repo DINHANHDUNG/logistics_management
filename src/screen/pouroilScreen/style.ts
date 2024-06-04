@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#fff', // Màu nền tổng thể
+    paddingBottom: 40,
   },
   containerFilter: {
     marginTop: 10,
@@ -18,7 +19,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
   },
-
   containerIcon: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -28,13 +28,13 @@ export const styles = StyleSheet.create({
   infoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    // marginBottom: 4,
+    marginBottom: 4,
   },
   icon: {
     marginRight: 8,
     color: colors.colorMain2,
   },
-  pouroilContainer: {
+  deliveryContainer: {
     margin: 10,
     padding: 15,
     borderRadius: 10,
@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    color: '#666',
+    color: '#333',
     marginBottom: 4,
   },
   buttonContainer: {
@@ -68,9 +68,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    // flex: 1,
     width: '40%',
-    // marginHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 5,
     alignItems: 'center',
@@ -93,10 +91,6 @@ export const styles = StyleSheet.create({
     marginLeft: 5,
   },
   //Input Date
-  label: {
-    marginBottom: 5,
-    marginTop: 12,
-  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -123,11 +117,22 @@ export const styles = StyleSheet.create({
     right: 10,
     color: colors.colorMain2,
   },
-  border: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
+  transferButton: {
+    backgroundColor: '#FF5733',
+  },
+  completeButton: {
+    backgroundColor: '#28a745',
+  },
+  iconPlus: {
+    position: 'absolute',
+    backgroundColor: colors.colorMain2,
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    right: 10,
+    bottom: 20,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

@@ -1,17 +1,12 @@
 import * as yup from 'yup';
 export const validationSchema = yup.object().shape({
-  licensePlate: yup.string().required('Vui lòng nhập biển số xe'),
-  seller: yup.string().required('Vui lòng nhập đơn vị bán'),
-  quantity: yup
+  GioDoDau: yup.string().required('Vui lòng chọn giờ'),
+  NgayDoDau: yup.string().required('Vui lòng chọn ngày'),
+  IDXeOto: yup.string().required('Vui lòng chọn xe'),
+  ThanhTien: yup
     .number()
     // .string()
-    .required('Vui lòng nhập số lượng')
+    .required('Vui lòng nhập')
     .typeError('Vui lòng nhập số')
-    .positive('Số lương phải lớn hơn bằng không'),
-  unitPrice: yup
-    .number()
-    // .string()
-    .required('Vui lòng nhập giá')
-    .typeError('Vui lòng nhập số')
-    .positive('Giá phải lớn hơn bằng không'),
+    .positive('Thành tiền lớn hơn bằng không'),
 });

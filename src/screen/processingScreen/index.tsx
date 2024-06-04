@@ -198,12 +198,7 @@ const ProcessingScreen = () => {
 
   const renderItem = ({item}: {item: dataVehicleCoordination}) => {
     return (
-      <View
-        key={item.IDChuyen}
-        style={[
-          styles.deliveryContainer,
-          // {backgroundColor: item.RGB ?? '#fff'},
-        ]}>
+      <View key={item.IDChuyen} style={[styles.deliveryContainer]}>
         <View style={styles.infoContainer}>
           <Text style={styles.title}>Khách hàng: {item.KhachHang}</Text>
         </View>
@@ -310,7 +305,9 @@ const ProcessingScreen = () => {
         }
         style={styles.containerScroll}
         ListEmptyComponent={
-          <Text style={{textAlign: 'center', marginTop: 20}}>Không có dữ liệu</Text>
+          <Text style={{textAlign: 'center', marginTop: 20}}>
+            Không có dữ liệu
+          </Text>
         }
       />
       {/* Date Time Pickers */}
