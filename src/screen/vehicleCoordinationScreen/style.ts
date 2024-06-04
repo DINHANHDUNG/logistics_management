@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    color: '#666',
+    color: '#333',
     marginBottom: 4,
   },
   buttonContainer: {
@@ -125,7 +125,7 @@ export const styles = StyleSheet.create({
   },
   iconPlus: {
     position: 'absolute',
-    backgroundColor: 'tomato',
+    backgroundColor: colors.colorMain2,
     width: 30,
     height: 30,
     borderRadius: 30,

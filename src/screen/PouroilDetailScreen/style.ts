@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import { colors } from '../../common/color';
+import {colors} from '../../common/color';
 
 export const styles = StyleSheet.create({
   container: {
@@ -33,4 +33,38 @@ export const styles = StyleSheet.create({
     marginTop: 12,
   },
   textBtn: {color: 'white', textAlign: 'center'},
+  iconInput: {
+    position: 'absolute',
+    right: 10,
+    fontSize: 14,
+    // color: colors.colorMain2,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    width: '100%',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  inputDate: {
+    flex: 1,
+    paddingRight: 30, // Space for the icon
+    height: '100%',
+    // alignItems: 'center',
+    justifyContent: 'center',
+  },
+  row: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  itemRow: {
+    width: '48%',
+  },
 });

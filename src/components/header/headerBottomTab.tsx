@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AccountModal from '../modals/accountModal';
+import {colors} from '../../common/color';
 
 const HomeHeader = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -25,7 +26,7 @@ const HomeHeader = () => {
 const styles = StyleSheet.create({
   headerContainer: {
     height: 60,
-    backgroundColor: 'tomato',
+    backgroundColor: colors.colorMain2,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

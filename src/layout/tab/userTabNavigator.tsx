@@ -5,6 +5,7 @@ import DeliveryListScreen from '../../screen/deliveryListScreen';
 import StackProcessing from '../stack/stackProcessing';
 import StackComplate from '../stack/stackComplate';
 import StackPouroil from '../stack/stackPouroil';
+import { colors } from '../../common/color';
 
 function UserTabNavigator() {
   const Tab = createBottomTabNavigator();
@@ -38,7 +39,7 @@ function UserTabNavigator() {
           // Bạn có thể trả về bất kỳ thành phần nào bạn muốn ở đây!
           return <IconMaterial name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
+        tabBarActiveTintColor: colors.colorMain2,
         tabBarInactiveTintColor: 'gray',
       })}>
       <Tab.Screen name="Đã giao" component={DeliveryListScreen} />
