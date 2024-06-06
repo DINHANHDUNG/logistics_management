@@ -41,6 +41,8 @@ const ProcessingScreen = () => {
   });
   const [page, setPage] = useState(1);
   const [trips, setTrips] = useState<Array<dataVehicleCoordination>>([]);
+  console.log('trips', trips);
+  
   const [values, setValues] = useState({
     startDate: new Date(),
     endDate: new Date(new Date().setDate(new Date().getDate() + 1)),

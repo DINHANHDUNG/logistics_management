@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import {Formik} from 'formik';
 import * as yup from 'yup';
@@ -17,19 +18,45 @@ import moment from 'moment';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {styles} from './style';
 import SelectValueModal from '../../components/modals/selectModal';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import DatePicker from 'react-native-date-picker';
+import {useGetTrangThaiQuery} from '../../app/services/category';
+import {authStore} from '../../app/features/auth/authSlice';
+import {uploadImage, useAppSelector} from '../../app/hooks';
+import {Platform} from 'react-native';
+import RNFetchBlob from 'rn-fetch-blob';
+import {API_URL, NetWork} from '../../common/apiKey';
+import {MSG} from '../../common/contants';
+import LoadingModal from '../../components/modals/loadingModal';
 
 const validationSchema = yup.object().shape({
-  status: yup.string().required('Vui lòng nhập trạng thái'),
-  time: yup.string().required('Vui lòng nhập thời gian'),
+  IDTrangThaiVanChuyen: yup.string().required('Vui lòng nhập trạng thái'),
 });
 
 const ProcessingDetailScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
-  const navigate = useNavigation()
+  console.log('record', record);
+
+  const auth = useAppSelector(authStore);
+  const {data: dataTrangThai} = useGetTrangThaiQuery(
+    {ProductKey: auth.Key},
+    {skip: !auth.Key},
+  );
+  const data = {} as any;
+  // const {
+  //   data,
+  //   isLoading: loadingDetail,
+  //   refetch,
+  // } = useGetDetailDoDauQuery(
+  //   {ProductKey: auth.Key, ID: record.ID},
+  //   {skip: !record.ID},
+  // );
+  const navigate = useNavigation();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedImages, setSelectedImages] = useState<Array<string>>([]);
   const [visibleDate, setVisibleDate] = useState(false);
+  console.log('selectedImages', selectedImages);
 
   //Select
   const [modalVisible, setModalVisible] = useState(false);
@@ -39,19 +66,6 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
     setSelectedValue(value);
   };
 
-  const options = [
-    {key: '1', value: 'Option 1'},
-    {key: '2', value: 'Option 2'},
-    {key: '3', value: 'Option 3'},
-    {key: '4', value: 'Option 4'},
-    {key: '5', value: 'Option 5'},
-    {key: '6', value: 'Option 6'},
-    {key: '7', value: 'Option 7'},
-    {key: '8', value: 'Option 8'},
-    {key: '9', value: 'Option 9'},
-    {key: '10', value: 'Option 10'},
-  ];
-
   const showHidenDate = () => {
     setVisibleDate(!visibleDate);
   };
@@ -60,21 +74,128 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
     setModalVisible(!modalVisible);
   };
 
+  const [visibleDatePicker, setVisibleDatePicker] = useState(false);
+  const [visibleTimePicker, setVisibleTimePicker] = useState(false);
+  const [selectedField, setSelectedField] = useState(null as unknown as string);
+
+  const handleConfirmDate = (date: any, setFieldValue: any) => {
+    setFieldValue(selectedField, date);
+    setVisibleDatePicker(false);
+  };
+
+  const handleConfirmTime = (time: any, setFieldValue: any) => {
+    setFieldValue(selectedField, time);
+    setVisibleTimePicker(false);
+  };
+
+  const [modalOptions, setModalOptions] = useState([]);
+  const [modalField, setModalField] = useState('');
+
+  const openModal = (field: any, options: any) => {
+    setModalField(field);
+    setModalOptions(options);
+    setModalVisible(true);
+  };
+
+  const renderTitleModalSelect = () => {
+    switch (modalField) {
+      case 'IDTrangThaiVanChuyen':
+        return 'Chọn trạng thái';
+
+      default:
+        return 'Chọn';
+    }
+  };
+
+  const renderTrangThai = values => {
+    return dataTrangThai?.find(
+      e => e.ID === Number(values.IDTrangThaiVanChuyen),
+    );
+  };
+
+  const deleteImg = (idx: number) => {
+    const copyArr = [...selectedImages];
+    console.log(idx);
+    copyArr.splice(idx, 1);
+    setSelectedImages(() => [...copyArr]);
+  };
+
+  const handleSubmit = async (val: any) => {
+    setIsLoading(true);
+    const NgayGioThucHien =
+      moment(val.NgayTrangThai).format('YYYY/MM/DD') +
+      ' ' +
+      moment(val.GioTrangThai).format('HH:mm');
+
+    const newD = [
+      {
+        name: 'data',
+        data: JSON.stringify({
+          IDChuyen: record.IDChuyen,
+          ProductKey: auth.Key,
+          IDTrangThaiVanChuyen: val.IDTrangThaiVanChuyen
+            ? Number(val.IDTrangThaiVanChuyen)
+            : '',
+          IDUser: auth.IDUser,
+          NgayGioThucHien: NgayGioThucHien,
+        }),
+      },
+    ] as any;
+
+    selectedImages.forEach((uri, index) => {
+      const uploadUri =
+        Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+      newD.push({
+        name: 'file',
+        filename: `image_${Math.random()}.jpg`,
+        type: 'image/jpeg',
+        data: RNFetchBlob.wrap(uploadUri),
+      });
+    });
+
+    const res = (await uploadImage(
+      API_URL + NetWork.UpdateTrangThaiVanChuyen,
+      newD,
+    )) as any;
+
+    const req = JSON.parse(res.data) as any;
+
+    console.log('res', JSON.parse(res.data));
+
+    setIsLoading(false);
+    if (req?.data.IDChuyen) {
+      Alert.alert(MSG.success, MSG.updateSuccess, [
+        {
+          text: 'Cancel',
+          onPress: () => navigate.goBack(),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => navigate.goBack()},
+      ]);
+    } else {
+      Alert.alert(MSG.err, MSG.errAgain);
+    }
+  };
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <HeaderCustom
-        title={`${'Chuyển tt (' + record?.customer + ')'}`}
+        title={`${'Chuyển trạng thái'}`}
         IconRight={<Icon name="history" size={16} />}
-        onActionPress={()=> navigate.navigate("HistoryStatusScreen")}
+        onActionPress={() => navigate.navigate('HistoryStatusScreen')}
       />
       <View style={{flex: 1, padding: 20}}>
         <Formik
-          initialValues={{status: '', time: '', note: ''}}
+          initialValues={{
+            IDTrangThaiVanChuyen: '',
+            NgayTrangThai: data?.NgayGioThucHien
+              ? moment(data.NgayGioThucHien).toDate()
+              : new Date(),
+            GioTrangThai: data?.NgayGioThucHien
+              ? moment(data.NgayGioThucHien).toDate()
+              : '',
+          }}
           validationSchema={validationSchema}
-          onSubmit={values => {
-            console.log(values);
-            console.log('Selected Images:', selectedImages);
-          }}>
+          onSubmit={handleSubmit}>
           {({
             handleChange,
             setFieldValue,
@@ -87,46 +208,62 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
               <Text style={styles.label}>Trạng thái</Text>
               <TouchableOpacity
                 style={styles.inputContainer}
-                onPress={showHidenStt}>
+                onPress={() =>
+                  openModal('IDTrangThaiVanChuyen', dataTrangThai)
+                }>
                 <View style={styles.inputDate}>
                   <Text>
-                    {values.status ? values.status : 'Chọn trạng thái'}
+                    {values.IDTrangThaiVanChuyen
+                      ? renderTrangThai(values)?.Name || ''
+                      : 'Chọn trạng thái'}
                   </Text>
                 </View>
                 <Icon name="chevron-down" style={styles.iconInput} />
               </TouchableOpacity>
-
-              {errors.status && (
-                <Text style={styles.errorText}>{errors.status}</Text>
+              {errors?.IDTrangThaiVanChuyen && (
+                <Text style={styles.errorText}>
+                  {errors?.IDTrangThaiVanChuyen}
+                </Text>
               )}
 
-              <Text style={styles.label}>Thời gian</Text>
+              <Text style={styles.label}>Ngày thực hiện</Text>
               <TouchableOpacity
                 style={styles.inputContainer}
-                onPress={showHidenDate}>
+                onPress={() => {
+                  setVisibleDatePicker(true);
+                  setSelectedField('NgayTrangThai');
+                }}>
                 <View style={styles.inputDate}>
                   <Text>
-                    {values.time
-                      ? moment(values.time).format('DD/MM/YYYY').toString()
+                    {values.NgayTrangThai
+                      ? moment(values.NgayTrangThai).format('DD/MM/YYYY')
                       : 'Chọn ngày'}
                   </Text>
                 </View>
                 <Icon name="calendar" style={styles.iconInput} />
               </TouchableOpacity>
-              {errors.time && (
-                <Text style={styles.errorText}>{errors.time}</Text>
+              {errors?.NgayTrangThai && (
+                <Text style={styles.errorText}>{errors?.NgayTrangThai}</Text>
               )}
 
-              <Text style={styles.label}>Ghi chú</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={handleChange('note')}
-                onBlur={handleBlur('note')}
-                value={values.note}
-                placeholder="Nhập ghi chú"
-              />
-              {errors.note && (
-                <Text style={styles.errorText}>{errors.note}</Text>
+              <Text style={styles.label}>Giờ thực hiện</Text>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => {
+                  setVisibleTimePicker(true);
+                  setSelectedField('GioTrangThai');
+                }}>
+                <View style={styles.inputDate}>
+                  <Text>
+                    {values.GioTrangThai
+                      ? moment(values.GioTrangThai).format('HH:mm')
+                      : 'Chọn giờ'}
+                  </Text>
+                </View>
+                <Icon name="clock-o" style={styles.iconInput} />
+              </TouchableOpacity>
+              {errors?.GioTrangThai && (
+                <Text style={styles.errorText}>{errors?.GioTrangThai}</Text>
               )}
 
               <TouchableOpacity
@@ -137,12 +274,19 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
               </TouchableOpacity>
 
               <ScrollView horizontal style={styles.imageContainer}>
-                {selectedImages.map((image, index) => (
-                  <Image
-                    key={index}
-                    source={{uri: image}}
-                    style={styles.image}
-                  />
+                {selectedImages?.map((image, index) => (
+                  <View style={styles.ImgItem}>
+                    <Image
+                      key={index}
+                      source={{uri: image}}
+                      style={styles.image}
+                    />
+                    <TouchableOpacity
+                      onPress={() => deleteImg(index)}
+                      style={styles.icon_delete_img}>
+                      <Icon name="close" color={'red'} size={15} />
+                    </TouchableOpacity>
+                  </View>
                 ))}
               </ScrollView>
 
@@ -152,22 +296,34 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
                 <Text style={styles.textBtn}>Lưu</Text>
               </TouchableOpacity>
 
-              <DateTimePickerModal
-                isVisible={visibleDate}
+              <DatePicker
+                modal
+                open={visibleDatePicker}
+                date={new Date()}
                 mode="date"
-                locale="vi_VN"
-                confirmTextIOS="Chọn"
-                cancelTextIOS="Hủy"
-                onConfirm={date => setFieldValue('time', date)}
-                onCancel={showHidenDate}
+                locale="vi"
+                onConfirm={date => handleConfirmDate(date, setFieldValue)}
+                onCancel={() => setVisibleDatePicker(false)}
+              />
+
+              <DatePicker
+                modal
+                open={visibleTimePicker}
+                date={new Date()}
+                mode="time"
+                is24hourSource="locale"
+                locale="vi"
+                onConfirm={time => handleConfirmTime(time, setFieldValue)}
+                onCancel={() => setVisibleTimePicker(false)}
               />
 
               <SelectValueModal
-                title="Chọn trạng thái"
+                title={renderTitleModalSelect()}
                 isVisible={modalVisible}
                 onClose={() => setModalVisible(false)}
-                onSelectValue={e => setFieldValue('status', e.value)}
-                values={options}
+                onSelectValue={e => setFieldValue(modalField, e.ID)}
+                values={modalOptions ?? []}
+                keyRender={'Name'}
               />
             </View>
           )}
@@ -177,12 +333,13 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
           isVisible={isModalVisible}
           onClose={() => setIsModalVisible(false)}
           onSelectImage={e => {
-            setSelectedImages(e);
+            setSelectedImages(pre => [...pre, ...e]);
             setIsModalVisible(false);
           }}
           multiple={true}
         />
       </View>
+      <LoadingModal isVisible={isLoading} />
     </View>
   );
 };
