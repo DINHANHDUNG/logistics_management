@@ -47,6 +47,8 @@ export const NetWork = {
 
   //Trạng thái
   UpdateTrangThaiVanChuyen: 'UpdateTrangThaiVanChuyen',
+  GetListTrangThaiVanChuyen: 'GetListTrangThaiVanChuyen',
+  DeleteTrangThaiVanChuyen: 'DeleteTrangThaiVanChuyen',
   
   //Pokemon
   pokemon: 'api/v2/',

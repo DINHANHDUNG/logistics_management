@@ -1,6 +1,6 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
 import {API_URL, NetWork} from '../../../common/apiKey';
-import {GET} from '../../../common/contants';
+import {GET, POST} from '../../../common/contants';
 import {axiosBaseQuery} from '../../baseQuery';
 import {dtoLogin} from '../../../types/auth';
 import {dtoGetListSttCar} from '../../../types/statusCar';
@@ -32,8 +32,29 @@ export const statusCarApi = createApi({
       }),
       transformResponse: (response: any) => response.data,
     }),
+    GetListTrangThaiVanChuyen: builder.query({
+      query: (value) => ({
+        method: GET,
+        url: NetWork.GetListTrangThaiVanChuyen,
+        params: value,
+      }),
+      transformResponse: (response: any) => response.data,
+    }),
+    DeleteTrangThaiVanChuyen: builder.mutation({
+      query: value => ({
+        method: POST,
+        url: NetWork.DeleteTrangThaiVanChuyen,
+        data: value,
+      }),
+      // transformResponse: (response: any) => response.data,
+    }),
   }),
 });
 
 // Export hooks for usage in functional components
-export const {useLazyGetSttCarQuery, useGetListChuyenXeQuery} = statusCarApi;
+export const {
+  useLazyGetSttCarQuery,
+  useGetListChuyenXeQuery,
+  useGetListTrangThaiVanChuyenQuery,
+  useDeleteTrangThaiVanChuyenMutation
+} = statusCarApi;

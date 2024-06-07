@@ -29,8 +29,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginRight: 8,
-    color: colors.colorMain2,
+    marginRight: 4,
+    // color: colors.colorMain2,
   },
   itemContainer: {
     margin: 10,
@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 8,
     borderRadius: 5,
-    color: '#fff',
+    color: 'gray',
     fontWeight: '600',
   },
   statusPending: {

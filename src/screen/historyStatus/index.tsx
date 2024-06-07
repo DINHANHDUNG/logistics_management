@@ -1,97 +1,44 @@
 import React, {useState} from 'react';
 import {
-  View,
+  Alert,
+  Image,
+  RefreshControl,
+  ScrollView,
   Text,
   TouchableOpacity,
-  ScrollView,
-  RefreshControl,
-  Image,
+  View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {useNavigation} from '@react-navigation/native';
 import ImageViewing from 'react-native-image-viewing';
-import {styles} from './style';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {authStore} from '../../app/features/auth/authSlice';
+import {useAppSelector} from '../../app/hooks';
+import {
+  useDeleteTrangThaiVanChuyenMutation,
+  useGetListTrangThaiVanChuyenQuery,
+} from '../../app/services/statusCar';
 import HeaderCustom from '../../components/header';
+import {styles} from './style';
+import {API_IMAGE_URL} from '../../common/apiKey';
+import moment from 'moment';
+import {MSG} from '../../common/contants';
+import LoadingModal from '../../components/modals/loadingModal';
 
-const HistoryStatusScreen = () => {
-  const navigate = useNavigation();
+const HistoryStatusScreen = ({route}: {route: any}) => {
+  const {IDChuyen: record} = route.params;
+  const auth = useAppSelector(authStore);
+  const {data, isLoading, isFetching, refetch} =
+    useGetListTrangThaiVanChuyenQuery(
+      {ProductKey: auth.Key, IDChuyen: record.IDChuyen},
+      {skip: !record.IDChuyen},
+    );
+
+  const [deleteTrangThai, {isLoading: loadingDelete}] =
+    useDeleteTrangThaiVanChuyenMutation();
+
+  const listData = data?.data ?? [];
   const [isModalVisible, setModalVisible] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageList, setImageList] = useState([]);
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  };
-
-  const deliveries = [
-    // {
-    //   id: 1,
-    //   licensePlate: '29C-12345',
-    //   trips: 10,
-    //   status: 'Đang chờ',
-    // },
-    // {
-    //   id: 2,
-    //   licensePlate: '51D-67890',
-    //   trips: 5,
-    //   status: 'Đang giao',
-    // },
-    {
-      id: 3,
-      licensePlate: '36G-24680',
-      trips: 8,
-      status: 'Hoàn thành',
-    },
-  ];
-
-  const history = [
-    {
-      id: 1,
-      status: 'Đang chờ',
-      time: '2024-05-18 10:00',
-      note: 'Chờ lấy hàng',
-      images: [
-        'https://via.placeholder.com/100',
-        'https://via.placeholder.com/101',
-        'https://via.placeholder.com/102',
-      ],
-    },
-    {
-      id: 2,
-      status: 'Đang giao',
-      time: '2024-05-18 12:00',
-      note: 'Đang trên đường',
-      images: [
-        'https://via.placeholder.com/100',
-        'https://via.placeholder.com/101',
-      ],
-    },
-    {
-      id: 3,
-      status: 'Hoàn thành',
-      time: '2024-05-18 14:00',
-      note: 'Đã giao hàng',
-      images: ['https://via.placeholder.com/100'],
-    },
-  ];
-
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case 'Đang chờ':
-        return styles.statusPending;
-      case 'Đang giao':
-        return styles.statusInProgress;
-      case 'Hoàn thành':
-        return styles.statusCompleted;
-      default:
-        return {};
-    }
-  };
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -103,67 +50,104 @@ const HistoryStatusScreen = () => {
     toggleModal();
   };
 
+  const deleteItem = (item: any) => {
+    Alert.alert(MSG.wraning, MSG.wraningDelete + ' ' + item.ID, [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          deleteTrangThai({
+            ID: item.ID,
+            ProductKey: auth.Key,
+          }).then((req: any) => {
+            console.log('req', req);
+
+            if (req.data.status === 200) {
+              Alert.alert(MSG.success, 'Đã xóa thành công');
+              refetch();
+              return;
+            }
+            if (req.data.status === 404) {
+              return Alert.alert(MSG.err, 'Không tìm thấy bản ghi !');
+            }
+            if (req.data.status === 400) {
+              return Alert.alert(MSG.err, 'Không thể xóa !');
+            }
+            return Alert.alert(MSG.err, MSG.errAgain);
+          });
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       <HeaderCustom title={`${'Lịch sử trạng thái'}`} />
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        style={styles.containerScroll}>
-        {deliveries.map(delivery => (
-          <View
-            key={delivery.id}
-            style={styles.itemContainer}
-            // onPress={() =>
-            //   navigate.navigate('PouroilDetailScreen', {
-            //     item: delivery,
-            //   })
-            // }
-          >
-            <View style={styles.infoContainer}>
-              <Text style={styles.title}>
-                Biển số xe: {delivery.licensePlate}
-              </Text>
-            </View>
-            {/* <View style={styles.infoContainer}>
+      <ScrollView style={styles.containerScroll}>
+        <View style={styles.itemContainer}>
+          <View style={styles.infoContainer}>
+            <Text style={styles.title}>Biển số xe: {record.BienSoXe}</Text>
+          </View>
+          {/* <View style={styles.infoContainer}>
               <View style={styles.containerIcon}>
                 <Icon name="road" size={20} style={styles.icon} />
               </View>
               <Text style={styles.text}>Số chuyến: {delivery.trips}</Text>
             </View> */}
-            <View style={styles.infoContainer}>
-              <View style={styles.containerIcon}>
-                <Icon name="info-circle" size={20} style={styles.icon} />
-              </View>
-              <Text
-                style={[
-                  styles.text,
-                  styles.status,
-                  getStatusStyle(delivery.status),
-                ]}>
-                Trạng thái: {delivery.status}
-              </Text>
+          <View style={styles.infoContainer}>
+            <View style={styles.containerIcon}>
+              <Icon
+                name="info-circle"
+                color={`rgb(${record.RGB})`}
+                size={20}
+                style={styles.icon}
+              />
             </View>
+            <Text style={[styles.text, styles.status]}>
+              Trạng thái: {record.TrangThaiDieuPhoiOut}
+            </Text>
           </View>
-        ))}
+        </View>
 
         <View style={styles.historyContainer}>
           <Text style={styles.title}>Lịch sử trạng thái:</Text>
-          {history.map(item => (
+          {listData?.map(item => (
             <View key={item.id} style={styles.historyItem}>
-              <Text style={styles.historyTitle}>Trạng thái: {item.status}</Text>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Text style={styles.historyTitle}>
+                  Trạng thái: {item.TrangThaiVanChuyen}
+                </Text>
+                <TouchableOpacity>
+                  <Icon
+                    name="trash-o"
+                    size={20}
+                    style={[styles.icon, {color: 'red'}]}
+                    onPress={() => deleteItem(item)}
+                  />
+                </TouchableOpacity>
+              </View>
               <Text style={styles.historyText}>
-                Thời gian thay đổi: {item.time}
+                Thời gian thay đổi:{' '}
+                {item.NgayGioThucHien
+                  ? moment(item.NgayGioThucHien).format('YYYY-MM-DD HH:mm')
+                  : ''}
               </Text>
-              <Text style={styles.historyText}>Ghi chú: {item.note}</Text>
+              {/* <Text style={styles.historyText}>Ghi chú: {item.note}</Text> */}
               <ScrollView horizontal>
-                {item.images.map((image, index) => (
+                {item?.FileAttach?.map((image, index) => (
                   <TouchableOpacity
                     key={index}
-                    onPress={() => handleImagePress(item.images, index)}>
+                    onPress={() => handleImagePress(item?.FileAttach, index)}>
                     <Image
-                      source={{uri: image ?? ''}}
+                      source={{uri: API_IMAGE_URL + image ?? ''}}
                       style={styles.historyImage}
                     />
                   </TouchableOpacity>
@@ -177,11 +161,13 @@ const HistoryStatusScreen = () => {
       </ScrollView>
 
       <ImageViewing
-        images={imageList.map(uri => ({uri}))}
+        images={imageList.map(uri => ({uri: API_IMAGE_URL + uri}))}
         imageIndex={currentImageIndex}
         visible={isModalVisible}
         onRequestClose={toggleModal}
       />
+
+      <LoadingModal isVisible={isFetching || isLoading || loadingDelete} />
     </View>
   );
 };

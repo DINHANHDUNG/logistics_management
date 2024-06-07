@@ -181,7 +181,9 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
       <HeaderCustom
         title={`${'Chuyển trạng thái'}`}
         IconRight={<Icon name="history" size={16} />}
-        onActionPress={() => navigate.navigate('HistoryStatusScreen')}
+        onActionPress={() =>
+          navigate.navigate('HistoryStatusScreen', {IDChuyen: record})
+        }
       />
       <View style={{flex: 1, padding: 20}}>
         <Formik
