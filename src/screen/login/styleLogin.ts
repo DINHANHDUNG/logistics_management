@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     padding: 15,
   },
   top: {
-    marginVertical: 30,
+    // marginVertical: 10,
     alignItems: 'center',
   },
   textTitle: {
@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
   btnLogin: {
     backgroundColor: colors.colorMain2,
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
     borderRadius: 4,
     marginTop: 12,
   },
@@ -61,7 +61,6 @@ export const styles = StyleSheet.create({
     width: 400,
     height: 150,
     objectFit: 'contain',
-    // backgroundColor: 'red'
   },
   checkboxContainer: {
     flexDirection: 'row',

@@ -34,19 +34,15 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
   const navigate = useNavigation();
   const auth = useAppSelector(authStore);
-  console.log('record', record);
   const ID = record?.ID;
   const {
     data,
     isLoading: loadingDetail,
     refetch,
   } = useGetDetailDoDauQuery(
-    {ProductKey: auth.Key, ID: record.ID},
-    {skip: !record.ID},
+    {ProductKey: auth.Key, ID: record?.ID},
+    {skip: !record?.ID},
   );
-
-  console.log('data', data);
-
   const {data: dataLoaiXe} = useGetListXeVanChuyenQuery(
     {ProductKey: auth.Key},
     {skip: !auth.Key},
@@ -264,6 +260,69 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
               {errors?.ThanhTien && (
                 <Text style={styles.errorText}>{errors?.ThanhTien}</Text>
               )}
+
+              {/* <Text style={styles.label}>Số lượng</Text>
+              <NumericFormat
+                value={values.SoLuong}
+                displayType={'input'}
+                // thousandSeparator={true}
+                onValueChange={val => setFieldValue('SoLuong', val.value)}
+                renderText={formattedValue => (
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={handleChange('SoLuong')}
+                    onBlur={handleBlur('SoLuong')}
+                    value={formattedValue}
+                    placeholder="Nhập số lượng"
+                    keyboardType="numeric"
+                  />
+                )}
+              />
+              {errors?.SoLuong && touched.SoLuong && (
+                <Text style={styles.errorText}>{errors?.SoLuong}</Text>
+              )}
+
+              <Text style={styles.label}>Đơn giá</Text>
+              <NumericFormat
+                value={values.DonGia}
+                displayType={'input'}
+                // thousandSeparator={true}
+                onValueChange={val => setFieldValue('DonGia', val.value)}
+                renderText={formattedValue => (
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={handleChange('DonGia')}
+                    onBlur={handleBlur('DonGia')}
+                    value={formattedValue}
+                    placeholder="Nhập đơn giá"
+                    keyboardType="numeric"
+                  />
+                )}
+              />
+              {errors?.DonGia && touched.DonGia && (
+                <Text style={styles.errorText}>{errors?.DonGia}</Text>
+              )}
+
+              <Text style={styles.label}>Thành tiền</Text>
+              <NumericFormat
+                value={values.ThanhTien}
+                displayType={'input'}
+                // thousandSeparator={true}
+                onValueChange={val => setFieldValue('ThanhTien', val.value)}
+                renderText={formattedValue => (
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={handleChange('ThanhTien')}
+                    onBlur={handleBlur('ThanhTien')}
+                    value={formattedValue}
+                    placeholder="Thành tiền"
+                    keyboardType="numeric"
+                  />
+                )}
+              />
+              {errors?.ThanhTien && touched.ThanhTien && (
+                <Text style={styles.errorText}>{errors?.ThanhTien}</Text>
+              )} */}
 
               <Text style={styles.label}>Ghi chú</Text>
               <TextInput

@@ -5,7 +5,7 @@ import DeliveryListScreen from '../../screen/deliveryListScreen';
 import StackProcessing from '../stack/stackProcessing';
 import StackComplate from '../stack/stackComplate';
 import StackPouroil from '../stack/stackPouroil';
-import { colors } from '../../common/color';
+import {colors} from '../../common/color';
 
 function UserTabNavigator() {
   const Tab = createBottomTabNavigator();
@@ -13,6 +13,10 @@ function UserTabNavigator() {
     <Tab.Navigator
       screenOptions={({route}) => ({
         headerShown: false,
+        tabBarStyle: {
+          // backgroundColor: '#3E48A0',
+        },
+
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
 

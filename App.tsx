@@ -1,14 +1,16 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect } from 'react';
-import { BackHandler, SafeAreaView } from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, {useEffect} from 'react';
+import {BackHandler, SafeAreaView} from 'react-native';
 import 'react-native-gesture-handler';
-import { Provider } from 'react-redux';
-import { store } from './src/app/store';
+import {Provider} from 'react-redux';
+import {store} from './src/app/store';
 import AdminTabNavigator from './src/layout/tab/adminTabNavigator';
 import UserTabNavigator from './src/layout/tab/userTabNavigator';
 import LoadingScreen from './src/screen/loading';
 import LoginScreen from './src/screen/login';
+import {View} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 function App(): React.JSX.Element {
   const Stack = createNativeStackNavigator();
@@ -33,10 +35,22 @@ function App(): React.JSX.Element {
 
   return (
     <Provider store={store}>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: '#fff',
+          position: 'relative',
+        }}>
         <NavigationContainer>
           <MainNavigator />
         </NavigationContainer>
+        {/* <View
+          style={{
+            position: 'absolute',
+            height: useSafeAreaInsets().top,
+            backgroundColor: 'red',
+          }}
+        /> */}
       </SafeAreaView>
     </Provider>
   );

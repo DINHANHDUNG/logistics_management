@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, StatusBar} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Example using Ionicons
 
 interface Props {
@@ -24,6 +24,14 @@ const HeaderCustom = (props: Props) => {
   } = props;
   return (
     <View style={[styles.container, headerStyle]}>
+      <StatusBar
+        animated={true}
+        backgroundColor={'#ffffff'}
+        // barStyle={'slide'}
+        translucent={false}
+        hidden={false}
+        barStyle={'dark-content'}
+      />
       <TouchableOpacity
         onPress={onBackPress ? onBackPress : () => navigate.goBack()}>
         <Icon name="arrow-back" size={24} color="black" />

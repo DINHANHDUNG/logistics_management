@@ -26,7 +26,7 @@ export default function LoadingScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar />
+      {/* <StatusBar /> */}
       <ActivityIndicator size="large" color={colors.colorMain2} />
     </View>
   );
