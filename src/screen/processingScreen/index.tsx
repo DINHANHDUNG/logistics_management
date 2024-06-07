@@ -85,15 +85,16 @@ const ProcessingScreen = () => {
 
   useEffect(() => {
     const unsubscribe = navigate.addListener('focus', () => {
-      setValues({
-        startDate: values.startDate,
-        endDate: values.endDate,
-      });
-      if (page != 1) {
-        setPage(1);
-      } else {
-        fetchList(1);
-      }
+      // setValues({
+      //   startDate: values.startDate,
+      //   endDate: values.endDate,
+      // });
+      // if (page != 1) {
+      //   setPage(1);
+      // } else {
+      //   fetchList(1);
+      // }
+      fetchList(1);
     });
 
     return unsubscribe;

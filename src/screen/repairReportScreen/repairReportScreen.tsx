@@ -87,15 +87,16 @@ const RepairReportScreen = () => {
 
   React.useEffect(() => {
     const unsubscribe = navigate.addListener('focus', () => {
-      setValues({
-        startDate: moment().startOf('month').toDate(),
-        endDate: moment().endOf('month').toDate(),
-      });
-      if (page !== 1) {
-        setPage(1);
-      } else {
-        fetchList(1);
-      }
+      // setValues({
+      //   startDate: moment().startOf('month').toDate(),
+      //   endDate: moment().endOf('month').toDate(),
+      // });
+      // if (page !== 1) {
+      //   setPage(1);
+      // } else {
+      //   fetchList(1);
+      // }
+      fetchList(1);
     });
 
     return unsubscribe;

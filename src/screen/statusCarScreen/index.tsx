@@ -18,6 +18,8 @@ import {dataStatusCar} from '../../types/statusCar';
 import {useNavigation} from '@react-navigation/native';
 import {isCloseToBottom} from '../../utils';
 import {MSG} from '../../common/contants';
+import {StatusBar} from 'react-native';
+import {colors} from '../../common/color';
 
 const StatusCarScreen = () => {
   const navigate = useNavigation();

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Image, TouchableOpacity, StyleSheet, StatusBar} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AccountModal from '../modals/accountModal';
 import {colors} from '../../common/color';
@@ -14,6 +14,14 @@ const HomeHeader = () => {
 
   return (
     <View style={styles.headerContainer}>
+      <StatusBar
+        animated={true}
+        backgroundColor={colors.colorMain2}
+        // barStyle={'slide'}
+        translucent={false} 
+        hidden={false}
+        barStyle={'dark-content'}
+      />
       <Image source={iconLogo ?? ''} style={styles.logoWrapper} />
       <TouchableOpacity onPress={onRightPress} style={styles.rightButton}>
         <Icon name="person-circle-outline" size={28} color="#fff" />
