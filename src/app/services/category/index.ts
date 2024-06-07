@@ -89,6 +89,15 @@ export const categoryApi = createApi({
       transformResponse: (response: {data: {data: any[]}}) =>
         response?.data?.data,
     }),
+    getTrangThai: builder.query<any[], unknown>({
+      query: params => ({
+        method: GET,
+        url: NetWork.GettblDMTrangThaiVanChuyen,
+        params: params,
+      }),
+      transformResponse: (response: {data: {data: any[]}}) =>
+        response?.data?.data,
+    }),
   }),
 });
 
@@ -103,4 +112,5 @@ export const {
   useGetListDonViVanTaiQuery,
   useGetListlaiXeQuery,
   useLazyGetListlaiXeQuery,
+  useGetTrangThaiQuery,
 } = categoryApi;

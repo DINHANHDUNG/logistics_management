@@ -22,24 +22,21 @@ export const currency = function (number: number) {
   }).format(number);
 };
 
-export const uploadImage = (uri: string) => {
-  const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-  const fileName = uploadUri.split('/').pop();
-
-  const data = [
-    {name: 'file', filename: fileName, data: RNFetchBlob.wrap(uploadUri)},
-  ];
-
-  RNFetchBlob.fetch(
-    'POST',
-    'http://yourserver/api/upload/upload',
-    {
-      'Content-Type': 'multipart/form-data',
-    },
-    data,
-  )
+export const uploadImage = async (url: string, data: any) => {
+  return await RNFetchBlob.config({
+    trusty: true,
+  })
+    .fetch(
+      'POST',
+      url,
+      {
+        Accept: 'application/json',
+        'Content-type': 'multipart/form-data',
+      },
+      data,
+    )
     .then(res => {
-      console.log(res.text());
+      return res
     })
     .catch(err => {
       console.error(err);

@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
   iconInput: {
     position: 'absolute',
     right: 10,
-    fontSize: 14
+    fontSize: 14,
     // color: colors.colorMain2,
   },
   inputContainer: {
@@ -65,6 +65,15 @@ export const styles = StyleSheet.create({
   imageContainer: {
     flexDirection: 'row',
     marginVertical: 10,
+  },
+  ImgItem: {
+    position: 'relative',
+  },
+  icon_delete_img: {
+    position: 'absolute',
+    right: 15,
+    top: 5,
+    color: 'red',
   },
   image: {
     width: 100,

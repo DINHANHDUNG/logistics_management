@@ -17,7 +17,7 @@ export const NetWork = {
   PutChuyenVanChuyen: 'PutChuyenVanChuyen',
 
   //vehicleCoordination
-  GetListDieuPhoiVanChuyen: 'GetListDieuPhoiVanChuyen', 
+  GetListDieuPhoiVanChuyen: 'GetListDieuPhoiVanChuyen',
   GetChuyenDieuPhoi: 'GetChuyenDieuPhoi',
   UpdateDieuPhoi: 'UpdateDieuPhoi',
   UpdateGuiLenh: 'UpdateGuiLenh',
@@ -43,7 +43,13 @@ export const NetWork = {
   listNhanVien: 'GettblNhanSu',
   listDonViVanTai: 'GettblDMDonViVanTai',
   listLaiXe: 'GetThongTinTuXe',
+  GettblDMTrangThaiVanChuyen: 'GettblDMTrangThaiVanChuyen',
 
+  //Trạng thái
+  UpdateTrangThaiVanChuyen: 'UpdateTrangThaiVanChuyen',
+  GetListTrangThaiVanChuyen: 'GetListTrangThaiVanChuyen',
+  DeleteTrangThaiVanChuyen: 'DeleteTrangThaiVanChuyen',
+  
   //Pokemon
   pokemon: 'api/v2/',
 };
