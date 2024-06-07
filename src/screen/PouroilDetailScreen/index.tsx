@@ -29,6 +29,8 @@ import {
 import {Alert} from 'react-native';
 import {MSG} from '../../common/contants';
 import {useNavigation} from '@react-navigation/native';
+import {NumberFormatBase} from 'react-number-format';
+import {TextInputMask} from 'react-native-masked-text';
 
 const PouroilDetailScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
@@ -135,7 +137,7 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
       <View style={styles.container}>
         <Formik
           initialValues={{
-            SoLuong: data?.SoLuong?.toString() || '',
+            SoLuong: data?.SoLuong ?? 0,
             DonGia: data?.DonGia?.toString() || '',
             IDXeOto: data?.IDXeOto,
             GhiChu: data?.GhiChu,
@@ -220,6 +222,24 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
               )}
 
               <Text style={styles.label}>Số lượng</Text>
+              {/* <TextInputMask
+                style={styles.input}
+                type={'money'}
+                options={{
+                  precision: 1, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
+                  separator: ',', // Dấu ngăn cách phần ngàn
+                  delimiter: '.', // Dấu ngăn cách phần nghìn
+                  unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
+                  suffixUnit: '', // Đối với các trường hợp khác, bạn có thể đặt thành '%' nếu cần
+                }}
+                value={values.SoLuong.toString()}
+                onChangeText={text => {
+                  return setFieldValue('SoLuong', text?.replace(/[.]/g, ''));
+                }}
+                onBlur={handleBlur('SoLuong')}
+                placeholder="Nhập đơn giá"
+                keyboardType="numeric"
+              /> */}
               <TextInput
                 style={styles.input}
                 onChangeText={handleChange('SoLuong')}
@@ -234,12 +254,30 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
               )}
 
               <Text style={styles.label}>Đơn giá</Text>
-              <TextInput
+              {/* <TextInput
                 style={styles.input}
                 onChangeText={handleChange('DonGia')}
                 onBlur={handleBlur('DonGia')}
                 // value={formatCurrency2(values.DonGia)}
                 value={values.DonGia}
+                placeholder="Nhập đơn giá"
+                keyboardType="numeric"
+              /> */}
+              <TextInputMask
+                style={styles.input}
+                type={'money'}
+                options={{
+                  precision: 0, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
+                  separator: ',', // Dấu ngăn cách phần ngàn
+                  delimiter: '.', // Dấu ngăn cách phần nghìn
+                  unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
+                  suffixUnit: '', // Đối với các trường hợp khác, bạn có thể đặt thành '%' nếu cần
+                }}
+                value={values.DonGia.toString()}
+                onChangeText={text =>
+                  setFieldValue('DonGia', text?.replace(/[,.]/g, ''))
+                }
+                onBlur={handleBlur('DonGia')}
                 placeholder="Nhập đơn giá"
                 keyboardType="numeric"
               />
@@ -248,7 +286,7 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
               )}
 
               <Text style={styles.label}>Thành tiền</Text>
-              <TextInput
+              {/* <TextInput
                 style={styles.input}
                 onChangeText={handleChange('ThanhTien')}
                 onBlur={handleBlur('ThanhTien')}
@@ -256,73 +294,28 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
                 value={values.ThanhTien}
                 placeholder="Thành tiền"
                 keyboardType="numeric"
+              /> */}
+              <TextInputMask
+                style={styles.input}
+                type={'money'}
+                options={{
+                  precision: 0, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
+                  separator: ',', // Dấu ngăn cách phần ngàn
+                  delimiter: '.', // Dấu ngăn cách phần nghìn
+                  unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
+                  suffixUnit: '', // Đối với các trường hợp khác, bạn có thể đặt thành '%' nếu cần
+                }}
+                value={values.ThanhTien}
+                onChangeText={text => {
+                  setFieldValue('ThanhTien', text?.replace(/[,.]/g, ''));
+                }}
+                onBlur={handleBlur('ThanhTien')}
+                placeholder="Thành tiền"
+                keyboardType="numeric"
               />
               {errors?.ThanhTien && (
                 <Text style={styles.errorText}>{errors?.ThanhTien}</Text>
               )}
-
-              {/* <Text style={styles.label}>Số lượng</Text>
-              <NumericFormat
-                value={values.SoLuong}
-                displayType={'input'}
-                // thousandSeparator={true}
-                onValueChange={val => setFieldValue('SoLuong', val.value)}
-                renderText={formattedValue => (
-                  <TextInput
-                    style={styles.input}
-                    onChangeText={handleChange('SoLuong')}
-                    onBlur={handleBlur('SoLuong')}
-                    value={formattedValue}
-                    placeholder="Nhập số lượng"
-                    keyboardType="numeric"
-                  />
-                )}
-              />
-              {errors?.SoLuong && touched.SoLuong && (
-                <Text style={styles.errorText}>{errors?.SoLuong}</Text>
-              )}
-
-              <Text style={styles.label}>Đơn giá</Text>
-              <NumericFormat
-                value={values.DonGia}
-                displayType={'input'}
-                // thousandSeparator={true}
-                onValueChange={val => setFieldValue('DonGia', val.value)}
-                renderText={formattedValue => (
-                  <TextInput
-                    style={styles.input}
-                    onChangeText={handleChange('DonGia')}
-                    onBlur={handleBlur('DonGia')}
-                    value={formattedValue}
-                    placeholder="Nhập đơn giá"
-                    keyboardType="numeric"
-                  />
-                )}
-              />
-              {errors?.DonGia && touched.DonGia && (
-                <Text style={styles.errorText}>{errors?.DonGia}</Text>
-              )}
-
-              <Text style={styles.label}>Thành tiền</Text>
-              <NumericFormat
-                value={values.ThanhTien}
-                displayType={'input'}
-                // thousandSeparator={true}
-                onValueChange={val => setFieldValue('ThanhTien', val.value)}
-                renderText={formattedValue => (
-                  <TextInput
-                    style={styles.input}
-                    onChangeText={handleChange('ThanhTien')}
-                    onBlur={handleBlur('ThanhTien')}
-                    value={formattedValue}
-                    placeholder="Thành tiền"
-                    keyboardType="numeric"
-                  />
-                )}
-              />
-              {errors?.ThanhTien && touched.ThanhTien && (
-                <Text style={styles.errorText}>{errors?.ThanhTien}</Text>
-              )} */}
 
               <Text style={styles.label}>Ghi chú</Text>
               <TextInput
