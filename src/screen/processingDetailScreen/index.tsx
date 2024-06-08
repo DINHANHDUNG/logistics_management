@@ -28,6 +28,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {API_URL, NetWork} from '../../common/apiKey';
 import {MSG} from '../../common/contants';
 import LoadingModal from '../../components/modals/loadingModal';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const validationSchema = yup.object().shape({
   IDTrangThaiVanChuyen: yup.string().required('Vui lòng nhập trạng thái'),
@@ -185,7 +186,9 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
           navigate.navigate('HistoryStatusScreen', {IDChuyen: record})
         }
       />
-      <View style={{flex: 1, padding: 20}}>
+      <KeyboardAwareScrollView
+        // keyboardShouldPersistTaps={'always'}
+        style={{flex: 1, padding: 20}}>
         <Formik
           initialValues={{
             IDTrangThaiVanChuyen: '',
@@ -340,7 +343,7 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
           }}
           multiple={true}
         />
-      </View>
+      </KeyboardAwareScrollView>
       <LoadingModal isVisible={isLoading} />
     </View>
   );

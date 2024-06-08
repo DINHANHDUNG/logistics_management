@@ -31,6 +31,7 @@ import {MSG} from '../../common/contants';
 import {useNavigation} from '@react-navigation/native';
 import {NumberFormatBase} from 'react-number-format';
 import {TextInputMask} from 'react-native-masked-text';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const PouroilDetailScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
@@ -132,9 +133,11 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
   };
 
   return (
-    <ScrollView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <HeaderCustom title={`${!ID ? 'Thêm mới' : 'Cập nhật'} đổ dầu`} />
-      <View style={styles.container}>
+      <KeyboardAwareScrollView
+        // keyboardShouldPersistTaps={'always'}
+        contentContainerStyle={{flexGrow: 1, padding: 20}}>
         <Formik
           initialValues={{
             SoLuong: data?.SoLuong ?? 0,
@@ -329,6 +332,7 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
               {errors?.GhiChu && (
                 <Text style={styles.errorText}>{errors?.GhiChu}</Text>
               )}
+
               <TouchableOpacity
                 style={styles.buttonContainer}
                 onPress={() => handleSubmit()}>
@@ -368,9 +372,9 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
             </View>
           )}
         </Formik>
-      </View>
+      </KeyboardAwareScrollView>
       <LoadingModal isVisible={isLoading || loadingDetail} />
-    </ScrollView>
+    </View>
   );
 };
 

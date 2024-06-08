@@ -1,7 +1,14 @@
 import {useNavigation} from '@react-navigation/native';
 import {useFormik} from 'formik';
 import React, {useState, useEffect} from 'react';
-import {Alert, StatusBar, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  StatusBar,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {loginValidationSchema} from './schema';
@@ -12,7 +19,7 @@ import LoadingModal from '../../components/modals/loadingModal';
 import {useAppDispatch} from '../../app/hooks';
 import {changeUser} from '../../app/features/auth/authSlice';
 import {MSG} from '../../common/contants';
-import { SafeAreaView } from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 const iconLogo = require('../../assets/images/logoLogin.png');
 
 const eyeOff = <Icon name="eye-off-outline" size={15} />;
@@ -120,7 +127,9 @@ const LoginScreen = () => {
       <View style={styles.top}>
         <Image source={iconLogo} style={styles.logoWrapper} />
       </View>
-      <View>
+      <KeyboardAwareScrollView
+      // keyboardShouldPersistTaps={'always'}
+      >
         <Text style={styles.label}>Tài khoản</Text>
         <TextInput
           style={styles.input}
@@ -185,7 +194,7 @@ const LoginScreen = () => {
         <TouchableOpacity style={styles.btnLogin} onPress={formik.handleSubmit}>
           <Text style={styles.textLogin}>Đăng nhập</Text>
         </TouchableOpacity>
-      </View>
+      </KeyboardAwareScrollView>
       <LoadingModal isVisible={isLoading} />
     </View>
   );
