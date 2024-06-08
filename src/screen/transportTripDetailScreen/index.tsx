@@ -32,6 +32,7 @@ import {
 } from '../../app/services/transportTrip';
 import {MSG} from '../../common/contants';
 import LoadingModal from '../../components/modals/loadingModal';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const TransportTripDetailScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
@@ -42,7 +43,11 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
   const [addTransportTrip, {isLoading}] = useAddTransportTripMutation();
   const [updateTransportTrip, {isLoading: loadingUpdate}] =
     useUpdateTransportTripMutation();
-  const {data, isLoading: loadingDetail, refetch} = useGetDetailQuery(
+  const {
+    data,
+    isLoading: loadingDetail,
+    refetch,
+  } = useGetDetailQuery(
     {ProductKey: auth.Key, IDChuyen: record.IDChuyen},
     {skip: !record.IDChuyen},
   );
@@ -175,15 +180,15 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
         ? moment(val.ThoiGianVe).format('YYYY/MM/DD HH:mm')
         : '',
     } as any;
-    
+
     if (record?.IDChuyen) {
-      newData.IDChuyen = record?.IDChuyen
+      newData.IDChuyen = record?.IDChuyen;
       console.log('data truyền vào', newData);
       updateTransportTrip(newData).then((req: any) => {
         console.log(req);
         if (req?.data?.status === 200) {
           //Thêm mới thành công
-          refetch()
+          refetch();
           Alert.alert(MSG.success, MSG.updateSuccess, [
             {
               text: 'Cancel',
@@ -252,7 +257,9 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
           record?.IDChuyen ? 'Cập nhật' : 'Thêm mới'
         } chuyến vận chuyển`}
       />
-      <ScrollView contentContainerStyle={{flexGrow: 1, padding: 20}}>
+      <KeyboardAwareScrollView
+        // keyboardShouldPersistTaps={'always'}
+        contentContainerStyle={{flexGrow: 1, padding: 20}}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -579,7 +586,7 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
             </View>
           )}
         </Formik>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <LoadingModal isVisible={isLoading || loadingUpdate} />
     </View>
   );

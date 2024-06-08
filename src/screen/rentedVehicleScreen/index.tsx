@@ -23,6 +23,7 @@ import LoadingModal from '../../components/modals/loadingModal';
 import SelectValueModal from '../../components/modals/selectModal';
 import {validationSchema} from './schema';
 import {styles} from './style';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const RentedVehicleScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
@@ -137,7 +138,9 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <HeaderCustom title={`Điều phối xe thuê`} />
-      <ScrollView contentContainerStyle={{flexGrow: 1, padding: 20}}>
+      <KeyboardAwareScrollView
+        // keyboardShouldPersistTaps={'always'}
+        contentContainerStyle={{flexGrow: 1, padding: 20}}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -297,7 +300,7 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
             </View>
           )}
         </Formik>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <LoadingModal isVisible={loadingUpdate} />
     </View>
   );
