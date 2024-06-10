@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {colors} from '../../common/color';
 
 export const styles = StyleSheet.create({
@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     padding: 15,
+    paddingTop: Platform.OS === 'ios' ? 44 : 0,
   },
   top: {
     // marginVertical: 10,

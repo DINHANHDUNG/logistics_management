@@ -80,7 +80,6 @@ const TransportTripScreen = () => {
   }, [page]);
 
   React.useEffect(() => {
-    
     const unsubscribe = navigate.addListener('focus', () => {
       // setValues({
       //   startDate: values.startDate,
@@ -176,18 +175,12 @@ const TransportTripScreen = () => {
             IDChuyen: item.IDChuyen,
             ProductKey: auth.Key,
           }).then((req: any) => {
-            if (req.data.status === 200) {
+            if (req.data?.status === 200) {
               Alert.alert(MSG.success, 'Đã xóa chuyến thành công');
               return onRefresh();
             }
-            // else {
-            //   Alert.alert(MSG.err, MSG.errAgain);
-            // }
-            if (req.data.status === 404) {
-              return Alert.alert(MSG.err, 'Không tìm thấy chuyến cần xóa !');
-            }
-            if (req.data.status === 400) {
-              return Alert.alert(MSG.err, 'Không thể xóa chuyến !');
+            if (req.error?.status === 404 || req.error?.status === 400) {
+              return Alert.alert(MSG.err, req.error?.data);
             }
             return Alert.alert(MSG.err, MSG.errAgain);
           });
@@ -223,7 +216,7 @@ const TransportTripScreen = () => {
           <View style={styles.containerIcon}>
             <Icon name="clock-o" size={20} style={styles.icon} />
           </View>
-          <Text style={styles.text}>Thời gian: {item.NgayDongHang}</Text>
+          <Text style={styles.text}>Ngày đóng: {item.NgayDongHang}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -292,7 +285,9 @@ const TransportTripScreen = () => {
           ) : null
         }
         ListEmptyComponent={
-          <Text style={{textAlign: 'center', marginTop: 20}}>Không có dữ liệu</Text>
+          <Text style={{textAlign: 'center', marginTop: 20}}>
+            Không có dữ liệu
+          </Text>
         }
         style={styles.containerScroll}
       />

@@ -1,6 +1,7 @@
 import {Formik} from 'formik';
 import React, {useState} from 'react';
 import {
+  Platform,
   ScrollView,
   Text,
   TextInput,
@@ -29,7 +30,6 @@ import {
 import {Alert} from 'react-native';
 import {MSG} from '../../common/contants';
 import {useNavigation} from '@react-navigation/native';
-import {NumberFormatBase} from 'react-number-format';
 import {TextInputMask} from 'react-native-masked-text';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
@@ -133,7 +133,7 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: '#fff'}}>
       <HeaderCustom title={`${!ID ? 'Thêm mới' : 'Cập nhật'} đổ dầu`} />
       <KeyboardAwareScrollView
         // keyboardShouldPersistTaps={'always'}
