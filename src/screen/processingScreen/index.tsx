@@ -42,7 +42,7 @@ const ProcessingScreen = () => {
   const [page, setPage] = useState(1);
   const [trips, setTrips] = useState<Array<dataVehicleCoordination>>([]);
   console.log('trips', trips);
-  
+
   const [values, setValues] = useState({
     startDate: new Date(),
     endDate: new Date(new Date().setDate(new Date().getDate() + 1)),
@@ -174,6 +174,10 @@ const ProcessingScreen = () => {
     sendItem(item, 5);
   };
 
+  const handleClose = (item: dataVehicleCoordination) => {
+    sendItem(item, -1);
+  };
+
   const sendItem = (item: dataVehicleCoordination, TrangThai: number) => {
     updateTrangThai({
       IDChuyen: item.IDChuyen,
@@ -197,6 +201,10 @@ const ProcessingScreen = () => {
       item: delivery,
     });
     // Xử lý khi người dùng nhấn nút "Nhận"
+  };
+
+  const handleHistory = (record: any) => {
+    navigate.navigate('HistoryStatusScreen', {IDChuyen: record});
   };
 
   const renderItem = ({item}: {item: dataVehicleCoordination}) => {
@@ -250,6 +258,20 @@ const ProcessingScreen = () => {
             onPress={() => handleComplate(item)}>
             <Icon name="check" size={16} color="#fff" />
             <Text style={styles.buttonText}>Hoàn thành</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.button, styles.transferButton]}
+            onPress={() => handleClose(item)}>
+            <Icon name="close" size={16} color="#fff" />
+            <Text style={styles.buttonText}>Bỏ nhận</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.completeButton]}
+            onPress={() => handleHistory(item)}>
+            <Icon name="history" size={16} color="#fff" />
+            <Text style={styles.buttonText}>Lịch sử</Text>
           </TouchableOpacity>
         </View>
       </View>

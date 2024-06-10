@@ -40,8 +40,8 @@ const VehicleCoordinationReportScreen = () => {
   const [page, setPage] = useState(1);
   const [trips, setTrips] = useState<Array<dataVehicleCoordination>>([]);
   const [values, setValues] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: moment().startOf('month').toDate(),
+    endDate: moment().endOf('month').toDate(),
   });
 
   const fetchList = async (page: number) => {
