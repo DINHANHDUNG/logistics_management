@@ -10,6 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import AccountModal from '../modals/accountModal';
 import {colors} from '../../common/color';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const HomeHeader = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -18,6 +19,8 @@ const HomeHeader = () => {
   };
 
   const iconLogo = require('../../assets/images/logoPNG2.png');
+
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.headerContainer}>
@@ -31,7 +34,7 @@ const HomeHeader = () => {
       />
       <View
         style={{
-          height: Platform.OS === 'ios' ? 44 : 0,
+          height: Platform.OS === 'ios' ? insets.top : 0,
         }}></View>
       <View style={styles.headerItems}>
         <Image source={iconLogo ?? ''} style={styles.logoWrapper} />
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.colorMain2,
   },
   headerItems: {
-    height: 60,
+    height: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

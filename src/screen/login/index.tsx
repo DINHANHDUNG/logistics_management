@@ -3,6 +3,7 @@ import {useFormik} from 'formik';
 import React, {useState, useEffect} from 'react';
 import {
   Alert,
+  Platform,
   StatusBar,
   Text,
   TextInput,
@@ -20,6 +21,7 @@ import {useAppDispatch} from '../../app/hooks';
 import {changeUser} from '../../app/features/auth/authSlice';
 import {MSG} from '../../common/contants';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 const iconLogo = require('../../assets/images/logoLogin.png');
 
 const eyeOff = <Icon name="eye-off-outline" size={15} />;
@@ -32,6 +34,8 @@ const LoginScreen = () => {
   const [state, setState] = useState({
     showPassword: false,
   });
+
+  const insets = useSafeAreaInsets();
 
   const changeState = (key: string, value: any) => {
     setState(pre => ({...pre, [key]: value}));
@@ -115,7 +119,11 @@ const LoginScreen = () => {
   }, [isError, isLoading]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        ...styles.container,
+        paddingTop: Platform.OS === 'ios' ? insets.top : 0,
+      }}>
       <StatusBar
         animated={true}
         backgroundColor={'#ffffff'}

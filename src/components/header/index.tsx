@@ -7,6 +7,7 @@ import {
   StyleSheet,
   StatusBar,
 } from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons'; // Example using Ionicons
 
 interface Props {
@@ -28,6 +29,9 @@ const HeaderCustom = (props: Props) => {
     headerStyle,
     titleStyle,
   } = props;
+
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={{backgroundColor: '#fff'}}>
       <StatusBar
@@ -38,9 +42,9 @@ const HeaderCustom = (props: Props) => {
         hidden={false}
         barStyle={'dark-content'}
       />
-       <View
+      <View
         style={{
-          height: Platform.OS === 'ios' ? 44 : 0,
+          height: Platform.OS === 'ios' ? insets.top : 0,
         }}></View>
       <View style={[styles.container, headerStyle]}>
         <TouchableOpacity
