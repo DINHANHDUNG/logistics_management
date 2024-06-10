@@ -49,7 +49,7 @@ const StatusCarScreen = () => {
         setStatusCarList(prevStatusCarList =>
           page === 1
             ? response.data.data.data
-            : [...prevStatusCarList, ...response.data],
+            : [...prevStatusCarList, ...response.data.data.data],
         );
       }
     } catch (error) {
