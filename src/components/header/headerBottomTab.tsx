@@ -1,8 +1,16 @@
 import React, {useState} from 'react';
-import {View, Image, TouchableOpacity, StyleSheet, StatusBar} from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
+  Platform,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AccountModal from '../modals/accountModal';
 import {colors} from '../../common/color';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const HomeHeader = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -12,29 +20,39 @@ const HomeHeader = () => {
 
   const iconLogo = require('../../assets/images/logoPNG2.png');
 
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={styles.headerContainer}>
       <StatusBar
         animated={true}
         backgroundColor={colors.colorMain2}
         // barStyle={'slide'}
-        translucent={false} 
+        translucent={false}
         hidden={false}
         barStyle={'dark-content'}
       />
-      <Image source={iconLogo ?? ''} style={styles.logoWrapper} />
-      <TouchableOpacity onPress={onRightPress} style={styles.rightButton}>
-        <Icon name="person-circle-outline" size={28} color="#fff" />
-      </TouchableOpacity>
-      <AccountModal visible={modalVisible} onClose={onRightPress} />
+      <View
+        style={{
+          height: Platform.OS === 'ios' ? insets.top : 0,
+        }}></View>
+      <View style={styles.headerItems}>
+        <Image source={iconLogo ?? ''} style={styles.logoWrapper} />
+        <TouchableOpacity onPress={onRightPress} style={styles.rightButton}>
+          <Icon name="person-circle-outline" size={28} color="#fff" />
+        </TouchableOpacity>
+        <AccountModal visible={modalVisible} onClose={onRightPress} />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   headerContainer: {
-    height: 60,
     backgroundColor: colors.colorMain2,
+  },
+  headerItems: {
+    height: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

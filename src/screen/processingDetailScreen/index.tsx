@@ -29,6 +29,7 @@ import {API_URL, NetWork} from '../../common/apiKey';
 import {MSG} from '../../common/contants';
 import LoadingModal from '../../components/modals/loadingModal';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const validationSchema = yup.object().shape({
   IDTrangThaiVanChuyen: yup.string().required('Vui lòng nhập trạng thái'),

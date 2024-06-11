@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
   containerItem: {
     flex: 1,
     padding: 20,
+    paddingTop: 0,
     backgroundColor: '#fff',
   },
   containIcon: {

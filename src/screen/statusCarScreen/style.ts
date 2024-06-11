@@ -4,7 +4,7 @@ import {colors} from '../../common/color';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.colorMain2,
   },
   containerScroll: {
     flex: 1,

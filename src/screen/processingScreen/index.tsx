@@ -235,7 +235,7 @@ const ProcessingScreen = () => {
           <View style={styles.containerIcon}>
             <Icon name="clock-o" size={20} style={styles.icon} />
           </View>
-          <Text style={styles.text}>Thời gian: {item.NgayDongHang}</Text>
+          <Text style={styles.text}>Ngày đóng: {item.NgayDongHang}</Text>
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.containerIcon}>
@@ -325,7 +325,7 @@ const ProcessingScreen = () => {
         onEndReachedThreshold={0.5}
         ListFooterComponent={
           uiState.loadingMore ? (
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="tomato" />
           ) : null
         }
         style={styles.containerScroll}
