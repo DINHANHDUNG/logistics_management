@@ -45,7 +45,7 @@ const StatusCarReportScreen = () => {
         setStatusCarList(prevStatusCarList =>
           page === 1
             ? response.data.data.data
-            : [...prevStatusCarList, ...response.data],
+            : [...prevStatusCarList, ...response.data.data.data],
         );
       }
     } catch (error) {
@@ -90,7 +90,7 @@ const StatusCarReportScreen = () => {
             key={val.IDXe}
             style={[
               styles.itemContainer,
-              {backgroundColor: val.RGB ? `rgb(${val.RGB})` : '#FFFFFF'},
+              // {backgroundColor: val.RGB ? `rgb(${val.RGB})` : '#FFFFFF'},
             ]}
             // onPress={() =>
             //   navigate.navigate('StatusCarDetailScreen', {
@@ -115,7 +115,6 @@ const StatusCarReportScreen = () => {
                 size={20}
                 style={[
                   styles.icon,
-
                   {color: val.RGB ? `rgb(${val.RGB})` : '#FFFFFF'},
                 ]}
               />
