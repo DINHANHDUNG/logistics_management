@@ -11,7 +11,7 @@ const LoadingModal = ({isVisible}: {isVisible: boolean}) => {
       animationOut="fadeOut"
       useNativeDriver={true}>
       <View style={styles.modalContent}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="tomato" />
       </View>
     </Modal>
   );

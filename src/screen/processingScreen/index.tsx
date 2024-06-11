@@ -303,7 +303,7 @@ const ProcessingScreen = () => {
         onEndReachedThreshold={0.5}
         ListFooterComponent={
           uiState.loadingMore ? (
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="tomato" />
           ) : null
         }
         style={styles.containerScroll}

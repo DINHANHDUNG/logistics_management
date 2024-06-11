@@ -237,7 +237,7 @@ const RepairReportScreen = () => {
         onEndReachedThreshold={0.5}
         ListFooterComponent={
           uiState.loadingMore ? (
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="tomato" />
           ) : (
             <View style={{height: 30}}></View>
           )

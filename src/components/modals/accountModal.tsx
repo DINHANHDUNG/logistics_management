@@ -1,11 +1,12 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Platform} from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../common/color';
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import {authStore} from '../../app/features/auth/authSlice';
 import {useAppSelector} from '../../app/hooks';
+// import useResetProfileStackNavigator from '../misc/resetProfileStackNavigator';
 
 interface Props {
   visible: boolean;
@@ -14,15 +15,11 @@ interface Props {
 
 const AccountModal = ({visible, onClose}: Props) => {
   const navigation = useNavigation();
+  // const resetProfileStackNavigator = useResetProfileStackNavigator();
   const auth = useAppSelector(authStore);
   const onLogout = () => {
-    console.log('onLogout');
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: 'LoginScreen'}],
-      }),
-    );
+    console.log('onLogout', navigation.getState()?.routes);
+    navigation.navigate('LoginScreen');
   };
 
   return (

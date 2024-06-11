@@ -1,7 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
-import {BackHandler, Platform} from 'react-native';
+import {BackHandler} from 'react-native';
 import 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 import {store} from './src/app/store';
@@ -9,8 +9,8 @@ import AdminTabNavigator from './src/layout/tab/adminTabNavigator';
 import UserTabNavigator from './src/layout/tab/userTabNavigator';
 import LoadingScreen from './src/screen/loading';
 import LoginScreen from './src/screen/login';
-import {View} from 'react-native';
-import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import SplashScreen from 'react-native-splash-screen';
 
 function App(): React.JSX.Element {
   const Stack = createNativeStackNavigator();
@@ -32,10 +32,13 @@ function App(): React.JSX.Element {
     );
     return () => backHandler.remove();
   }, []);
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
   return (
     <Provider store={store}>
-      <SafeAreaProvider
+      <SafeAreaView
         style={{
           flex: 1,
           backgroundColor: '#fff',
@@ -51,7 +54,7 @@ function App(): React.JSX.Element {
             backgroundColor: 'red',
           }}
         /> */}
-      </SafeAreaProvider>
+      </SafeAreaView>
     </Provider>
   );
 }

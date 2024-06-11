@@ -94,7 +94,7 @@ const StatusCarScreen = () => {
             key={val.IDXe}
             style={[
               styles.itemContainer,
-              {backgroundColor: val.RGB ? `rgb(${val.RGB})` : '#FFFFFF'},
+              // {backgroundColor: val.RGB ? `rgb(${val.RGB})` : '#FFFFFF'},
             ]}
             onPress={() =>
               navigate.navigate('StatusCarDetailScreen', {
@@ -118,7 +118,6 @@ const StatusCarScreen = () => {
                 size={20}
                 style={[
                   styles.icon,
-
                   {color: val.RGB ? `rgb(${val.RGB})` : '#FFFFFF'},
                 ]}
               />
@@ -137,7 +136,7 @@ const StatusCarScreen = () => {
             </View>
           </TouchableOpacity>
         ))}
-        {loadingMore && <ActivityIndicator size="large" color="#0000ff" />}
+        {loadingMore && <ActivityIndicator size="large" color="tomato" />}
         <View style={{paddingBottom: 20}}></View>
         <LoadingModal isVisible={isLoading || isFetching} />
       </ScrollView>
