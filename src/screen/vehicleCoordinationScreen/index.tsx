@@ -312,7 +312,6 @@ const VehicleCoordinationScreen = () => {
             size={20}
             style={[
               styles.icon,
-
               {color: item.RGB ? `rgb(${item.RGB})` : '#FFFFFF'},
             ]}
           />
