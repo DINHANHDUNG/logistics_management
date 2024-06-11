@@ -117,3 +117,26 @@ export const isCloseToBottom = ({
     contentSize.height - paddingToBottom
   );
 };
+
+export const formatStringToNumber = text => {
+  // Kiểm tra nếu text là null hoặc rỗng
+  if (text == null || text.trim() === '') {
+    return 0; // hoặc giá trị mặc định nào khác bạn mong muốn
+  }
+
+  // Bước 1: Xóa các dấu chấm
+  let formattedText = text.replace(/[.]/g, '');
+
+  // Bước 2: Thay dấu phẩy bằng dấu chấm
+  formattedText = formattedText.replace(/,/g, '.');
+
+  // Bước 3: Chuyển đổi chuỗi thành số
+  const number = parseFloat(formattedText);
+
+  // Kiểm tra nếu không phải là số thì trả về 0 hoặc giá trị nào khác bạn mong muốn
+  if (isNaN(number)) {
+    return 0;
+  }
+
+  return number;
+};
