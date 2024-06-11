@@ -229,7 +229,7 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
                 style={styles.input}
                 type={'money'}
                 options={{
-                  precision: 1, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
+                  precision: 0, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
                   separator: ',', // Dấu ngăn cách phần ngàn
                   delimiter: '.', // Dấu ngăn cách phần nghìn
                   unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
