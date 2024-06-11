@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import HeaderCustom from '../../components/header';
-import {formatCurrency} from '../../utils';
+import {formatCurrency, formatStringToNumber} from '../../utils';
 import {styles} from './style';
 import {validationSchema} from './schema';
 import {
@@ -95,8 +95,8 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
       moment(val.NgayDoDau).format('YYYY/MM/DD') +
       ' ' +
       moment(val.GioDoDau).format('HH:mm');
-    const sl = val.SoLuong ? Number(val.SoLuong) : 0;
-    const dg = val.DonGia ? Number(val.DonGia) : 0;
+    const sl = val.SoLuong ? formatStringToNumber(val.SoLuong) : 0;
+    const dg = val.DonGia ? formatStringToNumber(val.DonGia) : 0;
 
     const newData = {
       ProductKey: auth.Key,
@@ -225,7 +225,7 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
               )}
 
               <Text style={styles.label}>Số lượng</Text>
-              {/* <TextInputMask
+              <TextInputMask
                 style={styles.input}
                 type={'money'}
                 options={{
@@ -240,15 +240,6 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
                   return setFieldValue('SoLuong', text?.replace(/[.]/g, ''));
                 }}
                 onBlur={handleBlur('SoLuong')}
-                placeholder="Nhập đơn giá"
-                keyboardType="numeric"
-              /> */}
-              <TextInput
-                style={styles.input}
-                onChangeText={handleChange('SoLuong')}
-                onBlur={handleBlur('SoLuong')}
-                // value={formatCurrency2(values.SoLuong)}
-                value={values.SoLuong}
                 placeholder="Nhập số lượng"
                 keyboardType="numeric"
               />
@@ -257,15 +248,6 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
               )}
 
               <Text style={styles.label}>Đơn giá</Text>
-              {/* <TextInput
-                style={styles.input}
-                onChangeText={handleChange('DonGia')}
-                onBlur={handleBlur('DonGia')}
-                // value={formatCurrency2(values.DonGia)}
-                value={values.DonGia}
-                placeholder="Nhập đơn giá"
-                keyboardType="numeric"
-              /> */}
               <TextInputMask
                 style={styles.input}
                 type={'money'}
@@ -289,15 +271,6 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
               )}
 
               <Text style={styles.label}>Thành tiền</Text>
-              {/* <TextInput
-                style={styles.input}
-                onChangeText={handleChange('ThanhTien')}
-                onBlur={handleBlur('ThanhTien')}
-                // value={formatCurrency2(values.ThanhTien)}
-                value={values.ThanhTien}
-                placeholder="Thành tiền"
-                keyboardType="numeric"
-              /> */}
               <TextInputMask
                 style={styles.input}
                 type={'money'}

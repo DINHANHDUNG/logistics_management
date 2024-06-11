@@ -33,6 +33,8 @@ import {
 import {MSG} from '../../common/contants';
 import LoadingModal from '../../components/modals/loadingModal';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {TextInputMask} from 'react-native-masked-text';
+import { formatStringToNumber } from '../../utils';
 
 const TransportTripDetailScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
@@ -170,8 +172,8 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
       IDHangHoa: val.IDHangHoa ? Number(val.IDHangHoa) : '',
       IDKhachHang: val.IDKhachHang ? Number(val.IDKhachHang) : '',
       IDLoaiXe: val.IDLoaiXe ? Number(val.IDLoaiXe) : '',
-      SoKhoi: val.SoKhoi ? Number(val.SoKhoi) : '',
-      SoKG: val.SoKG ? Number(val.SoKG) : '',
+      SoKhoi: val.SoKhoi ? formatStringToNumber(val.SoKhoi) : '',
+      SoKG: val.SoKG ? formatStringToNumber(val.SoKG) : '',
       NgayDongHang: ngayDongHang,
       NgayTraHang: ngayTraHang,
       SoPL: val.SoPL,
@@ -489,13 +491,23 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
               <View style={styles.row}>
                 <View style={styles.itemRow}>
                   <Text style={styles.label}>Số kg</Text>
-                  <TextInput
+                  <TextInputMask
                     style={styles.input}
-                    onChangeText={handleChange('SoKG')}
+                    type={'money'}
+                    options={{
+                      precision: 1, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
+                      separator: ',', // Dấu ngăn cách phần ngàn
+                      delimiter: '.', // Dấu ngăn cách phần nghìn
+                      unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
+                      suffixUnit: '', // Đối với các trường hợp khác, bạn có thể đặt thành '%' nếu cần
+                    }}
+                    value={values.SoKG.toString()}
+                    onChangeText={text =>
+                      setFieldValue('SoKG', text?.replace(/[,.]/g, ''))
+                    }
                     onBlur={handleBlur('SoKG')}
-                    value={values.SoKG}
-                    keyboardType="numeric"
                     placeholder="Nhập số kg"
+                    keyboardType="numeric"
                   />
                   {errors?.SoKG && touched.SoKG && (
                     <Text style={styles.errorText}>{errors?.SoKG}</Text>
@@ -503,13 +515,23 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
                 </View>
                 <View style={styles.itemRow}>
                   <Text style={styles.label}>Số khối</Text>
-                  <TextInput
+                  <TextInputMask
                     style={styles.input}
-                    onChangeText={handleChange('SoKhoi')}
+                    type={'money'}
+                    options={{
+                      precision: 1, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
+                      separator: ',', // Dấu ngăn cách phần ngàn
+                      delimiter: '.', // Dấu ngăn cách phần nghìn
+                      unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
+                      suffixUnit: '', // Đối với các trường hợp khác, bạn có thể đặt thành '%' nếu cần
+                    }}
+                    value={values.SoKhoi.toString()}
+                    onChangeText={text =>
+                      setFieldValue('SoKhoi', text?.replace(/[,.]/g, ''))
+                    }
                     onBlur={handleBlur('SoKhoi')}
-                    value={values.SoKhoi}
-                    keyboardType="numeric"
                     placeholder="Nhập số khối"
+                    keyboardType="numeric"
                   />
                   {errors?.SoKhoi && touched.SoKhoi && (
                     <Text style={styles.errorText}>{errors?.SoKhoi}</Text>
@@ -518,13 +540,23 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
               </View>
 
               <Text style={styles.label}>Số PL</Text>
-              <TextInput
+              <TextInputMask
                 style={styles.input}
-                onChangeText={handleChange('SoPL')}
+                type={'money'}
+                options={{
+                  precision: 0, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
+                  separator: ',', // Dấu ngăn cách phần ngàn
+                  delimiter: '.', // Dấu ngăn cách phần nghìn
+                  unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
+                  suffixUnit: '', // Đối với các trường hợp khác, bạn có thể đặt thành '%' nếu cần
+                }}
+                value={values.SoPL.toString()}
+                onChangeText={text =>
+                  setFieldValue('SoPL', text?.replace(/[,.]/g, ''))
+                }
                 onBlur={handleBlur('SoPL')}
-                value={values.SoPL}
-                keyboardType="numeric"
                 placeholder="Nhập số PL"
+                keyboardType="numeric"
               />
               {errors?.SoPL && touched.SoPL && (
                 <Text style={styles.errorText}>{errors?.SoPL}</Text>

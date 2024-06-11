@@ -27,6 +27,8 @@ import LoadingModal from '../../components/modals/loadingModal';
 import SelectValueModal from '../../components/modals/selectModal';
 import {styles} from './style';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {TextInputMask} from 'react-native-masked-text';
+import { formatStringToNumber } from '../../utils';
 
 const CompanyVehicleScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
@@ -93,9 +95,9 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
       IDChuyen: Number(record.IDChuyen),
       IDLaiXe: val.IDLaiXe ? Number(val.IDLaiXe) : '',
       IDXeOto: val.IDXeOto ? Number(val.IDXeOto) : '',
-      SoGioCho: val.SoGioCho ? Number(val.SoGioCho) : '',
-      SoCaLuu: val.SoCaLuu ? Number(val.SoCaLuu) : '',
-      VeBenBai: val.VeBenBai ? Number(val.VeBenBai) : '',
+      SoGioCho: val.SoGioCho ? formatStringToNumber(val.SoGioCho) : '',
+      SoCaLuu: val.SoCaLuu ? formatStringToNumber(val.SoCaLuu) : '',
+      VeBenBai: val.VeBenBai ? formatStringToNumber(val.VeBenBai) : '',
       PhatSinhKhac: val.PhatSinhKhac || '',
       GhiChu: val.GhiChu || '',
     } as any;
@@ -205,13 +207,23 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
               )}
 
               <Text style={styles.label}>Vé bến bãi</Text>
-              <TextInput
+              <TextInputMask
                 style={styles.input}
-                onChangeText={handleChange('VeBenBai')}
+                type={'money'}
+                options={{
+                  precision: 0, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
+                  separator: ',', // Dấu ngăn cách phần ngàn
+                  delimiter: '.', // Dấu ngăn cách phần nghìn
+                  unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
+                  suffixUnit: '', // Đối với các trường hợp khác, bạn có thể đặt thành '%' nếu cần
+                }}
+                value={values.VeBenBai.toString()}
+                onChangeText={text =>
+                  setFieldValue('VeBenBai', text?.replace(/[,.]/g, ''))
+                }
                 onBlur={handleBlur('VeBenBai')}
-                value={values.VeBenBai}
-                keyboardType="numeric"
                 placeholder="Nhập vé bến bãi"
+                keyboardType="numeric"
               />
               {errors?.VeBenBai && touched.VeBenBai && (
                 <Text style={styles.errorText}>{errors?.VeBenBai}</Text>
@@ -220,13 +232,23 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
               <View style={styles.row}>
                 <View style={styles.itemRow}>
                   <Text style={styles.label}>Số ca lưu</Text>
-                  <TextInput
+                  <TextInputMask
                     style={styles.input}
-                    onChangeText={handleChange('SoCaLuu')}
+                    type={'money'}
+                    options={{
+                      precision: 0, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
+                      separator: ',', // Dấu ngăn cách phần ngàn
+                      delimiter: '.', // Dấu ngăn cách phần nghìn
+                      unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
+                      suffixUnit: '', // Đối với các trường hợp khác, bạn có thể đặt thành '%' nếu cần
+                    }}
+                    value={values.SoCaLuu.toString()}
+                    onChangeText={text =>
+                      setFieldValue('SoCaLuu', text?.replace(/[,.]/g, ''))
+                    }
                     onBlur={handleBlur('SoCaLuu')}
-                    value={values.SoCaLuu}
-                    keyboardType="numeric"
                     placeholder="Nhập số ca lưu"
+                    keyboardType="numeric"
                   />
                   {errors?.SoCaLuu && touched.SoCaLuu && (
                     <Text style={styles.errorText}>{errors?.SoCaLuu}</Text>
@@ -234,13 +256,23 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
                 </View>
                 <View style={styles.itemRow}>
                   <Text style={styles.label}>Số giờ chờ</Text>
-                  <TextInput
+                  <TextInputMask
                     style={styles.input}
-                    onChangeText={handleChange('SoGioCho')}
+                    type={'money'}
+                    options={{
+                      precision: 0, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
+                      separator: ',', // Dấu ngăn cách phần ngàn
+                      delimiter: '.', // Dấu ngăn cách phần nghìn
+                      unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
+                      suffixUnit: '', // Đối với các trường hợp khác, bạn có thể đặt thành '%' nếu cần
+                    }}
+                    value={values.SoGioCho.toString()}
+                    onChangeText={text =>
+                      setFieldValue('SoGioCho', text?.replace(/[,.]/g, ''))
+                    }
                     onBlur={handleBlur('SoGioCho')}
-                    value={values.SoGioCho}
-                    keyboardType="numeric"
                     placeholder="Nhập số giờ chờ"
+                    keyboardType="numeric"
                   />
                   {errors?.SoGioCho && touched.SoGioCho && (
                     <Text style={styles.errorText}>{errors?.SoGioCho}</Text>
