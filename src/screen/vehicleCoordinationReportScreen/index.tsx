@@ -331,7 +331,7 @@ const VehicleCoordinationReportScreen = () => {
           <View style={styles.containerIcon}>
             <Icon name="clock-o" size={20} style={styles.icon} />
           </View>
-          <Text style={styles.text}>Ngày đóng: {item.NgayDongHang}</Text>
+          <Text style={styles.text}>Thời gian đóng: {item.NgayDongHang}</Text>
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.containerIcon}>
