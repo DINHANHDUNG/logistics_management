@@ -42,7 +42,7 @@ const DeliveryListScreen = () => {
   const [page, setPage] = useState(1);
   const [trips, setTrips] = useState<Array<dataVehicleCoordination>>([]);
   const [values, setValues] = useState({
-    startDate: new Date(),
+    startDate: new Date(new Date().setDate(new Date().getDate() - 1)),
     endDate: new Date(new Date().setDate(new Date().getDate() + 1)),
   });
 

@@ -26,7 +26,11 @@ export const vehicleCoordinationApi = createApi({
         url: NetWork.GetChuyenDieuPhoi,
         params: value,
       }),
-      transformResponse: (response: any) => response.data, //Trả ra theo ý muốn nếu cần
+      transformResponse: (response: any) => {
+        console.log('response', response);
+
+        return response.data;
+      }, //Trả ra theo ý muốn nếu cần
     }),
     UpdateGuiLenh: builder.mutation({
       query: (value: dtoUpdate) => ({
@@ -72,9 +76,10 @@ export const {
   useGetListQuery,
   useLazyGetListQuery,
   useGetDetailQuery,
+  useLazyGetDetailQuery,
   useUpdateBoGuiLenhMutation,
   useUpdateGuiLenhMutation,
   useUpdateHuyChuyenMutation,
   useUpdateDieuPhoiMutation,
-  useUpdateStatusMutation
+  useUpdateStatusMutation,
 } = vehicleCoordinationApi;

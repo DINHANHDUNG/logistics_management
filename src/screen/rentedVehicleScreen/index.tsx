@@ -25,11 +25,10 @@ import {validationSchema} from './schema';
 import {styles} from './style';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TextInputMask} from 'react-native-masked-text';
-import { formatStringToNumber } from '../../utils';
+import {formatStringToNumber} from '../../utils';
 
 const RentedVehicleScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
-  console.log('record', record);
 
   const navigate = useNavigation();
   const auth = useAppSelector(authStore);
@@ -40,7 +39,7 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
     isLoading: loadingDetail,
     refetch,
   } = useGetDetailQuery(
-    {ProductKey: auth.Key, IDChuyen: record.IDChuyen},
+    {ProductKey: auth.Key, IDChuyen: record.IDChuyen, EnumThueXeOrXeMinh: 2},
     {skip: !record.IDChuyen},
   );
 
@@ -95,6 +94,7 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
       VeBenBai: val.VeBenBai ? formatStringToNumber(val.VeBenBai) : '',
       PhatSinhKhac: val.PhatSinhKhac || '',
       GhiChu: val.GhiChu || '',
+      EnumThueXeOrXeMinh: 2,
     } as any;
 
     if (record?.IDChuyen) {
@@ -130,7 +130,9 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
         SoGioCho: data.data.SoGioCho ? data.data.SoGioCho.toString() : '',
         SoCaLuu: data.data.SoCaLuu ? data.data.SoCaLuu.toString() : '',
         VeBenBai: data.data.VeBenBai ? data.data.VeBenBai.toString() : '',
-        PhatSinhKhac: data.data.PhatSinhKhac ? data.data.PhatSinhKhac.toString() : '',
+        PhatSinhKhac: data.data.PhatSinhKhac
+          ? data.data.PhatSinhKhac.toString()
+          : '',
         GhiChu: data.data.GhiChu ? data.data.GhiChu.toString() : '',
         IDDonViVanTai: data.data.IDDonViVanTai ?? '',
       });

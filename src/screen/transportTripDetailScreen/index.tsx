@@ -332,6 +332,50 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
                 <Text style={styles.errorText}>{errors?.IDLoaiXe}</Text>
               )}
 
+              <Text style={styles.label}>Điểm đi</Text>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => openModal('IDDiemDi', dataDiaDiem)}>
+                <View style={styles.inputDate}>
+                  <Text>
+                    {values.IDDiemDi
+                      ? dataDiaDiem?.find(e => e.ID === Number(values.IDDiemDi))
+                          ?.Name +
+                        ' - ' +
+                        dataDiaDiem?.find(e => e.ID === Number(values.IDDiemDi))
+                          ?.Address
+                      : 'Chọn điểm đi'}
+                  </Text>
+                </View>
+                <Icon name="chevron-down" style={styles.iconInput} />
+              </TouchableOpacity>
+              {errors?.IDDiemDi && touched.IDDiemDi && (
+                <Text style={styles.errorText}>{errors?.IDDiemDi}</Text>
+              )}
+
+              <Text style={styles.label}>Điểm đến</Text>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => openModal('IDDiemDen', dataDiaDiem)}>
+                <View style={styles.inputDate}>
+                  <Text>
+                    {values.IDDiemDen
+                      ? dataDiaDiem?.find(
+                          e => e.ID === Number(values.IDDiemDen),
+                        )?.Name +
+                        ' - ' +
+                        dataDiaDiem?.find(
+                          e => e.ID === Number(values.IDDiemDen),
+                        )?.Address
+                      : 'Chọn điểm đến'}
+                  </Text>
+                </View>
+                <Icon name="chevron-down" style={styles.iconInput} />
+              </TouchableOpacity>
+              {errors?.IDDiemDen && touched.IDDiemDen && (
+                <Text style={styles.errorText}>{errors?.IDDiemDen}</Text>
+              )}
+
               <View style={styles.row}>
                 <View style={styles.itemRow}>
                   <Text style={styles.label}>Ngày đóng hàng</Text>
@@ -377,50 +421,6 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
                   )}
                 </View>
               </View>
-
-              <Text style={styles.label}>Điểm đi</Text>
-              <TouchableOpacity
-                style={styles.inputContainer}
-                onPress={() => openModal('IDDiemDi', dataDiaDiem)}>
-                <View style={styles.inputDate}>
-                  <Text>
-                    {values.IDDiemDi
-                      ? dataDiaDiem?.find(e => e.ID === Number(values.IDDiemDi))
-                          ?.Name +
-                        ' - ' +
-                        dataDiaDiem?.find(e => e.ID === Number(values.IDDiemDi))
-                          ?.Address
-                      : 'Chọn điểm đi'}
-                  </Text>
-                </View>
-                <Icon name="chevron-down" style={styles.iconInput} />
-              </TouchableOpacity>
-              {errors?.IDDiemDi && touched.IDDiemDi && (
-                <Text style={styles.errorText}>{errors?.IDDiemDi}</Text>
-              )}
-
-              <Text style={styles.label}>Điểm đến</Text>
-              <TouchableOpacity
-                style={styles.inputContainer}
-                onPress={() => openModal('IDDiemDen', dataDiaDiem)}>
-                <View style={styles.inputDate}>
-                  <Text>
-                    {values.IDDiemDen
-                      ? dataDiaDiem?.find(
-                          e => e.ID === Number(values.IDDiemDen),
-                        )?.Name +
-                        ' - ' +
-                        dataDiaDiem?.find(
-                          e => e.ID === Number(values.IDDiemDen),
-                        )?.Address
-                      : 'Chọn điểm đến'}
-                  </Text>
-                </View>
-                <Icon name="chevron-down" style={styles.iconInput} />
-              </TouchableOpacity>
-              {errors?.IDDiemDen && touched.IDDiemDen && (
-                <Text style={styles.errorText}>{errors?.IDDiemDen}</Text>
-              )}
 
               <View style={styles.row}>
                 <View style={styles.itemRow}>

@@ -43,7 +43,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
     isLoading: loadingDetail,
     refetch,
   } = useGetDetailQuery(
-    {ProductKey: auth.Key, IDChuyen: record.IDChuyen},
+    {ProductKey: auth.Key, IDChuyen: record.IDChuyen, EnumThueXeOrXeMinh: 1},
     {skip: !record.IDChuyen},
   );
 
@@ -102,6 +102,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
       VeBenBai: val.VeBenBai ? formatStringToNumber(val.VeBenBai) : '',
       PhatSinhKhac: val.PhatSinhKhac || '',
       GhiChu: val.GhiChu || '',
+      EnumThueXeOrXeMinh: 1,
     } as any;
 
     if (record?.IDChuyen) {
