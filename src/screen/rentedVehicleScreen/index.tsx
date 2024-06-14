@@ -25,11 +25,10 @@ import {validationSchema} from './schema';
 import {styles} from './style';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TextInputMask} from 'react-native-masked-text';
-import { formatStringToNumber } from '../../utils';
+import {formatStringToNumber} from '../../utils';
 
 const RentedVehicleScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
-  console.log('record', record);
 
   const navigate = useNavigation();
   const auth = useAppSelector(authStore);
@@ -40,7 +39,7 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
     isLoading: loadingDetail,
     refetch,
   } = useGetDetailQuery(
-    {ProductKey: auth.Key, IDChuyen: record.IDChuyen},
+    {ProductKey: auth.Key, IDChuyen: record.IDChuyen, EnumThueXeOrXeMinh: 2},
     {skip: !record.IDChuyen},
   );
 
@@ -95,6 +94,7 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
       VeBenBai: val.VeBenBai ? formatStringToNumber(val.VeBenBai) : '',
       PhatSinhKhac: val.PhatSinhKhac || '',
       GhiChu: val.GhiChu || '',
+      EnumThueXeOrXeMinh: 2,
     } as any;
 
     if (record?.IDChuyen) {
@@ -124,15 +124,17 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
   useEffect(() => {
     if (!loadingDetail && data) {
       setInitialValues({
-        BienSoXe: data.BienSoXe ? data.BienSoXe.toString() : '',
-        LaiXe: data.LaiXe ? data.LaiXe.toString() : '',
-        DTLaiXe: data.DTLaiXe ? data.DTLaiXe.toString() : '',
-        SoGioCho: data.SoGioCho ? data.SoGioCho.toString() : '',
-        SoCaLuu: data.SoCaLuu ? data.SoCaLuu.toString() : '',
-        VeBenBai: data.VeBenBai ? data.VeBenBai.toString() : '',
-        PhatSinhKhac: data.PhatSinhKhac ? data.PhatSinhKhac.toString() : '',
-        GhiChu: data.GhiChu ? data.GhiChu.toString() : '',
-        IDDonViVanTai: data.IDDonViVanTai ?? '',
+        BienSoXe: data.data.BienSoXe ? data.data.BienSoXe.toString() : '',
+        LaiXe: data.data.LaiXe ? data.data.LaiXe.toString() : '',
+        DTLaiXe: data.data.DTLaiXe ? data.data.DTLaiXe.toString() : '',
+        SoGioCho: data.data.SoGioCho ? data.data.SoGioCho.toString() : '',
+        SoCaLuu: data.data.SoCaLuu ? data.data.SoCaLuu.toString() : '',
+        VeBenBai: data.data.VeBenBai ? data.data.VeBenBai.toString() : '',
+        PhatSinhKhac: data.data.PhatSinhKhac
+          ? data.data.PhatSinhKhac.toString()
+          : '',
+        GhiChu: data.data.GhiChu ? data.data.GhiChu.toString() : '',
+        IDDonViVanTai: data.data.IDDonViVanTai ?? '',
       });
     }
   }, [loadingDetail]);
@@ -158,7 +160,7 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
             touched,
           }) => (
             <View>
-              <Text style={styles.label}>Đơn vị vận tại</Text>
+              <Text style={styles.label}>Đơn vị vận tải</Text>
               <TouchableOpacity
                 style={styles.inputContainer}
                 onPress={() => openModal('IDDonViVanTai', dataKH)}>
@@ -167,7 +169,7 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
                     {values.IDDonViVanTai
                       ? dataKH?.find(e => e.ID === Number(values.IDDonViVanTai))
                           ?.Name
-                      : 'Chọn Đơn vị vận  tại'}
+                      : 'Chọn đơn vị vận tải'}
                   </Text>
                 </View>
                 <Icon name="chevron-down" style={styles.iconInput} />
@@ -212,7 +214,7 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
                 <Text style={styles.errorText}>{errors?.DTLaiXe}</Text>
               )}
 
-              <Text style={styles.label}>Vé bến bãi</Text>
+              {/* <Text style={styles.label}>Vé bến bãi</Text>
               <TextInputMask
                 style={styles.input}
                 type={'money'}
@@ -296,7 +298,7 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
               />
               {errors?.PhatSinhKhac && touched.PhatSinhKhac && (
                 <Text style={styles.errorText}>{errors?.PhatSinhKhac}</Text>
-              )}
+              )} */}
 
               <Text style={styles.label}>Ghi chú</Text>
               <TextInput

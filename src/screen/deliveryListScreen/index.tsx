@@ -42,7 +42,7 @@ const DeliveryListScreen = () => {
   const [page, setPage] = useState(1);
   const [trips, setTrips] = useState<Array<dataVehicleCoordination>>([]);
   const [values, setValues] = useState({
-    startDate: new Date(),
+    startDate: new Date(new Date().setDate(new Date().getDate() - 1)),
     endDate: new Date(new Date().setDate(new Date().getDate() + 1)),
   });
 
@@ -222,8 +222,22 @@ const DeliveryListScreen = () => {
           <View style={styles.containerIcon}>
             <Icon name="clock-o" size={20} style={styles.icon} />
           </View>
-          <Text style={styles.text}>Ngày đóng: {item.NgayDongHang}</Text>
+          <Text style={styles.text}>Thời gian đóng: {item.NgayDongHang}</Text>
         </View>
+        <View style={styles.infoContainer}>
+          <View style={styles.containerIcon}>
+            <Icon name="clock-o" size={20} style={styles.icon} />
+          </View>
+          <Text style={styles.text}>Thời gian trả: {item.NgayTraHang}</Text>
+        </View>
+        {item.ThoiGianVe && (
+          <View style={styles.infoContainer}>
+            <View style={styles.containerIcon}>
+              <Icon name="clock-o" size={20} style={styles.icon} />
+            </View>
+            <Text style={styles.text}>Thời gian về: {item.ThoiGianVe}</Text>
+          </View>
+        )}
         <View style={styles.infoContainer}>
           <View style={styles.containerIcon}>
             <Icon name="info-circle" size={20} style={styles.icon} />

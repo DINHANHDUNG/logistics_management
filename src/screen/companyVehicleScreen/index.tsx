@@ -15,6 +15,7 @@ import {useAppSelector} from '../../app/hooks';
 import {
   useGetListLoaiXeQuery,
   useGetListNhanVienQuery,
+  useGetListXeVanChuyenQuery,
   useLazyGetListlaiXeQuery,
 } from '../../app/services/category';
 import {
@@ -28,7 +29,7 @@ import SelectValueModal from '../../components/modals/selectModal';
 import {styles} from './style';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TextInputMask} from 'react-native-masked-text';
-import { formatStringToNumber } from '../../utils';
+import {formatStringToNumber} from '../../utils';
 
 const CompanyVehicleScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
@@ -42,7 +43,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
     isLoading: loadingDetail,
     refetch,
   } = useGetDetailQuery(
-    {ProductKey: auth.Key, IDChuyen: record.IDChuyen},
+    {ProductKey: auth.Key, IDChuyen: record.IDChuyen, EnumThueXeOrXeMinh: 1},
     {skip: !record.IDChuyen},
   );
 
@@ -57,7 +58,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
   });
 
   // Fetching data for select fields
-  const {data: dataLoaiXe} = useGetListLoaiXeQuery(
+  const {data: dataLoaiXe} = useGetListXeVanChuyenQuery(
     {ProductKey: auth.Key},
     {skip: !auth.Key},
   );
@@ -74,6 +75,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
   const [modalField, setModalField] = useState('');
 
   const openModal = (field: any, options: any) => {
+    console.log(field, options);
     setModalField(field);
     setModalOptions(options);
     setModalVisible(true);
@@ -100,6 +102,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
       VeBenBai: val.VeBenBai ? formatStringToNumber(val.VeBenBai) : '',
       PhatSinhKhac: val.PhatSinhKhac || '',
       GhiChu: val.GhiChu || '',
+      EnumThueXeOrXeMinh: 1,
     } as any;
 
     if (record?.IDChuyen) {
@@ -138,13 +141,13 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
       console.log('data', data);
 
       setInitialValues({
-        SoGioCho: data.SoGioCho ? data.SoGioCho.toString() : '',
-        SoCaLuu: data.SoCaLuu ? data.SoCaLuu.toString() : '',
-        VeBenBai: data.VeBenBai ? data.VeBenBai.toString() : '',
-        PhatSinhKhac: data.PhatSinhKhac ? data.PhatSinhKhac.toString() : '',
-        GhiChu: data.GhiChu ? data.GhiChu.toString() : '',
-        IDLaiXe: data.IDLaiXe ?? '',
-        IDXeOto: data.IDXeOto ?? '',
+        // SoGioCho: data.data.SoGioCho ? data.data.SoGioCho.toString() : '',
+        // SoCaLuu: data.data.SoCaLuu ? data.data.SoCaLuu.toString() : '',
+        // VeBenBai: data.data.VeBenBai ? data.data.VeBenBai.toString() : '',
+        // PhatSinhKhac: data.data.PhatSinhKhac ? data.data.PhatSinhKhac.toString() : '',
+        GhiChu: data.data.GhiChu ? data.data.GhiChu.toString() : '',
+        IDLaiXe: data.data.IDLaiXe ?? '',
+        IDXeOto: data.data.IDXeOto ?? '',
       });
     }
   }, [loadingDetail]);
@@ -178,8 +181,8 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
                   <Text>
                     {values.IDXeOto
                       ? dataLoaiXe?.find(e => e.ID === Number(values.IDXeOto))
-                          ?.Name
-                      : 'Chọn Đơn vị vận  tại'}
+                          ?.BienSoXe
+                      : 'Chọn xe vận chuyển'}
                   </Text>
                 </View>
                 <Icon name="chevron-down" style={styles.iconInput} />
@@ -206,7 +209,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
                 <Text style={styles.errorText}>{errors?.IDLaiXe}</Text>
               )}
 
-              <Text style={styles.label}>Vé bến bãi</Text>
+              {/* <Text style={styles.label}>Vé bến bãi</Text>
               <TextInputMask
                 style={styles.input}
                 type={'money'}
@@ -290,7 +293,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
               />
               {errors?.PhatSinhKhac && touched.PhatSinhKhac && (
                 <Text style={styles.errorText}>{errors?.PhatSinhKhac}</Text>
-              )}
+              )} */}
 
               <Text style={styles.label}>Ghi chú</Text>
               <TextInput
@@ -327,7 +330,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
                   }
                 }}
                 values={modalOptions ?? []}
-                keyRender={modalField === 'IDLaiXe' ? 'HoTen' : 'Name'}
+                keyRender={modalField === 'IDLaiXe' ? 'HoTen' : 'BienSoXe'}
               />
             </View>
           )}
