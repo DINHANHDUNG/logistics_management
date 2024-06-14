@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -78,22 +78,11 @@ const VehicleCoordinationReportScreen = () => {
     fetchList(page);
   }, [page]);
 
-  useEffect(() => {
-    const unsubscribe = navigate.addListener('focus', () => {
-      // setValues({
-      //   startDate: values.startDate,
-      //   endDate: values.endDate,
-      // });
-      // if (page != 1) {
-      //   setPage(1);
-      // } else {
-      //   fetchList(1);
-      // }
+  useFocusEffect(
+    useCallback(() => {
       fetchList(1);
-    });
-
-    return unsubscribe;
-  }, [navigate]);
+    }, [values.startDate, values.endDate]),
+  );
 
   const onRefresh = () => {
     setUiState(prevState => ({...prevState, refreshing: true}));
@@ -349,7 +338,7 @@ const VehicleCoordinationReportScreen = () => {
     <View style={styles.container}>
       {/* Header */}
       {/* <HomeHeader /> */}
-      <HeaderCustom title='Báo cáo điều phối' />
+      <HeaderCustom title="Báo cáo điều phối" />
       <View style={styles.containerFilter}>
         <TouchableOpacity
           style={styles.inputContainer}

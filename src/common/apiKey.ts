@@ -44,6 +44,7 @@ export const NetWork = {
   listDonViVanTai: 'GettblDMDonViVanTai',
   listLaiXe: 'GetThongTinTuXe',
   GettblDMTrangThaiVanChuyen: 'GettblDMTrangThaiVanChuyen',
+  GetXeVanChuyen: 'GetXeVanChuyen',
 
   //Trạng thái
   UpdateTrangThaiVanChuyen: 'UpdateTrangThaiVanChuyen',

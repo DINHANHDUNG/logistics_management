@@ -10,6 +10,7 @@ import {
   itemXeVanChuyen,
   itemNhanVien,
   itemDonViVanTai,
+  itemXeByUser,
 } from '../../../types/category';
 
 export const categoryApi = createApi({
@@ -98,6 +99,15 @@ export const categoryApi = createApi({
       transformResponse: (response: {data: {data: any[]}}) =>
         response?.data?.data,
     }),
+    GetXeVanChuyen: builder.query<itemXeByUser, unknown>({
+      query: params => ({
+        method: GET,
+        url: NetWork.GetXeVanChuyen,
+        params: params,
+      }),
+      transformResponse: (response: {data: {data: itemXeByUser}}) =>
+        response?.data?.data,
+    }),
   }),
 });
 
@@ -113,4 +123,5 @@ export const {
   useGetListlaiXeQuery,
   useLazyGetListlaiXeQuery,
   useGetTrangThaiQuery,
+  useGetXeVanChuyenQuery,
 } = categoryApi;

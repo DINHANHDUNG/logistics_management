@@ -27,3 +27,10 @@ export interface itemNhanVien {
   HoTen: string;
   MaNhanSu: string;
 }
+
+export interface itemXeByUser {
+  BienSoXe: string;
+  IDLaiXe: number;
+  IDXeOto: number;
+  TaiXe: string;
+}

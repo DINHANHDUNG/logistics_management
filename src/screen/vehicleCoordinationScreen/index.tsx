@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -51,9 +51,20 @@ const VehicleCoordinationScreen = () => {
     endDate: new Date(),
   });
 
+  console.log('values', values);
+
   const fetchList = async (page: number) => {
     try {
       const ProductKey = auth.Key;
+      console.log('ádasdF', {
+        Page: page,
+        Limit: Limit,
+        ProductKey: ProductKey ?? '',
+        dtE: moment(values.endDate).format('YYYY/MM/DD'),
+        dtS: moment(values.startDate).format('YYYY/MM/DD'),
+        IDUser: auth.IDUser,
+      });
+
       const response = await getList({
         Page: page,
         Limit: Limit,
@@ -85,22 +96,11 @@ const VehicleCoordinationScreen = () => {
     fetchList(page);
   }, [page]);
 
-  useEffect(() => {
-    const unsubscribe = navigate.addListener('focus', () => {
-      // setValues({
-      //   startDate: values.startDate,
-      //   endDate: values.endDate,
-      // });
-      // if (page != 1) {
-      //   setPage(1);
-      // } else {
-      //   fetchList(1);
-      // }
+  useFocusEffect(
+    useCallback(() => {
       fetchList(1);
-    });
-
-    return unsubscribe;
-  }, [navigate]);
+    }, [values.startDate, values.endDate]),
+  );
 
   const onRefresh = () => {
     setUiState(prevState => ({...prevState, refreshing: true}));
