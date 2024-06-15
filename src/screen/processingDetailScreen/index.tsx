@@ -44,7 +44,9 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
     {ProductKey: auth.Key},
     {skip: !auth.Key},
   );
-  const data = {} as any;
+  const data = {
+    // NgayGioThucHien: new Date(),
+  } as any;
   // const {
   //   data,
   //   isLoading: loadingDetail,
@@ -140,6 +142,7 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
             : '',
           IDUser: auth.IDUser,
           NgayGioThucHien: NgayGioThucHien,
+          GhiChu: val.GhiChu,
         }),
       },
     ] as any;
@@ -193,12 +196,13 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
         <Formik
           initialValues={{
             IDTrangThaiVanChuyen: '',
+            GhiChu: '',
             NgayTrangThai: data?.NgayGioThucHien
               ? moment(data.NgayGioThucHien).toDate()
               : new Date(),
             GioTrangThai: data?.NgayGioThucHien
               ? moment(data.NgayGioThucHien).toDate()
-              : '',
+              : new Date(),
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}>
@@ -270,6 +274,18 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
               </TouchableOpacity>
               {errors?.GioTrangThai && (
                 <Text style={styles.errorText}>{errors?.GioTrangThai}</Text>
+              )}
+
+              <Text style={styles.label}>Ghi chú</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={handleChange('GhiChu')}
+                onBlur={handleBlur('GhiChu')}
+                value={values.GhiChu}
+                placeholder="Nhập ghi chú"
+              />
+              {errors?.GhiChu && touched.GhiChu && (
+                <Text style={styles.errorText}>{errors?.GhiChu}</Text>
               )}
 
               <TouchableOpacity

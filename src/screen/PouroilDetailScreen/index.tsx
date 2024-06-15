@@ -15,6 +15,7 @@ import {validationSchema} from './schema';
 import {
   useGetListLoaiXeQuery,
   useGetListXeVanChuyenQuery,
+  useGetXeVanChuyenQuery,
 } from '../../app/services/category';
 import {useAppSelector} from '../../app/hooks';
 import {authStore} from '../../app/features/auth/authSlice';
@@ -48,6 +49,10 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
   );
   const {data: dataLoaiXe} = useGetListXeVanChuyenQuery(
     {ProductKey: auth.Key},
+    {skip: !auth.Key},
+  );
+  const {data: dataXeByIDUser} = useGetXeVanChuyenQuery(
+    {ProductKey: auth.Key, IDUser: auth.IDUser},
     {skip: !auth.Key},
   );
 
@@ -142,7 +147,7 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
           initialValues={{
             SoLuong: data?.SoLuong ?? 0,
             DonGia: data?.DonGia?.toString() || '',
-            IDXeOto: data?.IDXeOto,
+            IDXeOto: !ID ? dataXeByIDUser?.IDXeOto : data?.IDXeOto,
             GhiChu: data?.GhiChu,
             NgayDoDau: data?.NgayDoDauCal
               ? moment(data.NgayDoDauCal).toDate()

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Image,
@@ -22,8 +22,10 @@ import {API_IMAGE_URL} from '../../common/apiKey';
 import moment from 'moment';
 import {MSG} from '../../common/contants';
 import LoadingModal from '../../components/modals/loadingModal';
+import {useNavigation} from '@react-navigation/native';
 
 const HistoryStatusScreen = ({route}: {route: any}) => {
+  const navigate = useNavigation();
   const {IDChuyen: record} = route.params;
   const auth = useAppSelector(authStore);
   const {data, isLoading, isFetching, refetch} =
@@ -83,6 +85,14 @@ const HistoryStatusScreen = ({route}: {route: any}) => {
     ]);
   };
 
+  useEffect(() => {
+    const unsubscribe = navigate.addListener('focus', () => {
+      refetch();
+    });
+
+    return unsubscribe;
+  }, [navigate]);
+
   return (
     <View style={styles.container}>
       <HeaderCustom title={`${'Lịch sử trạng thái'}`} />
@@ -140,6 +150,7 @@ const HistoryStatusScreen = ({route}: {route: any}) => {
                   ? moment(item.NgayGioThucHien).format('YYYY-MM-DD HH:mm')
                   : ''}
               </Text>
+              <Text style={styles.historyText}>Ghi chú: {item.GhiChu}</Text>
               {/* <Text style={styles.historyText}>Ghi chú: {item.note}</Text> */}
               <ScrollView horizontal>
                 {item?.FileAttach?.map((image, index) => (

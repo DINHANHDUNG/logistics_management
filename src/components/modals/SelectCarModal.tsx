@@ -29,8 +29,6 @@ const SelectCarModal: React.FC<SelectCarModalProps> = ({
   const auth = useAppSelector(authStore);
   const [enumType, setEnumType] = useState<Number | undefined>();
 
-  console.log('item selected', item);
-
   const handleSelect = (type: 'Xe công ty' | 'Xe thuê') => {
     if (type === 'Xe công ty') {
       setEnumType(1);
@@ -48,7 +46,7 @@ const SelectCarModal: React.FC<SelectCarModalProps> = ({
     },
     {skip: !item.IDChuyen || !enumType},
   );
-  console.log('enumType', enumType);
+  // console.log('enumType', enumType);
 
   if (isError && enumType) {
     setEnumType(undefined);

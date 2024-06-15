@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -82,22 +82,11 @@ const ProcessingScreen = () => {
     fetchList(page);
   }, [page]);
 
-  useEffect(() => {
-    const unsubscribe = navigate.addListener('focus', () => {
-      // setValues({
-      //   startDate: values.startDate,
-      //   endDate: values.endDate,
-      // });
-      // if (page != 1) {
-      //   setPage(1);
-      // } else {
-      //   fetchList(1);
-      // }
+  useFocusEffect(
+    useCallback(() => {
       fetchList(1);
-    });
-
-    return unsubscribe;
-  }, [navigate]);
+    }, [values.startDate, values.endDate]),
+  );
 
   const onRefresh = () => {
     setUiState(prevState => ({...prevState, refreshing: true}));
@@ -170,11 +159,33 @@ const ProcessingScreen = () => {
   };
 
   const handleComplate = (item: dataVehicleCoordination) => {
-    sendItem(item, 5);
+    Alert.alert(MSG.wraning, 'Bạn có chắc chắn muốn hoàn thành chuyến?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          sendItem(item, 5);
+        },
+      },
+    ]);
   };
 
   const handleClose = (item: dataVehicleCoordination) => {
-    sendItem(item, -1);
+    Alert.alert(MSG.wraning, 'Bạn có chắc chắn muốn bỏ nhận?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          sendItem(item, -1);
+        },
+      },
+    ]);
   };
 
   const sendItem = (item: dataVehicleCoordination, TrangThai: number) => {
