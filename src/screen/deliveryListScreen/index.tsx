@@ -258,7 +258,7 @@ const DeliveryListScreen = () => {
     <View style={styles.container}>
       {/* Header */}
       <HomeHeader />
-      {/* <View style={styles.containerFilter}>
+      <View style={styles.containerFilter}>
         <TouchableOpacity
           style={styles.inputContainer}
           onPress={showHideStartDate}>
@@ -284,7 +284,7 @@ const DeliveryListScreen = () => {
           </View>
           <Icon name="calendar" size={20} style={styles.iconInput} />
         </TouchableOpacity>
-      </View> */}
+      </View>
 
       {/* List of Deliveries */}
       <FlatList

@@ -28,7 +28,7 @@ const eyeOff = <Icon name="eye-off-outline" size={15} />;
 const eyeOn = <Icon name="eye-outline" size={15} />;
 
 const LoginScreen = () => {
-  const [login, {isLoading, isError}] = useLazyLoginQuery();
+  const [login, {isLoading, isError, error}] = useLazyLoginQuery();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const [state, setState] = useState({
@@ -55,13 +55,16 @@ const LoginScreen = () => {
         Password: values.Password,
         ProductKey: values.ProductKey,
       }).then((req: any) => {
-        console.log(req);
         if (req.data.data.IDUser) {
           dispatch(changeUser(req.data.data));
-          navigation.navigate('LoadingScreen');
-        } else {
-          Alert.alert(MSG.err, MSG.errLoginfail);
+          return navigation.navigate('LoadingScreen');
         }
+        if (req.error.status == 500)
+          return Alert.alert(
+            MSG.err,
+            'Lỗi trong quá trình xác thực thông tin. Vui lòng đăng nhập lại',
+          );
+        Alert.alert(MSG.err, MSG.errLoginfail);
       });
       if (values.rememberMe) {
         try {
@@ -114,6 +117,12 @@ const LoginScreen = () => {
 
   useEffect(() => {
     if (!isLoading && isError === true) {
+      if (error && error?.status == 500)
+        return Alert.alert(
+          MSG.err,
+          'Lỗi trong quá trình xác thực thông tin. Vui lòng đăng nhập lại',
+        );
+
       Alert.alert(MSG.err, MSG.errLoginfail);
     }
   }, [isError, isLoading]);

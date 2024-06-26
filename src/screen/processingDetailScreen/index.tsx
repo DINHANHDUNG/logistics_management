@@ -126,10 +126,10 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
 
   const handleSubmit = async (val: any) => {
     setIsLoading(true);
-    const NgayGioThucHien =
-      moment(val.NgayTrangThai).format('YYYY/MM/DD') +
-      ' ' +
-      moment(val.GioTrangThai).format('HH:mm');
+    // const NgayGioThucHien =
+    //   moment(val.NgayTrangThai).format('YYYY/MM/DD') +
+    //   ' ' +
+    //   moment(val.GioTrangThai).format('HH:mm');
 
     const newD = [
       {
@@ -141,7 +141,7 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
             ? Number(val.IDTrangThaiVanChuyen)
             : '',
           IDUser: auth.IDUser,
-          NgayGioThucHien: NgayGioThucHien,
+          // NgayGioThucHien: NgayGioThucHien,
           GhiChu: val.GhiChu,
         }),
       },
@@ -197,12 +197,12 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
           initialValues={{
             IDTrangThaiVanChuyen: '',
             GhiChu: '',
-            NgayTrangThai: data?.NgayGioThucHien
-              ? moment(data.NgayGioThucHien).toDate()
-              : new Date(),
-            GioTrangThai: data?.NgayGioThucHien
-              ? moment(data.NgayGioThucHien).toDate()
-              : new Date(),
+            // NgayTrangThai: data?.NgayGioThucHien
+            //   ? moment(data.NgayGioThucHien).toDate()
+            //   : new Date(),
+            // GioTrangThai: data?.NgayGioThucHien
+            //   ? moment(data.NgayGioThucHien).toDate()
+            //   : new Date(),
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}>
@@ -222,7 +222,7 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
                   openModal('IDTrangThaiVanChuyen', dataTrangThai)
                 }>
                 <View style={styles.inputDate}>
-                  <Text>
+                  <Text style={{fontSize: 16}}>
                     {values.IDTrangThaiVanChuyen
                       ? renderTrangThai(values)?.Name || ''
                       : 'Chọn trạng thái'}
@@ -236,7 +236,7 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
                 </Text>
               )}
 
-              <Text style={styles.label}>Ngày thực hiện</Text>
+              {/* <Text style={styles.label}>Ngày thực hiện</Text>
               <TouchableOpacity
                 style={styles.inputContainer}
                 onPress={() => {
@@ -254,9 +254,9 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
               </TouchableOpacity>
               {errors?.NgayTrangThai && (
                 <Text style={styles.errorText}>{errors?.NgayTrangThai}</Text>
-              )}
+              )} */}
 
-              <Text style={styles.label}>Giờ thực hiện</Text>
+              {/* <Text style={styles.label}>Giờ thực hiện</Text>
               <TouchableOpacity
                 style={styles.inputContainer}
                 onPress={() => {
@@ -274,7 +274,7 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
               </TouchableOpacity>
               {errors?.GioTrangThai && (
                 <Text style={styles.errorText}>{errors?.GioTrangThai}</Text>
-              )}
+              )} */}
 
               <Text style={styles.label}>Ghi chú</Text>
               <TextInput
@@ -283,6 +283,8 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
                 onBlur={handleBlur('GhiChu')}
                 value={values.GhiChu}
                 placeholder="Nhập ghi chú"
+                multiline={true}
+                numberOfLines={4}
               />
               {errors?.GhiChu && touched.GhiChu && (
                 <Text style={styles.errorText}>{errors?.GhiChu}</Text>
@@ -292,7 +294,7 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
                 style={styles.iconButton}
                 onPress={() => setIsModalVisible(true)}>
                 <Icon name="camera" size={20} color="#2196F3" />
-                <Text style={{marginLeft: 10}}>Chọn ảnh</Text>
+                <Text style={{marginLeft: 10, fontSize: 16}}>Chọn ảnh</Text>
               </TouchableOpacity>
 
               <ScrollView horizontal style={styles.imageContainer}>

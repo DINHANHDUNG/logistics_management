@@ -29,7 +29,7 @@ export const axiosBaseQuery =
         method,
         data,
         params,
-        timeout: 30000,
+        timeout: 60000,
         headers: {
           // Language: getLangGlobla(),
           // Authorization: accessToken ?? '',
@@ -46,7 +46,7 @@ export const axiosBaseQuery =
       const err = axiosError as AxiosError;
       return {
         error: {
-          status: err.response?.status,
+          status: err.message === 'Network Error' ? 500 : err.response?.status,
           data: err.response?.data || err.message,
         },
       };

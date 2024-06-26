@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 12,
     fontWeight: '600',
+    fontSize: 16
   },
   input: {
     borderWidth: 0.5,
@@ -14,7 +15,8 @@ export const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 4,
     marginBottom: 5,
-    height: 40,
+    minHeight: 40,
+    fontSize: 16
   },
   errorText: {
     color: 'red',
@@ -30,6 +32,7 @@ export const styles = StyleSheet.create({
   textBtn: {
     color: 'white',
     textAlign: 'center',
+    fontSize: 16
   },
   iconButton: {
     flexDirection: 'row',
@@ -48,7 +51,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     width: '100%',
-    height: 40,
+    height: 50,
     borderColor: 'gray',
     borderWidth: 0.5,
     borderRadius: 4,

@@ -40,6 +40,7 @@ export const NetWork = {
   listHangHoa: 'GettblDMHangHoa',
   listLoaiXe: 'GettblDMLoaiXe',
   listXeVanChuyen: 'GettblDMXeOto',
+  GetListXeOtoUuTien: 'GetListXeOtoUuTien',
   listNhanVien: 'GettblNhanSu',
   listDonViVanTai: 'GettblDMDonViVanTai',
   listLaiXe: 'GetThongTinTuXe',
