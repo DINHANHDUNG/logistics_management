@@ -1,21 +1,14 @@
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
-import {
-  Alert,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {authStore} from '../../app/features/auth/authSlice';
 import {useAppSelector} from '../../app/hooks';
 import {
-  useGetListLoaiXeQuery,
   useGetListNhanVienQuery,
-  useGetListXeVanChuyenQuery,
+  useGetListXeOtoUuTienQuery,
   useLazyGetListlaiXeQuery,
 } from '../../app/services/category';
 import {
@@ -26,10 +19,8 @@ import {MSG} from '../../common/contants';
 import HeaderCustom from '../../components/header';
 import LoadingModal from '../../components/modals/loadingModal';
 import SelectValueModal from '../../components/modals/selectModal';
-import {styles} from './style';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {TextInputMask} from 'react-native-masked-text';
 import {formatStringToNumber} from '../../utils';
+import {styles} from './style';
 
 const CompanyVehicleScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
@@ -58,7 +49,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
   });
 
   // Fetching data for select fields
-  const {data: dataLoaiXe} = useGetListXeVanChuyenQuery(
+  const {data: dataLoaiXe} = useGetListXeOtoUuTienQuery(
     {ProductKey: auth.Key},
     {skip: !auth.Key},
   );

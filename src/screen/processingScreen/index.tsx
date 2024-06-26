@@ -286,12 +286,12 @@ const ProcessingScreen = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.button, styles.transferButton]}
             onPress={() => handleClose(item)}>
             <Icon name="close" size={16} color="#fff" />
             <Text style={styles.buttonText}>Bỏ nhận</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={[styles.button, styles.completeButton]}
             onPress={() => handleHistory(item)}>

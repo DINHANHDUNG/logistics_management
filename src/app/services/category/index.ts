@@ -63,6 +63,15 @@ export const categoryApi = createApi({
       transformResponse: (response: {data: {data: itemXeVanChuyen[]}}) =>
         response?.data?.data,
     }),
+    getListXeOtoUuTien: builder.query<itemXeVanChuyen[], unknown>({
+      query: params => ({
+        method: GET,
+        url: NetWork.GetListXeOtoUuTien,
+        params: params,
+      }),
+      transformResponse: (response: {data: {data: itemXeVanChuyen[]}}) =>
+        response?.data?.data,
+    }),
     getListNhanVien: builder.query<itemNhanVien[], unknown>({
       query: params => ({
         method: GET,
@@ -124,4 +133,5 @@ export const {
   useLazyGetListlaiXeQuery,
   useGetTrangThaiQuery,
   useGetXeVanChuyenQuery,
+  useGetListXeOtoUuTienQuery
 } = categoryApi;
