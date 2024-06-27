@@ -50,7 +50,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
 
   // Fetching data for select fields
   const {data: dataLoaiXe} = useGetListXeOtoUuTienQuery(
-    {ProductKey: auth.Key},
+    {ProductKey: auth.Key, IDChuyen: record.IDChuyen},
     {skip: !auth.Key},
   );
 

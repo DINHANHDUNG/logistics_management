@@ -83,7 +83,7 @@ const StatusCarReportScreen = () => {
             loadMore();
           }
         }}
-        scrollEventThrottle={400}
+        scrollEventThrottle={16}
         style={styles.containerScroll}>
         {statusCarList.map((val: dataStatusCar) => (
           <TouchableOpacity
