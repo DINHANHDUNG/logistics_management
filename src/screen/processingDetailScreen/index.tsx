@@ -152,7 +152,7 @@ const ProcessingDetailScreen = ({route}: {route: any}) => {
         Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
       newD.push({
         name: 'file',
-        filename: `image_${Math.random()}.jpg`,
+        filename: `image_${record.IDChuyen}_${moment().valueOf()}_${index}.jpg`,
         type: 'image/jpeg',
         data: RNFetchBlob.wrap(uploadUri),
       });
