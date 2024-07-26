@@ -6,9 +6,12 @@ import StackProcessing from '../stack/stackProcessing';
 import StackComplate from '../stack/stackComplate';
 import StackPouroil from '../stack/stackPouroil';
 import {colors} from '../../common/color';
+import {useAppSelector} from '../../app/hooks';
+import {authStore} from '../../app/features/auth/authSlice';
 
 function UserTabNavigator() {
   const Tab = createBottomTabNavigator();
+  const auth = useAppSelector(authStore);
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -21,10 +24,10 @@ function UserTabNavigator() {
           let iconName;
 
           switch (route.name) {
-            case 'Đã giao':
+            case 'Kế hoạch':
               iconName = focused ? 'checkbox' : 'checkbox-outline';
               break;
-            case 'Đang thực hiện':
+            case 'Thực hiện':
               iconName = focused ? 'hourglass' : 'hourglass-outline';
               break;
             case 'Hoàn thành':
@@ -46,10 +49,14 @@ function UserTabNavigator() {
         tabBarActiveTintColor: colors.colorMain2,
         tabBarInactiveTintColor: 'gray',
       })}>
-      <Tab.Screen name="Đã giao" component={DeliveryListScreen} />
-      <Tab.Screen name="Đang thực hiện" component={StackProcessing} />
-      <Tab.Screen name="Hoàn thành" component={StackComplate} />
-      <Tab.Screen name="Đổ dầu" component={StackPouroil} />
+      <Tab.Screen name="Kế hoạch" component={DeliveryListScreen} />
+      <Tab.Screen name="Thực hiện" component={StackProcessing} />
+      {auth.FlagHoanThanhDoDau && (
+        <>
+          <Tab.Screen name="Hoàn thành" component={StackComplate} />
+          <Tab.Screen name="Đổ dầu" component={StackPouroil} />
+        </>
+      )}
     </Tab.Navigator>
   );
 }

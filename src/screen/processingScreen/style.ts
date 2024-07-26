@@ -22,6 +22,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     // marginBottom: 4,
   },
+  justifyContent: {justifyContent: 'center'},
   icon: {
     marginRight: 8,
     color: colors.colorMain2,
@@ -49,6 +50,7 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
     color: '#333',
   },
+  fontS20: {fontSize: 20},
   text: {
     fontSize: 16,
     color: '#333',
@@ -61,13 +63,13 @@ export const styles = StyleSheet.create({
   },
   button: {
     // flex: 1,
-    width: '45%',
+    width: '100%',
     // marginHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 5,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   acceptButton: {
     backgroundColor: '#4CAF50',
@@ -85,6 +87,7 @@ export const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     marginLeft: 5,
+    fontSize: 16,
   },
   transferButton: {
     backgroundColor: '#FF5733', // Màu nền cho nút "Chuyển TT"

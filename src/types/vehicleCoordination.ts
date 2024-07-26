@@ -5,7 +5,7 @@ export type dtoListVehicleCoordination = {
   IDUser: number;
   dtS: string;
   dtE: string;
-  TrangThai?: number
+  TrangThai?: number;
 };
 
 export type dtoUpdate = {
@@ -13,7 +13,6 @@ export type dtoUpdate = {
   IDChuyen: number;
   IDUser: number;
 };
-
 
 export type dataVehicleCoordination = {
   RGB: string;
@@ -47,6 +46,8 @@ export type dataVehicleCoordination = {
   ThoiGianVeCal: string;
   TrangThaiVanChuyen: string;
   ThoiGianVe: string;
+  STTChuyen: string;
+  TenNutHienThi: string;
 };
 
 export interface dataSubmit {

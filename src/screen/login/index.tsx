@@ -56,6 +56,8 @@ const LoginScreen = () => {
         ProductKey: values.ProductKey,
       }).then((req: any) => {
         if (req.data.data.IDUser) {
+          console.log(req.data.data);
+
           dispatch(changeUser(req.data.data));
           return navigation.navigate('LoadingScreen');
         }
