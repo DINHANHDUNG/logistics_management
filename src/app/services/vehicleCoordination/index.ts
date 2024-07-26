@@ -68,6 +68,23 @@ export const vehicleCoordinationApi = createApi({
         data: value,
       }),
     }),
+    getStatusShow: builder.query({
+      query: value => ({
+        method: GET,
+        url: NetWork.GetTrangThaiHienThi,
+        params: value,
+      }),
+      transformResponse: (response: any) => {
+        return response;
+      },
+    }),
+    UpdateTrangThaiChuyen: builder.mutation({
+      query: (value: dtoUpdate & {SoVo?: string; file?: any[]}) => ({
+        method: POST,
+        url: NetWork.UpdateTrangThaiChuyen,
+        data: value,
+      }),
+    }),
   }),
 });
 
@@ -82,4 +99,7 @@ export const {
   useUpdateHuyChuyenMutation,
   useUpdateDieuPhoiMutation,
   useUpdateStatusMutation,
+  useGetStatusShowQuery,
+  useLazyGetStatusShowQuery,
+  useUpdateTrangThaiChuyenMutation,
 } = vehicleCoordinationApi;

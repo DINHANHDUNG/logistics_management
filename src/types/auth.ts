@@ -15,4 +15,5 @@ export type dataUser = {
   Key: string;
   Pass: string;
   Username: string;
+  FlagHoanThanhDoDau: boolean;
 };
