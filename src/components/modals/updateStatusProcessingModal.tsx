@@ -47,12 +47,13 @@ const UpdateStatusProcessingModal = ({
         data: JSON.stringify({
           IDChuyen: item.IDChuyen,
           ProductKey: auth.Key,
+          IDUser: auth.IDUser,
           SoVo: val.SoVo ?? null,
         }),
       },
     ] as any;
 
-    selectedImages.forEach((uri, index) => {
+    selectedImages?.forEach((uri, index) => {
       const uploadUri =
         Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
       newD.push({
@@ -62,6 +63,7 @@ const UpdateStatusProcessingModal = ({
         data: RNFetchBlob.wrap(uploadUri),
       });
     });
+    if (status === ENUMSTATUS.TAKEPHOTO && selectedImages?.length < 1) return;
     submitForm(newD);
   };
 

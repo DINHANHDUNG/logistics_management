@@ -1,44 +1,48 @@
+import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
-import React, {useState} from 'react';
+import moment from 'moment';
+import React, {useEffect, useState} from 'react';
+import {Alert, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import DatePicker from 'react-native-date-picker';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {TextInputMask} from 'react-native-masked-text';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {authStore} from '../../app/features/auth/authSlice';
+import {useAppSelector} from '../../app/hooks';
 import {
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import HeaderCustom from '../../components/header';
-import {formatCurrency, formatStringToNumber} from '../../utils';
-import {styles} from './style';
-import {validationSchema} from './schema';
-import {
-  useGetListLoaiXeQuery,
   useGetListXeVanChuyenQuery,
   useGetXeVanChuyenQuery,
 } from '../../app/services/category';
-import {useAppSelector} from '../../app/hooks';
-import {authStore} from '../../app/features/auth/authSlice';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import SelectValueModal from '../../components/modals/selectModal';
-import moment from 'moment';
-import DatePicker from 'react-native-date-picker';
-import LoadingModal from '../../components/modals/loadingModal';
 import {
   useGetDetailDoDauQuery,
   useUpdateDoDauMutation,
 } from '../../app/services/pouroil';
-import {Alert} from 'react-native';
 import {MSG} from '../../common/contants';
-import {useNavigation} from '@react-navigation/native';
-import {TextInputMask} from 'react-native-masked-text';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import HeaderCustom from '../../components/header';
+import LoadingModal from '../../components/modals/loadingModal';
+import SelectValueModal from '../../components/modals/selectModal';
+import {formatStringToNumber} from '../../utils';
+import {validationSchema} from './schema';
+import {styles} from './style';
+import {itemXeVanChuyen} from '../../types/category';
 
 const PouroilDetailScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
   const navigate = useNavigation();
   const auth = useAppSelector(authStore);
   const ID = record?.ID;
+
+  const [listDataDefault, setListDataDefault] = useState({
+    dataLoaiXe: [] as itemXeVanChuyen[],
+  });
+  const changeListDataDefault = (key: string, value: any) => {
+    setListDataDefault(pre => ({
+      ...pre,
+      [key]: value,
+    }));
+  };
+  const [valueSearchLoaiXe, setValueSearchLoaiXe] = useState('');
+
   const {
     data,
     isLoading: loadingDetail,
@@ -48,7 +52,7 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
     {skip: !record?.ID},
   );
   const {data: dataLoaiXe} = useGetListXeVanChuyenQuery(
-    {ProductKey: auth.Key},
+    {ProductKey: auth.Key, Search: valueSearchLoaiXe},
     {skip: !auth.Key},
   );
   const {data: dataXeByIDUser} = useGetXeVanChuyenQuery(
@@ -72,12 +76,12 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
   };
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalOptions, setModalOptions] = useState([]);
+  // const [modalOptions, setModalOptions] = useState([]);
   const [modalField, setModalField] = useState('');
 
   const openModal = (field: any, options: any) => {
     setModalField(field);
-    setModalOptions(options);
+    // setModalOptions(options);
     setModalVisible(true);
   };
 
@@ -91,8 +95,39 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
     }
   };
 
+  const changeSearchModalSelect = (value: string) => {
+    switch (modalField) {
+      case 'IDXeOto':
+        return setValueSearchLoaiXe(value);
+
+      default:
+        return;
+    }
+  };
+
+  const changeValueSearchModalSelect = () => {
+    switch (modalField) {
+      case 'IDXeOto':
+        return valueSearchLoaiXe;
+
+      default:
+        return;
+    }
+  };
+
+  const renderDataModalSelect = () => {
+    switch (modalField) {
+      case 'IDXeOto':
+        return dataLoaiXe;
+      default:
+        return [];
+    }
+  };
+
   const renderXe = values => {
-    return dataLoaiXe?.find(e => e.ID === Number(values.IDXeOto));
+    return listDataDefault?.dataLoaiXe?.find(
+      e => e.ID === Number(values.IDXeOto),
+    );
   };
 
   const handleSubmit = val => {
@@ -117,7 +152,6 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
     if (ID) {
       newData.ID = ID;
     }
-    console.log('data truyền vào', newData);
     UpdateDoDau(newData).then((req: any) => {
       console.log(req);
       if (req?.data?.status === 200) {
@@ -136,6 +170,11 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
       }
     });
   };
+
+  useEffect(() => {
+    if (valueSearchLoaiXe.length < 1)
+      changeListDataDefault('dataLoaiXe', dataLoaiXe);
+  }, [dataLoaiXe]);
 
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -339,11 +378,14 @@ const PouroilDetailScreen = ({route}: {route: any}) => {
               />
 
               <SelectValueModal
+                onChangeSearch={e => changeSearchModalSelect(e)}
+                onSearch={true}
+                valueSearch={changeValueSearchModalSelect()}
                 title={renderTitleModalSelect()}
                 isVisible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 onSelectValue={e => setFieldValue(modalField, e.ID)}
-                values={modalOptions ?? []}
+                values={renderDataModalSelect() ?? []}
                 keyRender={'BienSoXe'}
                 keySubRender={'LaiXe'}
               />

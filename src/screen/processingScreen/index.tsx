@@ -1,6 +1,6 @@
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -10,18 +10,18 @@ import {
   View,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { authStore } from '../../app/features/auth/authSlice';
-import { useAppSelector } from '../../app/hooks';
+import {authStore} from '../../app/features/auth/authSlice';
+import {useAppSelector} from '../../app/hooks';
 import {
   useLazyGetListQuery,
   useUpdateStatusMutation,
 } from '../../app/services/vehicleCoordination';
-import { MSG } from '../../common/contants';
+import {MSG} from '../../common/contants';
 import HomeHeader from '../../components/header/headerBottomTab';
 import LoadingModal from '../../components/modals/loadingModal';
-import { dataVehicleCoordination } from '../../types/vehicleCoordination';
-import { ItemProcessing } from './itemProcessing';
-import { styles } from './style';
+import {dataVehicleCoordination} from '../../types/vehicleCoordination';
+import {ItemProcessing} from './itemProcessing';
+import {styles} from './style';
 
 const Limit = 10;
 
@@ -226,7 +226,11 @@ const ProcessingScreen = () => {
       <FlatList
         data={trips}
         renderItem={item => (
-          <ItemProcessing item={item.item} key={item.index} />
+          <ItemProcessing
+            item={item.item}
+            key={item.index}
+            onRefresh={() => onRefresh()}
+          />
         )}
         keyExtractor={item => item?.IDChuyen?.toString()}
         refreshControl={

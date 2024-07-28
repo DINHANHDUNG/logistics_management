@@ -11,16 +11,20 @@ import UpdateStatusProcessingModal from '../../components/modals/updateStatusPro
 import {useState} from 'react';
 import {API_URL, NetWork} from '../../common/apiKey';
 
-export const ItemProcessing = ({item}: {item: dataVehicleCoordination}) => {
+export const ItemProcessing = ({
+  item,
+  onRefresh,
+}: {
+  item: dataVehicleCoordination;
+  onRefresh: () => void;
+}) => {
   const auth = useAppSelector(authStore);
   const [getStatus, {isLoading}] = useLazyGetStatusShowQuery();
   const [isVisibleUpdate, setIsVisibleUpdate] = useState(false);
   const [statusEnum, setStatusEnum] = useState(0);
   //   useUpdateTrangThaiChuyenMutation
   const fnc_UpdateStatus = async (data: any) => {
-    console.log('Update trạng thái');
-    // setIsVisibleUpdate(true);
-
+    console.log('Update trạng thái', data);
     const res = (await uploadImage(
       API_URL + NetWork.UpdateTrangThaiChuyen,
       data,
@@ -28,31 +32,33 @@ export const ItemProcessing = ({item}: {item: dataVehicleCoordination}) => {
 
     const req = JSON.parse(res.data) as any;
 
-    console.log('res', JSON.parse(res.data));
+    console.log('req', req, res.data);
 
-    // setIsLoading(false);
-    // if (req?.data.IDChuyen) {
-    //   Alert.alert(MSG.success, MSG.updateSuccess, [
-    //     {
-    //       text: 'Cancel',
-    //       onPress: () => navigate.goBack(),
-    //       style: 'cancel',
-    //     },
-    //     {text: 'OK', onPress: () => navigate.goBack()},
-    //   ]);
-    // } else {
-    //   Alert.alert(MSG.err, MSG.errAgain);
-    // }
+    if (req?.data.IDChuyen) {
+      setIsVisibleUpdate(false);
+      Alert.alert(MSG.success, MSG.updateSuccess, [
+        // {
+        //   text: 'Cancel',
+        //   onPress: () => navigate.goBack(),
+        //   style: 'cancel',
+        // },
+        {text: 'OK', onPress: () => onRefresh()},
+      ]);
+    } else {
+      Alert.alert(MSG.err, MSG.errAgain);
+    }
   };
 
   const fnc_EnterShell = () => {
     console.log('Nhập số vỏ');
     //Show Form nhập số vỏ
+    setIsVisibleUpdate(true);
   };
 
   const fnc_TakeAPhoto = () => {
     console.log('Chọn ảnh');
     //Show form chọn ảnh
+    setIsVisibleUpdate(true);
   };
 
   const onClickButton = async () => {
@@ -91,6 +97,7 @@ export const ItemProcessing = ({item}: {item: dataVehicleCoordination}) => {
                 data: JSON.stringify({
                   IDChuyen: item.IDChuyen,
                   ProductKey: auth.Key,
+                  IDUser: auth.IDUser,
                   SoVo: null,
                 }),
               },
@@ -173,7 +180,7 @@ export const ItemProcessing = ({item}: {item: dataVehicleCoordination}) => {
         item={item}
         visible={isVisibleUpdate}
         status={statusEnum}
-        submitForm={data => console.log(data)}
+        submitForm={data => fnc_UpdateStatus(data)}
       />
       <LoadingModal isVisible={isLoading} />
     </View>
