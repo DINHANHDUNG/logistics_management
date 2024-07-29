@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff', // Màu nền tổng thể
+    paddingBottom: 10,
   },
   containerScroll: {
     flex: 1,
