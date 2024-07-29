@@ -41,6 +41,8 @@ const DeliveryListScreen = () => {
   });
   const [page, setPage] = useState(1);
   const [trips, setTrips] = useState<Array<dataVehicleCoordination>>([]);
+  console.log('trips', trips);
+
   const [values, setValues] = useState({
     startDate: new Date(new Date().setDate(new Date().getDate() - 1)),
     endDate: new Date(new Date().setDate(new Date().getDate() + 1)),
@@ -186,6 +188,9 @@ const DeliveryListScreen = () => {
   const renderItem = ({item}: {item: dataVehicleCoordination}) => {
     return (
       <View key={item.IDChuyen} style={[styles.deliveryContainer]}>
+        <View style={[styles.infoContainer, styles.justifyContent]}>
+          <Text style={[styles.title, styles.fontS20]}>{item.STTChuyen}</Text>
+        </View>
         <View style={styles.infoContainer}>
           <Text style={styles.title}>Khách hàng: {item.KhachHang}</Text>
         </View>
@@ -227,16 +232,16 @@ const DeliveryListScreen = () => {
             <Text style={styles.text}>Thời gian về: {item.ThoiGianVe}</Text>
           </View>
         )}
-        <View style={styles.infoContainer}>
+        {/* <View style={styles.infoContainer}>
           <View style={styles.containerIcon}>
             <Icon name="info-circle" size={20} style={styles.icon} />
           </View>
           <Text style={styles.text}>
             Trạng thái điều phối: {item.TrangThaiDieuPhoiOut || 'Chưa gửi lệnh'}
           </Text>
-        </View>
+        </View> */}
 
-        <View style={styles.buttonContainer}>
+        {/* <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[styles.button, styles.acceptButton]}
             onPress={() => handleAccept(item)}>
@@ -249,7 +254,7 @@ const DeliveryListScreen = () => {
             <Icon name="times" size={20} color="#fff" />
             <Text style={styles.buttonText}>Từ chối</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     );
   };

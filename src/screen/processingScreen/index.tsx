@@ -1,4 +1,4 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
@@ -7,11 +7,9 @@ import {
   FlatList,
   RefreshControl,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {authStore} from '../../app/features/auth/authSlice';
 import {useAppSelector} from '../../app/hooks';
 import {
@@ -22,6 +20,7 @@ import {MSG} from '../../common/contants';
 import HomeHeader from '../../components/header/headerBottomTab';
 import LoadingModal from '../../components/modals/loadingModal';
 import {dataVehicleCoordination} from '../../types/vehicleCoordination';
+import {ItemProcessing} from './itemProcessing';
 import {styles} from './style';
 
 const Limit = 10;
@@ -30,8 +29,8 @@ const ProcessingScreen = () => {
   const [getList, {isLoading, isFetching}] = useLazyGetListQuery();
 
   const [updateTrangThai, {isLoading: loading3}] = useUpdateStatusMutation();
+
   const auth = useAppSelector(authStore);
-  const navigate = useNavigation();
   const [uiState, setUiState] = useState({
     visibleStartDate: false,
     visibleEndDate: false,
@@ -158,35 +157,20 @@ const ProcessingScreen = () => {
     }));
   };
 
-  const handleComplate = (item: dataVehicleCoordination) => {
-    Alert.alert(MSG.wraning, 'Bạn có chắc chắn muốn hoàn thành chuyến?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'OK',
-        onPress: () => {
-          sendItem(item, 5);
-        },
-      },
-    ]);
-  };
-
-  const handleClose = (item: dataVehicleCoordination) => {
-    Alert.alert(MSG.wraning, 'Bạn có chắc chắn muốn bỏ nhận?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'OK',
-        onPress: () => {
-          sendItem(item, -1);
-        },
-      },
-    ]);
-  };
+  // const handleComplate = (item: dataVehicleCoordination) => {
+  //   Alert.alert(MSG.wraning, 'Bạn có chắc chắn muốn hoàn thành chuyến?', [
+  //     {
+  //       text: 'Cancel',
+  //       style: 'cancel',
+  //     },
+  //     {
+  //       text: 'OK',
+  //       onPress: () => {
+  //         sendItem(item, 5);
+  //       },
+  //     },
+  //   ]);
+  // };
 
   const sendItem = (item: dataVehicleCoordination, TrangThai: number) => {
     updateTrangThai({
@@ -204,103 +188,6 @@ const ProcessingScreen = () => {
       }
       return Alert.alert(MSG.err, MSG.errAgain);
     });
-  };
-
-  const handleAccept = (delivery: any) => {
-    navigate.navigate('ProcessingDetailScreen', {
-      item: delivery,
-    });
-    // Xử lý khi người dùng nhấn nút "Nhận"
-  };
-
-  const handleHistory = (record: any) => {
-    navigate.navigate('HistoryStatusScreen', {IDChuyen: record});
-  };
-
-  const renderItem = ({item}: {item: dataVehicleCoordination}) => {
-    return (
-      <View key={item.IDChuyen} style={[styles.deliveryContainer]}>
-        <View style={styles.infoContainer}>
-          <Text style={styles.title}>Khách hàng: {item.KhachHang}</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <Text style={styles.title}>Biển số xe: {item.BienSoXe}</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <Text style={styles.title}>Lái xe: {item.LaiXe}</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <View style={styles.containerIcon}>
-            <Icon name="truck" size={20} style={styles.icon} />
-          </View>
-          <Text style={styles.text}>Điểm đi: {item.DiemDi}</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <View style={styles.containerIcon}>
-            <Icon name="map-marker" size={20} style={styles.icon} />
-          </View>
-          <Text style={styles.text}>Điểm đến: {item.DiemDen}</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <View style={styles.containerIcon}>
-            <Icon name="clock-o" size={20} style={styles.icon} />
-          </View>
-          <Text style={styles.text}>Thời gian đóng: {item.NgayDongHang}</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <View style={styles.containerIcon}>
-            <Icon name="clock-o" size={20} style={styles.icon} />
-          </View>
-          <Text style={styles.text}>Thời gian trả: {item.NgayTraHang}</Text>
-        </View>
-        {item.ThoiGianVe && (
-          <View style={styles.infoContainer}>
-            <View style={styles.containerIcon}>
-              <Icon name="clock-o" size={20} style={styles.icon} />
-            </View>
-            <Text style={styles.text}>Thời gian về: {item.ThoiGianVe}</Text>
-          </View>
-        )}
-        <View style={styles.infoContainer}>
-          <View style={styles.containerIcon}>
-            <Icon name="info-circle" size={20} style={styles.icon} />
-          </View>
-          <Text style={styles.text}>
-            Trạng thái vận chuyển:{' '}
-            {item.TrangThaiDieuPhoiOut || 'Chưa gửi lệnh'}
-          </Text>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, styles.transferButton]}
-            onPress={() => handleAccept(item)}>
-            <Icon name="exchange" size={16} color="#fff" />
-            <Text style={styles.buttonText}>Chuyển TT</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.completeButton]}
-            onPress={() => handleComplate(item)}>
-            <Icon name="check" size={16} color="#fff" />
-            <Text style={styles.buttonText}>Hoàn thành</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.buttonContainer}>
-          {/* <TouchableOpacity
-            style={[styles.button, styles.transferButton]}
-            onPress={() => handleClose(item)}>
-            <Icon name="close" size={16} color="#fff" />
-            <Text style={styles.buttonText}>Bỏ nhận</Text>
-          </TouchableOpacity> */}
-          <TouchableOpacity
-            style={[styles.button, styles.completeButton]}
-            onPress={() => handleHistory(item)}>
-            <Icon name="history" size={16} color="#fff" />
-            <Text style={styles.buttonText}>Lịch sử</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
   };
 
   return (
@@ -338,7 +225,13 @@ const ProcessingScreen = () => {
       {/* List of Deliveries */}
       <FlatList
         data={trips}
-        renderItem={renderItem}
+        renderItem={item => (
+          <ItemProcessing
+            item={item.item}
+            key={item.index}
+            onRefresh={() => onRefresh()}
+          />
+        )}
         keyExtractor={item => item?.IDChuyen?.toString()}
         refreshControl={
           <RefreshControl
@@ -380,16 +273,6 @@ const ProcessingScreen = () => {
         onConfirm={date => handleConfirm(date, 'endDate')}
         onCancel={showHideEndDate}
       />
-      {/* <View style={styles.iconPlus}>
-        <Icon
-          name="plus"
-          size={23}
-          color="#fff"
-          onPress={() =>
-            navigate.navigate('TransportTripDetailScreen', { item: {} })
-          }
-        />
-      </View> */}
 
       <LoadingModal isVisible={isLoading || isFetching || loading3} />
     </View>

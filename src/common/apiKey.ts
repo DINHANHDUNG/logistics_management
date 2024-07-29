@@ -24,6 +24,8 @@ export const NetWork = {
   UpdateHuyChuyen: 'UpdateHuyChuyen',
   UpdateBoGuiLenh: 'UpdateBoGuiLenh',
   UpdateTrangThaiDieuPhoi: 'UpdateTrangThaiDieuPhoi',
+  GetTrangThaiHienThi: 'GetTrangThaiHienThi',
+  UpdateTrangThaiChuyen: 'UpdateTrangThaiChuyen',
 
   //report admin
   GetListSuachuaXe: 'GetListSuachuaXe',

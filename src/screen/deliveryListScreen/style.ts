@@ -20,8 +20,10 @@ export const styles = StyleSheet.create({
   infoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+
     // marginBottom: 4,
   },
+  justifyContent: {justifyContent: 'center'},
   icon: {
     marginRight: 8,
     color: colors.colorMain2,
@@ -31,6 +33,8 @@ export const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: colors.border,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -49,6 +53,7 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
     color: '#333',
   },
+  fontS20: {fontSize: 20},
   text: {
     fontSize: 16,
     color: '#333',

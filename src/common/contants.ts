@@ -21,3 +21,8 @@ export const MSG = {
   addNew: 'Thêm mới thành công',
   updateSuccess: 'Cập nhật thành công',
 };
+
+export const ENUMSTATUS = {
+  ENTERSHELL: 1,
+  TAKEPHOTO: 3,
+};

@@ -19,6 +19,7 @@ import {MSG} from '../../common/contants';
 import HeaderCustom from '../../components/header';
 import LoadingModal from '../../components/modals/loadingModal';
 import SelectValueModal from '../../components/modals/selectModal';
+import {itemNhanVien, itemXeVanChuyen} from '../../types/category';
 import {formatStringToNumber} from '../../utils';
 import {styles} from './style';
 
@@ -46,36 +47,94 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
     VeBenBai: '',
     PhatSinhKhac: '',
     GhiChu: '',
+  }) as any;
+
+  const [listDataDefault, setListDataDefault] = useState({
+    dataLoaiXe: [] as itemXeVanChuyen[],
+    dataNhanSu: [] as itemNhanVien[],
   });
+
+  const changeListDataDefault = (key: string, value: any) => {
+    setListDataDefault(pre => ({
+      ...pre,
+      [key]: value,
+    }));
+  };
+
+  const [valueSearchLoaiXe, setValueSearchLoaiXe] = useState('');
+  const [valueSearchNhanSu, setValueSearchNhanSu] = useState('');
 
   // Fetching data for select fields
   const {data: dataLoaiXe} = useGetListXeOtoUuTienQuery(
-    {ProductKey: auth.Key, IDChuyen: record.IDChuyen},
+    {
+      ProductKey: auth.Key,
+      IDChuyen: record.IDChuyen,
+      Search: valueSearchLoaiXe,
+    },
     {skip: !auth.Key},
   );
 
   const {data: dataNhanSu} = useGetListNhanVienQuery(
-    {ProductKey: auth.Key},
+    {ProductKey: auth.Key, Search: valueSearchNhanSu},
     {skip: !auth.Key},
   );
+
+  const changeSearchModalSelect = (value: string) => {
+    switch (modalField) {
+      case 'IDLaiXe':
+        return setValueSearchNhanSu(value);
+
+      case 'IDXeOto':
+        return setValueSearchLoaiXe(value);
+
+      default:
+        return;
+    }
+  };
+
+  const changeValueSearchModalSelect = () => {
+    switch (modalField) {
+      case 'IDLaiXe':
+        return valueSearchNhanSu;
+      case 'IDXeOto':
+        return valueSearchLoaiXe;
+
+      default:
+        return;
+    }
+  };
+
+  const renderDataModalSelect = () => {
+    switch (modalField) {
+      case 'IDLaiXe':
+        return dataNhanSu;
+
+      case 'IDXeOto':
+        return dataLoaiXe;
+      default:
+        return [];
+    }
+  };
 
   const [getInfoLaiXe] = useLazyGetListlaiXeQuery({});
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalOptions, setModalOptions] = useState([]);
+  // const [modalOptions, setModalOptions] = useState([]);
   const [modalField, setModalField] = useState('');
 
   const openModal = (field: any, options: any) => {
     console.log(field, options);
     setModalField(field);
-    setModalOptions(options);
+    // setModalOptions(options);
     setModalVisible(true);
   };
 
   const renderTitleModalSelect = () => {
     switch (modalField) {
-      case 'IDDonViVanTai':
-        return 'Chọn đơn vị vận  tại';
+      case 'IDLaiXe':
+        return 'Chọn lái xe';
+      case 'IDXeOto':
+        return 'Chọn xe vận chuyển';
       default:
         return 'Chọn';
     }
@@ -122,7 +181,10 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
   const onSelectValue = (e: any) => {
     if (e.ID) {
       getInfoLaiXe({IDXe: e.ID, ProductKey: auth.Key}).then((req: any) => {
-        setInitialValues(pre => ({...pre, IDLaiXe: req?.data?.IDLaiXe ?? ''}));
+        setInitialValues((pre: any) => ({
+          ...pre,
+          IDLaiXe: req?.data?.IDLaiXe ?? '',
+        }));
       });
     }
   };
@@ -142,6 +204,14 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
       });
     }
   }, [loadingDetail]);
+
+  useEffect(() => {
+    if (valueSearchLoaiXe.length < 1)
+      changeListDataDefault('dataLoaiXe', dataLoaiXe);
+
+    if (valueSearchNhanSu.length < 1)
+      changeListDataDefault('dataNhanSu', dataNhanSu);
+  }, [dataLoaiXe, dataNhanSu]);
 
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -171,8 +241,9 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
                 <View style={styles.inputDate}>
                   <Text>
                     {values.IDXeOto
-                      ? dataLoaiXe?.find(e => e.ID === Number(values.IDXeOto))
-                          ?.BienSoXe
+                      ? listDataDefault?.dataLoaiXe?.find(
+                          e => e.ID === Number(values.IDXeOto),
+                        )?.BienSoXe
                       : 'Chọn xe vận chuyển'}
                   </Text>
                 </View>
@@ -189,8 +260,9 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
                 <View style={styles.inputDate}>
                   <Text>
                     {values.IDLaiXe
-                      ? dataNhanSu?.find(e => e.ID === Number(values.IDLaiXe))
-                          ?.HoTen
+                      ? listDataDefault?.dataNhanSu?.find(
+                          e => e.ID === Number(values.IDLaiXe),
+                        )?.HoTen
                       : 'Chọn lái xe'}
                   </Text>
                 </View>
@@ -305,6 +377,9 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
               </TouchableOpacity>
 
               <SelectValueModal
+                onChangeSearch={e => changeSearchModalSelect(e)}
+                onSearch={true}
+                valueSearch={changeValueSearchModalSelect()}
                 title={renderTitleModalSelect()}
                 isVisible={modalVisible}
                 onClose={() => setModalVisible(false)}
@@ -320,7 +395,7 @@ const CompanyVehicleScreen = ({route}: {route: any}) => {
                     }
                   }
                 }}
-                values={modalOptions ?? []}
+                values={renderDataModalSelect() ?? []}
                 keyRender={modalField === 'IDLaiXe' ? 'HoTen' : 'BienSoXe'}
               />
             </View>

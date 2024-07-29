@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
+  TextInput,
 } from 'react-native';
 import Modal from 'react-native-modal';
 interface Props {
@@ -16,6 +17,9 @@ interface Props {
   title?: string; // Optional title prop
   keyRender?: string;
   keySubRender?: string;
+  onSearch?: boolean;
+  onChangeSearch?: (e: string) => void;
+  valueSearch?: string;
 }
 
 const SelectValueModal: React.FC<Props> = ({
@@ -26,6 +30,9 @@ const SelectValueModal: React.FC<Props> = ({
   title = '', // Default value for title is an empty string
   keyRender,
   keySubRender,
+  onSearch,
+  onChangeSearch,
+  valueSearch,
 }) => {
   const screenHeight = Dimensions.get('window').height;
   const modalHeight = screenHeight * 0.3;
@@ -40,6 +47,14 @@ const SelectValueModal: React.FC<Props> = ({
       style={styles.modal}>
       <View style={[styles.modalView, {maxHeight: modalHeight}]}>
         {title !== '' && <Text style={styles.title}>{title}</Text>}
+        {onSearch && (
+          <TextInput
+            style={styles.input}
+            value={valueSearch || ''}
+            onChangeText={e => onChangeSearch && onChangeSearch(e)}
+            placeholder="Tìm kiếm"
+          />
+        )}
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           {values.map((item: any, index) => (
             <TouchableOpacity
@@ -69,6 +84,15 @@ const styles = StyleSheet.create({
   modal: {
     justifyContent: 'flex-end',
     margin: 0,
+  },
+  input: {
+    borderWidth: 0.5,
+    borderColor: 'gray',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 4,
+    marginBottom: 10,
+    height: 40,
   },
   modalView: {
     backgroundColor: 'white',

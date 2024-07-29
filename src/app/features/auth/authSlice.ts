@@ -14,6 +14,7 @@ const initialState: dataUser = {
   Key: '',
   Pass: '',
   Username: '',
+  FlagHoanThanhDoDau: false,
 };
 
 export const authSlice = createSlice({

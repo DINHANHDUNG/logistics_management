@@ -35,10 +35,15 @@ import LoadingModal from '../../components/modals/loadingModal';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {TextInputMask} from 'react-native-masked-text';
 import {formatStringToNumber} from '../../utils';
+import {
+  itemDiaDiem,
+  itemHangHoa,
+  itemKH,
+  itemLoaiXe,
+} from '../../types/category';
 
 const TransportTripDetailScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
-  console.log('record', record);
 
   const navigate = useNavigation();
   const auth = useAppSelector(authStore);
@@ -71,25 +76,46 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
     IDLoaiXe: '',
   });
 
-  console.log('initialValues', initialValues);
+  const [listDataDefault, setListDataDefault] = useState({
+    dataKH: [] as itemKH[],
+    dataLoaiXe: [] as itemLoaiXe[],
+    dataHangHoa: [] as itemHangHoa[],
+    dataDiemDi: [] as itemDiaDiem[],
+    dataDiemDen: [] as itemDiaDiem[],
+  });
 
-  console.log('data', data);
+  const changeListDataDefault = (key: string, value: any) => {
+    setListDataDefault(pre => ({
+      ...pre,
+      [key]: value,
+    }));
+  };
+
+  const [valueSearchKH, setValueSearchKH] = useState('');
+  const [valueSearchLoaiXe, setValueSearchLoaiXe] = useState('');
+  const [valueSearchHangHoa, setValueSearchHangHoa] = useState('');
+  const [valueSearchDiemDi, setValueSearchDiemDi] = useState('');
+  const [valueSearchDiemDen, setValueSearchDiemDen] = useState('');
 
   // Fetching data for select fields
   const {data: dataKH} = useGetListKHQuery(
-    {ProductKey: auth.Key},
+    {ProductKey: auth.Key, Search: valueSearchKH},
     {skip: !auth.Key},
   );
   const {data: dataLoaiXe} = useGetListLoaiXeQuery(
-    {ProductKey: auth.Key},
+    {ProductKey: auth.Key, Search: valueSearchLoaiXe},
     {skip: !auth.Key},
   );
   const {data: dataHangHoa} = useGetListHangHoaQuery(
-    {ProductKey: auth.Key},
+    {ProductKey: auth.Key, Search: valueSearchHangHoa},
     {skip: !auth.Key},
   );
-  const {data: dataDiaDiem} = useGetListDiaDiemQuery(
-    {ProductKey: auth.Key},
+  const {data: dataDiemDi} = useGetListDiaDiemQuery(
+    {ProductKey: auth.Key, Search: valueSearchDiemDi},
+    {skip: !auth.Key},
+  );
+  const {data: dataDiemDen} = useGetListDiaDiemQuery(
+    {ProductKey: auth.Key, Search: valueSearchDiemDen},
     {skip: !auth.Key},
   );
 
@@ -97,7 +123,7 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
   const [visibleTimePicker, setVisibleTimePicker] = useState(false);
   const [selectedField, setSelectedField] = useState(null as unknown as string);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalOptions, setModalOptions] = useState([]);
+  // const [modalOptions, setModalOptions] = useState([]);
   const [modalField, setModalField] = useState('');
 
   const handleConfirmDate = (date: any, setFieldValue: any) => {
@@ -112,7 +138,7 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
 
   const openModal = (field: any, options: any) => {
     setModalField(field);
-    setModalOptions(options);
+    // setModalOptions(options);
     setModalVisible(true);
   };
 
@@ -135,6 +161,72 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
 
       default:
         return 'Chọn';
+    }
+  };
+
+  const changeSearchModalSelect = (value: string) => {
+    switch (modalField) {
+      case 'IDDiemDi':
+        return setValueSearchDiemDi(value);
+
+      case 'IDDiemDen':
+        return setValueSearchDiemDen(value);
+
+      case 'IDHangHoa':
+        return setValueSearchHangHoa(value);
+
+      case 'IDKhachHang':
+        return setValueSearchKH(value);
+
+      case 'IDLoaiXe':
+        return setValueSearchLoaiXe(value);
+
+      default:
+        return;
+    }
+  };
+
+  const changeValueSearchModalSelect = () => {
+    switch (modalField) {
+      case 'IDDiemDi':
+        return valueSearchDiemDi;
+
+      case 'IDDiemDen':
+        return valueSearchDiemDen;
+
+      case 'IDHangHoa':
+        return valueSearchHangHoa;
+
+      case 'IDKhachHang':
+        return valueSearchKH;
+
+      case 'IDLoaiXe':
+        return valueSearchLoaiXe;
+
+      default:
+        return;
+    }
+  };
+
+  const renderDataModalSelect = () => {
+    switch (modalField) {
+      case 'IDDiemDi':
+        return dataDiemDi;
+
+      case 'IDDiemDen':
+        return dataDiemDen;
+
+      case 'IDHangHoa':
+        return dataHangHoa;
+
+      case 'IDKhachHang':
+        return dataKH;
+
+      case 'IDLoaiXe':
+        return dataLoaiXe;
+
+      default:
+        return [];
     }
   };
 
@@ -252,6 +344,22 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
     }
   }, [loadingDetail]);
 
+  useEffect(() => {
+    if (valueSearchDiemDen.length < 1)
+      changeListDataDefault('dataDiemDen', dataDiemDen);
+
+    if (valueSearchDiemDi.length < 1)
+      changeListDataDefault('dataDiemDi', dataDiemDi);
+
+    if (valueSearchHangHoa.length < 1)
+      changeListDataDefault('dataHangHoa', dataHangHoa);
+
+    if (valueSearchLoaiXe.length < 1)
+      changeListDataDefault('dataLoaiXe', dataLoaiXe);
+
+    if (valueSearchKH.length < 1) changeListDataDefault('dataKH', dataKH);
+  }, [dataDiemDen, dataDiemDi, dataHangHoa, dataLoaiXe, dataKH]);
+
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <HeaderCustom
@@ -284,8 +392,9 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
                 <View style={styles.inputDate}>
                   <Text>
                     {values.IDKhachHang
-                      ? dataKH?.find(e => e.ID === Number(values.IDKhachHang))
-                          ?.Name
+                      ? listDataDefault?.dataKH?.find(
+                          e => e.ID === Number(values.IDKhachHang),
+                        )?.Name
                       : 'Chọn khách hàng'}
                   </Text>
                 </View>
@@ -302,7 +411,7 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
                 <View style={styles.inputDate}>
                   <Text>
                     {values.IDHangHoa
-                      ? dataHangHoa?.find(
+                      ? listDataDefault?.dataHangHoa?.find(
                           e => e.ID === Number(values.IDHangHoa),
                         )?.Name
                       : 'Chọn hàng hóa'}
@@ -321,8 +430,9 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
                 <View style={styles.inputDate}>
                   <Text>
                     {values.IDLoaiXe
-                      ? dataLoaiXe?.find(e => e.ID === Number(values.IDLoaiXe))
-                          ?.Name
+                      ? listDataDefault?.dataLoaiXe?.find(
+                          e => e.ID === Number(values.IDLoaiXe),
+                        )?.Name
                       : 'Chọn loại xe'}
                   </Text>
                 </View>
@@ -335,15 +445,17 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
               <Text style={styles.label}>Điểm đi</Text>
               <TouchableOpacity
                 style={styles.inputContainer}
-                onPress={() => openModal('IDDiemDi', dataDiaDiem)}>
+                onPress={() => openModal('IDDiemDi', dataDiemDi)}>
                 <View style={styles.inputDate}>
                   <Text>
                     {values.IDDiemDi
-                      ? dataDiaDiem?.find(e => e.ID === Number(values.IDDiemDi))
-                          ?.Name +
+                      ? listDataDefault?.dataDiemDi?.find(
+                          e => e.ID === Number(values.IDDiemDi),
+                        )?.Name +
                         ' - ' +
-                        dataDiaDiem?.find(e => e.ID === Number(values.IDDiemDi))
-                          ?.Address
+                        listDataDefault?.dataDiemDi?.find(
+                          e => e.ID === Number(values.IDDiemDi),
+                        )?.Address
                       : 'Chọn điểm đi'}
                   </Text>
                 </View>
@@ -356,15 +468,15 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
               <Text style={styles.label}>Điểm đến</Text>
               <TouchableOpacity
                 style={styles.inputContainer}
-                onPress={() => openModal('IDDiemDen', dataDiaDiem)}>
+                onPress={() => openModal('IDDiemDen', dataDiemDen)}>
                 <View style={styles.inputDate}>
                   <Text>
                     {values.IDDiemDen
-                      ? dataDiaDiem?.find(
+                      ? listDataDefault?.dataDiemDen?.find(
                           e => e.ID === Number(values.IDDiemDen),
                         )?.Name +
                         ' - ' +
-                        dataDiaDiem?.find(
+                        listDataDefault?.dataDiemDen?.find(
                           e => e.ID === Number(values.IDDiemDen),
                         )?.Address
                       : 'Chọn điểm đến'}
@@ -603,11 +715,14 @@ const TransportTripDetailScreen = ({route}: {route: any}) => {
               />
 
               <SelectValueModal
+                onChangeSearch={e => changeSearchModalSelect(e)}
+                onSearch={true}
+                valueSearch={changeValueSearchModalSelect()}
                 title={renderTitleModalSelect()}
                 isVisible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 onSelectValue={e => setFieldValue(modalField, e.ID)}
-                values={modalOptions ?? []}
+                values={renderDataModalSelect() ?? []}
                 keyRender={'Name'}
                 keySubRender={
                   modalField === 'IDDiemDen' || modalField === 'IDDiemDi'

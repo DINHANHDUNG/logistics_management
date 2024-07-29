@@ -1,14 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
-import {
-  Alert,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {authStore} from '../../app/features/auth/authSlice';
 import {useAppSelector} from '../../app/hooks';
@@ -21,11 +15,10 @@ import {MSG} from '../../common/contants';
 import HeaderCustom from '../../components/header';
 import LoadingModal from '../../components/modals/loadingModal';
 import SelectValueModal from '../../components/modals/selectModal';
+import {formatStringToNumber} from '../../utils';
 import {validationSchema} from './schema';
 import {styles} from './style';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {TextInputMask} from 'react-native-masked-text';
-import {formatStringToNumber} from '../../utils';
+import {itemKH} from '../../types/category';
 
 const RentedVehicleScreen = ({route}: {route: any}) => {
   const {item: record} = route.params;
@@ -55,19 +48,31 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
     IDDonViVanTai: '',
   });
 
+  const [listDataDefault, setListDataDefault] = useState({
+    dataKH: [] as itemKH[],
+  });
+
+  const changeListDataDefault = (key: string, value: any) => {
+    setListDataDefault(pre => ({
+      ...pre,
+      [key]: value,
+    }));
+  };
+
+  const [valueSearchKH, setValueSearchKH] = useState('');
+
   // Fetching data for select fields
   const {data: dataKH} = useGetListKHQuery(
-    {ProductKey: auth.Key},
+    {ProductKey: auth.Key, Search: valueSearchKH},
     {skip: !auth.Key},
   );
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalOptions, setModalOptions] = useState([]);
   const [modalField, setModalField] = useState('');
 
   const openModal = (field: any, options: any) => {
     setModalField(field);
-    setModalOptions(options);
+    // setModalOptions(options);
     setModalVisible(true);
   };
 
@@ -77,6 +82,33 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
         return 'Chọn đơn vị vận  tại';
       default:
         return 'Chọn';
+    }
+  };
+
+  const changeSearchModalSelect = (value: string) => {
+    switch (modalField) {
+      case 'IDDonViVanTai':
+        return setValueSearchKH(value);
+      default:
+        return;
+    }
+  };
+
+  const changeValueSearchModalSelect = () => {
+    switch (modalField) {
+      case 'IDDonViVanTai':
+        return valueSearchKH;
+      default:
+        return;
+    }
+  };
+
+  const renderDataModalSelect = () => {
+    switch (modalField) {
+      case 'IDDonViVanTai':
+        return dataKH;
+      default:
+        return [];
     }
   };
 
@@ -139,6 +171,10 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
     }
   }, [loadingDetail]);
 
+  useEffect(() => {
+    if (valueSearchKH.length < 1) changeListDataDefault('dataKH', dataKH);
+  }, [dataKH]);
+
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <HeaderCustom title={`Điều phối xe thuê`} />
@@ -167,8 +203,9 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
                 <View style={styles.inputDate}>
                   <Text>
                     {values.IDDonViVanTai
-                      ? dataKH?.find(e => e.ID === Number(values.IDDonViVanTai))
-                          ?.Name
+                      ? listDataDefault?.dataKH?.find(
+                          e => e.ID === Number(values.IDDonViVanTai),
+                        )?.Name
                       : 'Chọn đơn vị vận tải'}
                   </Text>
                 </View>
@@ -319,11 +356,14 @@ const RentedVehicleScreen = ({route}: {route: any}) => {
               </TouchableOpacity>
 
               <SelectValueModal
+                onChangeSearch={e => changeSearchModalSelect(e)}
+                onSearch={true}
+                valueSearch={changeValueSearchModalSelect()}
                 title={renderTitleModalSelect()}
                 isVisible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 onSelectValue={e => setFieldValue(modalField, e.ID)}
-                values={modalOptions ?? []}
+                values={renderDataModalSelect() ?? []}
                 keyRender={'Name'}
                 keySubRender={
                   modalField === 'IDDiemDen' || modalField === 'IDDiemDi'
