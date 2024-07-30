@@ -52,13 +52,17 @@ export const ItemProcessing = ({
   const fnc_EnterShell = () => {
     console.log('Nhập số vỏ');
     //Show Form nhập số vỏ
-    setIsVisibleUpdate(true);
+    setTimeout(() => {
+      setIsVisibleUpdate(true);
+    }, 1000);
   };
 
   const fnc_TakeAPhoto = () => {
     console.log('Chọn ảnh');
     //Show form chọn ảnh
-    setIsVisibleUpdate(true);
+    setTimeout(() => {
+      setIsVisibleUpdate(true);
+    }, 1000);
   };
 
   const onClickButton = async () => {

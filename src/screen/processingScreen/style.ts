@@ -53,6 +53,7 @@ export const styles = StyleSheet.create({
   },
   fontS20: {fontSize: 20},
   text: {
+    flexWrap: 'wrap',
     fontSize: 16,
     color: '#333',
     marginBottom: 4,
