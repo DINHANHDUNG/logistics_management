@@ -4,6 +4,7 @@ import {
   Platform,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -100,23 +101,16 @@ const UpdateStatusProcessingModal = ({
                 {ENUMSTATUS.ENTERSHELL === status && (
                   <>
                     <Text style={styles.label}>Số vỏ</Text>
-                    <TextInputMask
+                    <TextInput
                       style={styles.input}
-                      type={'money'}
-                      options={{
-                        precision: 0, // Số lượng số sau dấu phẩy, 0 để không có số thập phân
-                        separator: ',', // Dấu ngăn cách phần ngàn
-                        delimiter: '.', // Dấu ngăn cách phần nghìn
-                        unit: '', // Tiền tệ, bạn có thể đặt thành '$' hoặc '€' tùy ý
-                        suffixUnit: '', // Đối với các trường hợp khác, bạn có thể đặt thành '%' nếu cần
-                      }}
-                      value={values.SoVo.toString()}
                       onChangeText={text => {
-                        return setFieldValue('SoVo', text?.replace(/[.]/g, ''));
+                        return setFieldValue('SoVo', text);
                       }}
                       onBlur={handleBlur('SoVo')}
+                      value={values.SoVo}
                       placeholder="Nhập số vỏ"
-                      keyboardType="numeric"
+                      multiline={true}
+                      numberOfLines={3}
                     />
                     {errors?.SoVo && (
                       <Text style={styles.errorText}>{errors?.SoVo}</Text>
@@ -194,7 +188,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 8,
     width: '100%',
-    height: '100%',
+    height: '70%',
   },
   closeButton: {
     position: 'absolute',

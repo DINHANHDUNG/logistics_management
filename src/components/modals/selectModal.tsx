@@ -8,6 +8,7 @@ import {
   Dimensions,
   TextInput,
 } from 'react-native';
+// import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Modal from 'react-native-modal';
 interface Props {
   isVisible: boolean;
@@ -44,8 +45,10 @@ const SelectValueModal: React.FC<Props> = ({
       backdropOpacity={0.5}
       animationIn="slideInUp"
       animationOut="slideOutDown"
+      avoidKeyboard
       style={styles.modal}>
       <View style={[styles.modalView, {maxHeight: modalHeight}]}>
+        {/* <KeyboardAwareScrollView> */}
         {title !== '' && <Text style={styles.title}>{title}</Text>}
         {onSearch && (
           <TextInput
@@ -75,6 +78,7 @@ const SelectValueModal: React.FC<Props> = ({
             </TouchableOpacity>
           ))}
         </ScrollView>
+        {/* </KeyboardAwareScrollView> */}
       </View>
     </Modal>
   );
