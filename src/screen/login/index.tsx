@@ -109,6 +109,13 @@ const LoginScreen = () => {
             ProductKey: savedProductKey,
             rememberMe: true,
           });
+        } else {
+          formik.setValues({
+            UserName: '',
+            Password: '',
+            ProductKey: 'CMCBacNinhDB-06062024',
+            rememberMe: false,
+          });
         }
       } catch (error) {
         console.error('Failed to load credentials', error);
