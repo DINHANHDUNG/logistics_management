@@ -32,6 +32,7 @@ export const authSlice = createSlice({
       state.Key = action.payload.Key;
       state.Pass = action.payload.Pass;
       state.Username = action.payload.Username;
+      state.FlagHoanThanhDoDau = action.payload.FlagHoanThanhDoDau;
     },
   },
 });

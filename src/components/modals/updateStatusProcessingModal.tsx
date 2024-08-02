@@ -68,6 +68,22 @@ const UpdateStatusProcessingModal = ({
     submitForm(newD);
   };
 
+  const cancel = async () => {
+    const newD = [
+      {
+        name: 'data',
+        data: JSON.stringify({
+          IDChuyen: item.IDChuyen,
+          ProductKey: auth.Key,
+          IDUser: auth.IDUser,
+          SoVo: null,
+        }),
+      },
+    ] as any;
+
+    submitForm(newD);
+  };
+
   const deleteImg = (idx: number) => {
     const copyArr = [...selectedImages];
     console.log(idx);
@@ -159,6 +175,13 @@ const UpdateStatusProcessingModal = ({
                   onPress={() => handleSubmit()}>
                   <Text style={styles.textBtn}>Lưu</Text>
                 </TouchableOpacity>
+                {ENUMSTATUS.ENTERSHELL === status && (
+                  <TouchableOpacity
+                    style={styles.buttonContainer}
+                    onPress={() => cancel()}>
+                    <Text style={styles.textBtn}>Bỏ qua</Text>
+                  </TouchableOpacity>
+                )}
               </View>
             )}
           </Formik>
