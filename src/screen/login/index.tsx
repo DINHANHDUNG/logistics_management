@@ -53,7 +53,10 @@ const LoginScreen = () => {
       login({
         UserName: values.UserName,
         Password: values.Password,
-        ProductKey: values.ProductKey,
+        ProductKey:
+          values.ProductKey && values.ProductKey.length > 0
+            ? values.ProductKey
+            : 'CMCBacNinhDB-06062024',
       }).then((req: any) => {
         if (req.data.data.IDUser) {
           console.log(req.data.data);

@@ -5,10 +5,7 @@ export const loginValidationSchema = yup.object().shape({
     .string()
     // .email('Email không đúng định dạng')
     .required('Vui lòng nhập tài khoản'),
-  ProductKey: yup
-    .string()
-    // .email('Email không đúng định dạng')
-    .required('Vui lòng nhập key'),
+  ProductKey: yup.string(),
   Password: yup
     .string()
     .min(6, ({min}) => `Mật khẩu phải có ít nhất ${min} ký tự`)
